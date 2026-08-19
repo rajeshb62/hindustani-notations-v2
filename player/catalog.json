@@ -1,0 +1,16 @@
+[
+  {
+    "id": "iccr-1854-side-b",
+    "title": "ICCR-1854 Side B",
+    "path": "./data/iccr-1854-side-b/performance.json",
+    "sa_hz": 96.97,
+    "notes": 6397
+  },
+  {
+    "id": "pt-jasraj-side-a",
+    "title": "Pt. Jasraj side A",
+    "path": "./data/pt-jasraj-side-a/performance.json",
+    "sa_hz": 136.18,
+    "notes": 11921
+  }
+]

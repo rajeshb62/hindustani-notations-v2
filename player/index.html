@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Hindustani notations</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,700;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#08070f; --text:#ece4dc; --dim:#6e6574; --accent:#c8b89a; --line:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow:hidden}
+#app{max-width:960px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+#bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.35);flex-wrap:wrap}
+button{font-family:inherit;cursor:pointer}
+#play{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
+#rw{height:32px;padding:0 10px;border-radius:999px;border:1px solid rgba(200,184,154,.3);background:transparent;color:var(--accent);font-size:.7rem;font-weight:700}
+#scrub-wrap{flex:1;min-width:140px}
+#scrub{width:100%;appearance:none;height:3px;background:rgba(255,255,255,.12);border-radius:2px}
+#scrub::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+#time{font-size:.7rem;color:var(--dim);letter-spacing:.04em}
+.pill{padding:7px 12px;border-radius:999px;border:1px solid rgba(200,184,154,.35);background:rgba(200,184,154,.08);color:var(--accent);font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.pill.on{background:rgba(82,183,136,.16);border-color:rgba(82,183,136,.5);color:#9de0b8}
+#stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+#note{font-family:'EB Garamond',Georgia,serif;font-size:clamp(84px,18vw,168px);font-weight:700;line-height:1}
+#note.komal{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:3px}
+#oct-a,#oct-b{height:22px;font-size:16px;opacity:0}
+#oct-a.on,#oct-b.on{opacity:1}
+#meta{margin-top:12px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,224,216,.55);text-align:center}
+#cents{margin-top:6px;font-size:.72rem;color:var(--dim)}
+#cents.bad{color:#e07a7a}
+#confbar{width:min(260px,70vw);height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:12px;overflow:hidden}
+#conffill{height:100%;background:currentColor;width:0}
+#tl{height:76px;border-top:1px solid var(--line);background:rgba(0,0,0,.35);overflow:hidden;position:relative}
+#track{display:flex;align-items:center;height:100%;position:absolute;left:50%;white-space:nowrap}
+.tn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;height:70px;cursor:pointer;opacity:.35}
+.tn.cur{opacity:1}
+.tn.low{opacity:.18}
+.tc{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:700}
+#tl::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.12)}
+#foot{display:flex;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--line);font-size:.65rem;color:var(--dim)}
+#empty{padding:40px 24px;text-align:center;color:var(--dim);line-height:1.6}
+select{background:#12101a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-family:inherit}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar">
+    <button id="play" title="Space">▶</button>
+    <button id="rw" title="Rewind 5s">↺ 5s</button>
+    <div id="scrub-wrap">
+      <input id="scrub" type="range" min="0" max="100" step="0.01" value="0"/>
+      <div id="time">0:00 / 0:00</div>
+    </div>
+    <button class="pill" id="mode">Play notes</button>
+    <button class="pill" id="drone">Sa drone</button>
+    <label style="font-size:.68rem;color:var(--dim)">Vol
+      <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" style="width:70px;vertical-align:middle"/>
+    </label>
+    <select id="catalog" title="Performance"></select>
+  </div>
+  <div id="stage">
+    <div id="oct-a">●</div>
+    <div id="note">—</div>
+    <div id="oct-b">●</div>
+    <div id="meta">Load a performance…</div>
+    <div id="cents"></div>
+    <div id="confbar"><div id="conffill"></div></div>
+  </div>
+  <div id="tl"><div id="track"></div></div>
+  <div id="foot">
+    <span id="sa-src">Sa is fixed from the transcription</span>
+    <span>Space play · N notes</span>
+  </div>
+</div>
+<audio id="audio" preload="auto"></audio>
+<script>
+const JUST = {S:1,r:256/243,R:9/8,g:32/27,G:5/4,M:4/3,'M+':45/32,P:3/2,d:128/81,D:5/3,n:16/9,N:15/8};
+const COLORS = {S:'#E63946',r:'#F4845F',R:'#F4845F',g:'#E9C46A',G:'#E9C46A',M:'#52B788','M+':'#52B788',P:'#2EC4B6',d:'#4895EF',D:'#4895EF',n:'#C77DFF',N:'#C77DFF'};
+const NAMES = {S:'Sa',r:'Re komal',R:'Re shuddh',g:'Ga komal',G:'Ga shuddh',M:'Ma shuddh','M+':'Ma tivra',P:'Pa',d:'Dha komal',D:'Dha shuddh',n:'Ni komal',N:'Ni shuddh'};
+const KOMAL = new Set(['r','g','d','n']);
+
+let perf = null;
+let baseSa = 96.97;
+let notes = [];
+let mode = 'audio';
+let playing = false;
+let idx = -1;
+let ctx, master, flute, fluteGain, droneGain;
+let lastFreq = null;
+
+const audio = document.getElementById('audio');
+const $ = id => document.getElementById(id);
+
+function currentSa(){ return baseSa; }
+
+function mapHz(hz){
+  const sa = currentSa();
+  const cents = 1200 * Math.log2(hz/sa);
+  let oct = Math.floor(cents/1200);
+  let local = cents - oct*1200;
+  let best='S', err=1e9, bo=oct;
+  for (const [name, ratio] of Object.entries(JUST)){
+    const sc = 1200*Math.log2(ratio);
+    let e = local-sc, o=oct;
+    if(name==='S' && Math.abs(local-1200)<Math.abs(e)){ e=local-1200; o=oct+1; }
+    if(Math.abs(e)<Math.abs(err)){ err=e; best=name; bo=o; }
+  }
+  const ideal = sa * JUST[best] * Math.pow(2, bo);
+  const label = bo>0 ? best+"'".repeat(bo) : bo<0 ? best+'.'.repeat(-bo) : best;
+  return {swara:best, octave:bo, cents_off:err, label, ideal, color:COLORS[best]||'#fff', komal:KOMAL.has(best), name:NAMES[best]||best};
+}
+
+function remap(){
+  if(!perf) return;
+  notes = perf.notes.map(n => {
+    const m = mapHz(n.hz);
+    return {...n, ...m};
+  });
+  buildTimeline();
+}
+
+function fmt(t){ if(!isFinite(t)) return '0:00'; const m=Math.floor(t/60); const s=Math.floor(t%60); return m+':'+String(s).padStart(2,'0'); }
+
+let fluteOpen = false;
+
+function ensureAudio(){
+  if(ctx) return;
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+  master = ctx.createGain();
+  master.gain.value = parseFloat($('vol').value);
+  master.connect(ctx.destination);
+}
+
+async function resumeAudio(){
+  ensureAudio();
+  if(ctx.state !== 'running'){
+    try{ await ctx.resume(); }catch(e){}
+  }
+  return ctx.state === 'running';
+}
+
+function setParam(param, value, now){
+  param.cancelScheduledValues(now);
+  const cur = Number.isFinite(param.value) ? param.value : value;
+  param.setValueAtTime(Math.max(0.0001, cur), now);
+  param.linearRampToValueAtTime(Math.max(0.0001, value), now + 0.03);
+}
+
+function initFlute(freq){
+  ensureAudio();
+  if(flute) return;
+  const now = ctx.currentTime;
+  const fund = ctx.createOscillator(); fund.type = 'sine'; fund.frequency.setValueAtTime(freq, now);
+  const h2 = ctx.createOscillator(); h2.type = 'sine'; h2.frequency.setValueAtTime(freq * 2, now);
+  const h2g = ctx.createGain(); h2g.gain.setValueAtTime(0.08, now);
+  fluteGain = ctx.createGain(); fluteGain.gain.setValueAtTime(0.0001, now);
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(3200, now);
+  fund.connect(fluteGain); h2.connect(h2g); h2g.connect(fluteGain);
+  fluteGain.connect(lp); lp.connect(master);
+  fund.start(now); h2.start(now);
+  flute = {fund, h2, h2g};
+  lastFreq = freq;
+}
+
+function openFlute(){
+  if(!fluteGain || !ctx) return;
+  const now = ctx.currentTime;
+  fluteGain.gain.cancelScheduledValues(now);
+  fluteGain.gain.setValueAtTime(Math.max(0.0001, fluteGain.gain.value), now);
+  fluteGain.gain.linearRampToValueAtTime(0.62, now + 0.05);
+  fluteOpen = true;
+}
+
+function playFreq(freq, dur){
+  if(!freq || !Number.isFinite(freq)) return;
+  initFlute(freq);
+  const now = ctx.currentTime;
+  const glide = dur < 0.05 ? 0.006 : Math.min(0.04, dur * 0.14);
+  setParam(flute.fund.frequency, freq, now);
+  setParam(flute.h2.frequency, freq * 2, now);
+  if(!fluteOpen) openFlute();
+  lastFreq = freq;
+}
+
+function stopFlute(){
+  if(!fluteGain || !ctx || !fluteOpen) return;
+  const now = ctx.currentTime;
+  fluteGain.gain.cancelScheduledValues(now);
+  fluteGain.gain.setValueAtTime(Math.max(0.0001, fluteGain.gain.value), now);
+  fluteGain.gain.linearRampToValueAtTime(0.0001, now + 0.06);
+  fluteOpen = false;
+}
+
+async function setDrone(on){
+  await resumeAudio();
+  if(on && !droneGain){
+    const sa=currentSa();
+    const g=ctx.createGain(); g.gain.value=0;
+    ['sine',sa,0.4],['sine',sa*2,0.16],['sine',sa*1.5,0.08].forEach(()=>{});
+    const specs=[[sa,0.4],[sa*2,0.16],[sa*3/2,0.08]];
+    specs.forEach(([f,a])=>{
+      const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
+      const gg=ctx.createGain(); gg.gain.value=a;
+      o.connect(gg); gg.connect(g); o.start();
+    });
+    g.connect(master);
+    droneGain=g;
+  }
+  if(droneGain){
+    droneGain.gain.setTargetAtTime(on?0.28:0, ctx.currentTime, 0.08);
+  }
+  $('drone').classList.toggle('on', on);
+}
+
+function findNote(t){
+  let lo=0,hi=notes.length-1,found=-1;
+  while(lo<=hi){const mid=(lo+hi)>>1; if(notes[mid].t<=t){found=mid;lo=mid+1;} else hi=mid-1;}
+  if(found<0) return -1;
+  const n=notes[found];
+  if(t < n.t + n.dur + 0.04) return found;
+  return -2;
+}
+
+function showNote(i){
+  if(i===idx) return;
+  idx=i;
+  const el=$('note'), meta=$('meta'), cents=$('cents');
+  if(i<0){
+    el.textContent='—'; el.style.color='rgba(255,255,255,.12)'; el.className='';
+    meta.textContent = i===-2 ? 'Silence' : '—';
+    cents.textContent='';
+    $('oct-a').className=''; $('oct-b').className='';
+    highlight(-1);
+    return;
+  }
+  const n=notes[i];
+  el.textContent = n.swara==='M+' ? 'M+' : n.swara;
+  el.style.color=n.color;
+  el.className = n.komal ? 'komal' : '';
+  $('oct-a').textContent='●'.repeat(Math.max(1,n.octave));
+  $('oct-a').className=n.octave>0?'on':'';
+  $('oct-b').textContent='●'.repeat(Math.max(1,-n.octave));
+  $('oct-b').className=n.octave<0?'on':'';
+  meta.textContent = `${n.name}  ·  ${n.octave===0?'madhya':n.octave>0?'taar':'mandra'}`;
+  const off = n.cents_off;
+  cents.textContent = `${off>=0?'+':''}${off.toFixed(1)} ¢ from ideal  ·  ${n.hz.toFixed(1)} Hz  ·  conf ${(n.conf*100).toFixed(0)}%`;
+  cents.className = Math.abs(off)>25 ? 'bad' : '';
+  $('conffill').style.width = (n.conf*100)+'%';
+  $('conffill').style.background = n.color;
+  highlight(i);
+}
+
+function buildTimeline(){
+  const track=$('track');
+  track.innerHTML='';
+  notes.forEach((n,i)=>{
+    const d=document.createElement('div');
+    d.className='tn'+(n.conf<0.35?' low':'');
+    d.innerHTML=`<div class="tc" style="color:${n.color}">${n.swara==='M+'?'M+':n.swara}</div>`;
+    d.onclick=()=>{ seek(n.t); };
+    track.appendChild(d);
+  });
+}
+function highlight(i){
+  const kids=$('track').children;
+  for(let k=0;k<kids.length;k++) kids[k].classList.toggle('cur', k===i);
+  if(i>=0 && kids[i]){
+    const x = kids[i].offsetLeft + kids[i].offsetWidth/2;
+    $('track').style.transform = `translateX(${-x}px)`;
+  }
+}
+
+function tnow(){ return audio.currentTime || 0; }
+function applyMix(){
+  const v = parseFloat($('vol').value);
+  if(master) master.gain.value = v;
+  // Keep the recording as a silent clock in notes mode; do not use
+  // audio.muted — some browsers treat that as "tab is silent".
+  audio.volume = (mode === 'audio') ? v : 0;
+}
+
+function seek(t){
+  audio.currentTime = t;
+  if(mode==='notes' && playing){
+    const i = findNote(t);
+    if(i>=0) playFreq(notes[i].ideal, notes[i].dur);
+    else stopFlute();
+  }
+}
+
+function tick(){
+  const t=tnow();
+  const i=findNote(t);
+  showNote(i);
+  if(mode==='notes' && playing){
+    if(i>=0) playFreq(notes[i].ideal, notes[i].dur);
+    else stopFlute();
+  }
+  $('scrub').value = audio.duration ? (t/audio.duration)*100 : 0;
+  $('time').textContent = `${fmt(t)} / ${fmt(audio.duration||0)}`;
+  requestAnimationFrame(tick);
+}
+
+async function toggle(){
+  await resumeAudio();
+  if(playing){
+    audio.pause(); stopFlute(); playing=false; $('play').textContent='▶';
+  } else {
+    applyMix();
+    try{ await audio.play(); }catch(e){}
+    playing=true; $('play').textContent='❚❚';
+    if(mode==='notes'){
+      const i = findNote(tnow());
+      if(i>=0) playFreq(notes[i].ideal, notes[i].dur);
+    }
+  }
+}
+async function setMode(next){
+  mode=next;
+  $('mode').textContent = mode==='audio' ? 'Play notes' : 'Play recording';
+  $('mode').classList.toggle('on', mode==='notes');
+  applyMix();
+  if(mode==='audio'){
+    stopFlute();
+  } else {
+    await resumeAudio();
+    if(playing){
+      try{ await audio.play(); }catch(e){}
+      const i = findNote(tnow());
+      if(i>=0) playFreq(notes[i].ideal, notes[i].dur);
+    }
+  }
+}
+
+async function loadPerf(url){
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('Could not load '+url+' ('+res.status+')');
+  perf=await res.json();
+  baseSa=perf.sa_hz;
+  $('sa-src').textContent = 'Sa ' + baseSa.toFixed(2) + ' Hz · ' + (perf.stats?.note_count||0) + ' notes';
+  const dir = url.replace(/performance\.json$/, '');
+  audio.src = dir + perf.audio;
+  applyMix();
+  remap();
+  $('meta').textContent = perf.title + ' · press play';
+}
+
+async function init(){
+  let catalog=[];
+  try{ catalog = await (await fetch('./catalog.json')).json(); }catch(e){}
+  const sel=$('catalog');
+  if(!catalog.length){
+    $('meta').textContent='No performances yet. Run pipeline.run or bootstrap_legacy.py';
+  }
+  catalog.forEach((c,i)=>{
+    const o=document.createElement('option');
+    o.value=c.path; o.textContent=c.title;
+    sel.appendChild(o);
+  });
+  sel.onchange=()=>loadPerf(sel.value);
+  try{
+    if(catalog[0]) await loadPerf(catalog[0].path);
+  }catch(err){
+    $('meta').textContent = 'Could not load track: '+err.message;
+  }
+  $('play').onclick=toggle;
+  $('rw').onclick=()=>seek(Math.max(0,tnow()-5));
+  $('mode').onclick=()=>setMode(mode==='audio'?'notes':'audio');
+  let droneOn=false;
+  $('drone').onclick=()=>{ droneOn=!droneOn; setDrone(droneOn); };
+  $('vol').oninput=()=>applyMix();
+  $('scrub').oninput=e=>{ if(audio.duration) seek((e.target.value/100)*audio.duration); };
+  document.addEventListener('keydown', e=>{
+    if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+    if(e.code==='Space'){ e.preventDefault(); toggle(); }
+    if(e.key==='n'||e.key==='N') setMode(mode==='audio'?'notes':'audio');
+  });
+  requestAnimationFrame(tick);
+}
+init();
+</script>
+</body>
+</html>
