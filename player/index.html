@@ -215,6 +215,7 @@ async function setDrone(on){
   await resumeAudio();
   if(droneGain && droneSa !== currentSa()){
     // Loaded a performance with a different Sa: rebuild the drone.
+    droneGain.oscs.forEach(o => { o.stop(); o.disconnect(); });
     droneGain.disconnect(); droneGain = null;
   }
   if(on && !droneGain){
@@ -222,10 +223,11 @@ async function setDrone(on){
     droneSa = sa;
     const g=ctx.createGain(); g.gain.value=0;
     const specs=[[sa,0.4],[sa*2,0.16],[sa*3/2,0.08]];
-    specs.forEach(([f,a])=>{
+    g.oscs = specs.map(([f,a])=>{
       const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f;
       const gg=ctx.createGain(); gg.gain.value=a;
       o.connect(gg); gg.connect(g); o.start();
+      return o;
     });
     g.connect(master);
     droneGain=g;

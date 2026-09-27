@@ -105,7 +105,7 @@ let beatInCycle = 0;
 let isPlaying = false;
 let timer = null;
 let audioCtx = null, masterGain = null, dryGain = null, delayNode = null, wetGain = null;
-let oscillators = [];
+let oscillators = new Set();  // notes still sounding; each removes itself when it ends
 let droneGain = null, droneOscs = [];
 let percGain = null, noiseBuf = null, percTimer = null, percBeat = 0, percEpoch = 0;
 let thekaOn = true;
@@ -225,6 +225,17 @@ function buildStream(){
   return out;
 }
 
+// Disconnect a one-shot voice once it has finished. Without this, every note
+// stays attached to the graph; after hours the audio thread drowns in tens of
+// thousands of dead nodes and the output turns to crackle.
+function releaseWhenDone(src, ...nodes){
+  src.onended = () => {
+    src.disconnect();
+    nodes.forEach(n => n.disconnect());
+    oscillators.delete(src);
+  };
+}
+
 function setupAudio(){
   if (audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -266,6 +277,7 @@ function startDrone(){
     gg.gain.value = a;
     o.connect(gg); gg.connect(g);
     o.start();
+    releaseWhenDone(o, gg);
     droneOscs.push(o);
   });
   g.connect(masterGain);
@@ -283,6 +295,8 @@ function stopDrone(){
     droneGain.gain.linearRampToValueAtTime(0, now + 0.12);
   }
   droneOscs.forEach(o => { try { o.stop(audioCtx ? audioCtx.currentTime + 0.14 : 0); } catch (e) {} });
+  const oldGain = droneGain;
+  if (oldGain) setTimeout(() => oldGain.disconnect(), 200);
   droneOscs = [];
   droneGain = null;
 }
@@ -301,6 +315,7 @@ function hitPerc(kind, time){
     g.gain.linearRampToValueAtTime(0.0001, t + dur);
     src.connect(bp); bp.connect(g); g.connect(percGain);
     src.start(t); src.stop(t + dur + 0.03);
+    releaseWhenDone(src, bp, g);
   }
   function boom(hz, dur, amp){
     const o = audioCtx.createOscillator();
@@ -313,6 +328,7 @@ function hitPerc(kind, time){
     g.gain.linearRampToValueAtTime(0.0001, t + dur);
     o.connect(g); g.connect(percGain);
     o.start(t); o.stop(t + dur + 0.03);
+    releaseWhenDone(o, g);
   }
   if (kind === 'kick'){
     boom(140, 0.18, 0.95);
@@ -365,7 +381,8 @@ function playTone(freq, dur){
   g.gain.linearRampToValueAtTime(0, t + dur);
   osc.connect(g); g.connect(dryGain); g.connect(delayNode);
   osc.start(t); osc.stop(t + dur + 0.02);
-  oscillators.push(osc);
+  oscillators.add(osc);
+  releaseWhenDone(osc, g);
 }
 
 function markBeat(beat){
@@ -470,8 +487,7 @@ async function start(){
 function stop(){
   isPlaying = false;
   if (timer){ clearTimeout(timer); timer = null; }
-  oscillators.forEach(o => { try { o.stop(); } catch (e) {} });
-  oscillators = [];
+  oscillators.forEach(o => { try { o.stop(); } catch (e) {} });  // onended releases them
   stopPerc();
   stopDrone();
   $('play').textContent = '▶';
