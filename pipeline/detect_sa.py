@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 
-def _stft_peak_scores(y: np.ndarray, sr: int, lo: float = 70.0, hi: float = 200.0) -> list[dict]:
+def _stft_peak_scores(y: np.ndarray, sr: int, lo: float = 70.0, hi: float = 280.0) -> list[dict]:
     import librosa
 
     hop = 2048
@@ -47,12 +47,14 @@ def _stft_peak_scores(y: np.ndarray, sr: int, lo: float = 70.0, hi: float = 200.
     return out
 
 
-def _vocal_tonic_histogram(f0_hz: np.ndarray, lo: float = 70.0, hi: float = 200.0) -> list[dict]:
+def _vocal_tonic_histogram(f0_hz: np.ndarray, lo: float = 70.0) -> list[dict]:
+    # Pitch class only: folded into one octave, so the tanpura (or a pin) picks
+    # the register. Male Sa ~100-150 Hz, female ~200-280 Hz.
+    hi = 2.0 * lo
     voiced = f0_hz[(f0_hz > 50) & np.isfinite(f0_hz)]
     if len(voiced) < 20:
         return []
-    # Fold every f0 into [lo, 2*lo)
-    folded = []
+        folded = []
     for hz in voiced:
         x = float(hz)
         while x >= hi:

@@ -30,6 +30,9 @@ class Note:
     octave: int
     label: str
     snap_quality: float
+    # None = trusted. Otherwise why this is probably not a note the singer
+    # landed on: "offcentre", "passing" (flag_suspects) or "range" (flag_range).
+    flag: str | None = None
 
 
 def load_frames(path: Path) -> list[Frame]:
@@ -91,49 +94,118 @@ def _median_smooth(frames: list[Frame], win: int = 5) -> list[Frame]:
     return out
 
 
+def prepare_frames(frames: list[Frame], sa_hz: float) -> list[Frame]:
+    """Fix octave hops, then remove single-frame spikes.
+
+    The 3-frame median only kills 1-frame glitches; anything longer (kan swaras,
+    gamak) survives. A wider window erased real 20 ms ornaments.
+    """
+    return _median_smooth(_deglitch(frames, sa_hz), 3)
+
+
+# Frame times are 10 ms steps in float; 0.02 can come out as 0.01999.
+_EPS = 1e-6
+
+
+@dataclass
+class _Group:
+    t0: float
+    t1: float
+    swara: str
+    octave: int
+    hz: list[float]
+    conf: list[float]
+
+    @property
+    def dur(self) -> float:
+        return (self.t1 - self.t0) + 0.01
+
+
+def _merge_bridges(groups: list[_Group], bridge_max: float, gap_max: float) -> list[_Group]:
+    """A-x-A → A when x is a sub-`bridge_max` flicker inside a held note.
+
+    Ported from the legacy postprocess_notation.py that produced the known-good
+    by-ear result. Repeats until stable.
+    """
+    changed = True
+    while changed:
+        changed = False
+        out: list[_Group] = []
+        i = 0
+        while i < len(groups):
+            if i + 2 < len(groups):
+                a, x, b = groups[i], groups[i + 1], groups[i + 2]
+                if (
+                    a.swara == b.swara
+                    and a.octave == b.octave
+                    and x.dur + _EPS < bridge_max
+                    and b.t0 - (a.t0 + a.dur) <= gap_max
+                ):
+                    out.append(_Group(a.t0, b.t1, a.swara, a.octave, a.hz + b.hz, a.conf + b.conf))
+                    i += 3
+                    changed = True
+                    continue
+            out.append(groups[i])
+            i += 1
+        groups = out
+    return groups
+
+
 def frames_to_notes(
     frames: list[Frame],
     sa_hz: float,
-    gap_tol: float = 0.06,
-    min_dur: float = 0.035,
+    gap_tol: float = 0.075,
+    min_dur: float = 0.020,
     max_cents_for_merge: float = 45.0,
+    bridge_max: float = 0.020,
+    bridge_gap: float = 0.085,
+    *,
+    prepared: bool = False,
 ) -> list[Note]:
-    frames = _deglitch(frames, sa_hz)
-    frames = _median_smooth(frames, 5)
+    # Defaults follow the by-ear known-good pipeline (gap 0.0748, bridge merge,
+    # then a 20 ms floor). Two-frame kan swaras survive; lone frames do not.
+    if not prepared:
+        frames = prepare_frames(frames, sa_hz)
     if not frames:
         return []
 
-    labeled = []
+    groups: list[_Group] = []
+    cur: _Group | None = None
     for f in frames:
         hit = nearest_swara(f.hz, sa_hz)
-        labeled.append((f, hit))
+        # Same swara in a different octave is a different note; merging across
+        # octaves over-smooths and sounded worse by ear.
+        if (
+            cur is not None
+            and hit.swara == cur.swara
+            and hit.octave == cur.octave
+            and abs(hit.cents_off) <= max_cents_for_merge
+            and (f.t - cur.t1) <= gap_tol
+        ):
+            cur.t1 = f.t
+            cur.hz.append(f.hz)
+            cur.conf.append(f.conf)
+        else:
+            cur = _Group(f.t, f.t, hit.swara, hit.octave, [f.hz], [f.conf])
+            groups.append(cur)
+
+    groups = _merge_bridges(groups, bridge_max, bridge_gap)
 
     notes: list[Note] = []
-    acc_hz: list[float] = []
-    acc_conf: list[float] = []
-    f0, h0 = labeled[0]
-    start = end = f0.t
-    acc_hz.append(f0.hz)
-    acc_conf.append(f0.conf)
-    cur_sw, cur_oct = h0.swara, h0.octave
-
-    def flush(t0: float, t1: float, sw: str, octv: int) -> None:
-        if not acc_hz:
-            return
-        dur = (t1 - t0) + 0.01
-        if dur < min_dur:
-            return
+    for g in groups:
+        if g.dur + _EPS < min_dur:
+            continue
         # confidence-weighted mean Hz
-        w = [max(0.05, c) for c in acc_conf]
-        hz = sum(h * wi for h, wi in zip(acc_hz, w)) / sum(w)
+        w = [max(0.05, c) for c in g.conf]
+        hz = sum(h * wi for h, wi in zip(g.hz, w)) / sum(w)
         hit = nearest_swara(hz, sa_hz)
         # snap quality: 1 at 0 cents, 0 at 50 cents
         snap = max(0.0, 1.0 - abs(hit.cents_off) / 50.0)
-        mean_conf = sum(acc_conf) / len(acc_conf)
+        mean_conf = sum(g.conf) / len(g.conf)
         notes.append(
             Note(
-                t=round(t0, 3),
-                dur=round(dur, 3),
+                t=round(g.t0, 3),
+                dur=round(g.dur, 3),
                 hz=round(hz, 3),
                 conf=round(mean_conf * snap, 4),
                 cents_off=round(hit.cents_off, 2),
@@ -143,22 +215,111 @@ def frames_to_notes(
                 snap_quality=round(snap, 4),
             )
         )
+    return flag_range(flag_suspects(notes, sa_hz), sa_hz)
 
-    for f, hit in labeled[1:]:
-        same = hit.swara == cur_sw and abs(hit.octave - cur_oct) <= 1
-        close = abs(hit.cents_off) <= max_cents_for_merge
-        if same and close and (f.t - end) <= gap_tol:
-            end = f.t
-            acc_hz.append(f.hz)
-            acc_conf.append(f.conf)
-        else:
-            flush(start, end, cur_sw, cur_oct)
-            acc_hz = [f.hz]
-            acc_conf = [f.conf]
-            start = end = f.t
-            cur_sw, cur_oct = hit.swara, hit.octave
-    flush(start, end, cur_sw, cur_oct)
+
+def flag_suspects(
+    notes: list[Note],
+    sa_hz: float,
+    short: float = 0.080,
+    max_off: float = 25.0,
+    gap: float = 0.075,
+) -> list[Note]:
+    """Mark short notes that are probably glide fragments, not landed swaras.
+
+    Long notes are always trusted. A note under `short` seconds is suspect if
+    - "offcentre": its pitch is more than `max_off` cents from the swara, i.e.
+      it sampled the voice between swaras; or
+    - "passing": it lies strictly between its neighbours' pitches (Sa→Re→Ga
+      inside a meend). A real kan/turn goes above or below both neighbours.
+      A clearly centred note of 50 ms+ is kept even when passing.
+    Correctness over granularity: the player hides flagged notes by default.
+    """
+    cents = [1200.0 * math.log2(n.hz / sa_hz) for n in notes]
+    for i, n in enumerate(notes):
+        n.flag = None
+        if n.dur + _EPS >= short:
+            continue
+        if abs(n.cents_off) > max_off:
+            n.flag = "offcentre"
+            continue
+        joined_prev = i > 0 and n.t - (notes[i - 1].t + notes[i - 1].dur) <= gap
+        joined_next = i + 1 < len(notes) and notes[i + 1].t - (n.t + n.dur) <= gap
+        if joined_prev and joined_next:
+            a, b, c = cents[i - 1], cents[i], cents[i + 1]
+            passing = a < b < c or a > b > c
+            if passing and not (n.dur + _EPS >= 0.050 and abs(n.cents_off) <= 12.0):
+                n.flag = "passing"
     return notes
+
+
+def singer_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> tuple[float, float]:
+    """(low, high) cents from Sa the singer plausibly reaches.
+
+    Time-weighted 1st-99th percentile of trusted notes, widened by `margin`
+    (5 semitones). Relative to each singer: ICCR really does sing two octaves
+    above its Sa, Jasraj almost never does.
+    """
+    pts = sorted(
+        (1200.0 * math.log2(n.hz / sa_hz), n.dur) for n in notes if n.flag in (None, "range")
+    )
+    if not pts:
+        return (-math.inf, math.inf)
+    total = sum(w for _, w in pts)
+
+    def pct(p: float) -> float:
+        acc = 0.0
+        for c, w in pts:
+            acc += w
+            if acc >= p * total:
+                return c
+        return pts[-1][0]
+
+    return (pct(0.01) - margin, pct(0.99) + margin)
+
+
+def flag_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> list[Note]:
+    """Flag notes outside the singer's own range, whatever their length.
+
+    These are an accompanying instrument (harmonium/sarangi doubling Sa an
+    octave up) or the tracker locking onto the voice's 2nd harmonic — e.g.
+    Jasraj side A 25:33, where held S' keeps jumping to S'' at exactly 2x.
+    """
+    lo, hi = singer_range(notes, sa_hz, margin)
+    for n in notes:
+        c = 1200.0 * math.log2(n.hz / sa_hz)
+        if n.flag is None and not (lo <= c <= hi):
+            n.flag = "range"
+    return notes
+
+
+def build_contour(
+    frames: list[Frame],
+    sa_hz: float,
+    cents_range: tuple[float, float] | None = None,
+) -> dict:
+    """Pitch curve for glide-faithful playback: runs of whole cents above Sa.
+
+    Each run is [start_time, [cents, ...]] sampled every `step` seconds; a gap
+    longer than 1.5 steps starts a new run (the player treats it as silence).
+    Frames outside `cents_range` (see singer_range) are dropped as silence.
+    """
+    if not frames:
+        return {"step": 0.01, "runs": []}
+    diffs = sorted(b.t - a.t for a, b in zip(frames, frames[1:]) if b.t > a.t)
+    step = round(diffs[len(diffs) // 2], 4) if diffs else 0.01
+    runs: list[list] = []
+    prev_t = None
+    for f in frames:
+        c = round(1200.0 * math.log2(f.hz / sa_hz))
+        if cents_range and not (cents_range[0] <= c <= cents_range[1]):
+            continue
+        if prev_t is None or f.t - prev_t > 1.5 * step:
+            runs.append([round(f.t, 3), [c]])
+        else:
+            runs[-1][1].append(c)
+        prev_t = f.t
+    return {"step": step, "runs": runs}
 
 
 def write_performance(
@@ -170,6 +331,7 @@ def write_performance(
     sa_hz: float,
     sa_meta: dict,
     extra: dict | None = None,
+    contour: dict | None = None,
 ) -> None:
     payload = {
         "schema": "hindustani-notation-v1",
@@ -189,8 +351,16 @@ def write_performance(
                 statistics.mean(n.conf for n in notes) if notes else 0.0, 4
             ),
             "low_conf_notes": sum(1 for n in notes if n.conf < 0.35),
+            "trusted_notes": sum(1 for n in notes if n.flag is None),
+            "flagged": {
+                k: sum(1 for n in notes if n.flag == k)
+                for k in ("offcentre", "passing", "range")
+            },
         },
     }
+    if contour:
+        payload["contour"] = contour
     if extra:
         payload["pipeline"] = extra
-    dest.write_text(json.dumps(payload, indent=2))
+    # Compact separators: the contour alone is ~100k numbers.
+    dest.write_text(json.dumps(payload, separators=(",", ":")))

@@ -12,7 +12,14 @@ from pathlib import Path
 from .detect_sa import estimate_sa, write_estimate
 from .extract_f0 import extract_f0
 from .isolate import isolate
-from .transcribe import frames_to_notes, load_frames, write_performance
+from .transcribe import (
+    build_contour,
+    frames_to_notes,
+    load_frames,
+    prepare_frames,
+    singer_range,
+    write_performance,
+)
 from .vad_filter import filter_f0
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -105,7 +112,8 @@ def run(
         vad_meta = {"skipped": True, "out": str(vad_csv)}
     else:
         vad_meta = filter_f0(primary_f0, vocals, vad_csv, sa_hz=sa_hz)
-    notes = frames_to_notes(load_frames(vad_csv), sa_hz)
+    frames = prepare_frames(load_frames(vad_csv), sa_hz)
+    notes = frames_to_notes(frames, sa_hz, prepared=True)
 
     write_performance(
         notes,
@@ -115,6 +123,7 @@ def run(
         sa_hz=sa_hz,
         sa_meta=sa_meta,
         extra={"isolate": iso, "f0": f0_meta, "vad": vad_meta},
+        contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz)),
     )
     write_catalog()
     return dest / "performance.json"

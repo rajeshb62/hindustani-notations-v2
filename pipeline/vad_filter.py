@@ -1,8 +1,9 @@
-"""Keep vocal frames; drop silence and tanpura harmonics of the estimated Sa."""
+"""Keep vocal frames; drop silence, and tanpura pitches heard outside vocal segments."""
 
 from __future__ import annotations
 
 import csv
+import math
 from pathlib import Path
 
 import numpy as np
@@ -85,13 +86,17 @@ def _in_seg(t: float, segs: list[tuple[float, float]]) -> bool:
     return False
 
 
-def is_drone_harmonic(hz: float, sa_hz: float, tol_hz: float = 8.0) -> bool:
+def is_drone_harmonic(hz: float, sa_hz: float, tol_cents: float = 20.0) -> bool:
+    """True if hz sits on a tanpura string pitch (Sa or Pa in any octave).
+
+    Only meaningful outside vocal segments: a singer holding Sa or Pa lands on
+    exactly these pitches, so this must never be used to reject in-speech frames.
+    """
     if sa_hz <= 0 or hz <= 0:
         return False
-    for k in (1, 2, 3, 4, 5, 6):
-        if abs(hz - sa_hz * k) < tol_hz:
-            return True
-        if abs(hz - sa_hz * k / 2) < tol_hz:
+    cents = 1200.0 * math.log2(hz / sa_hz) % 1200.0
+    for target in (0.0, 1200.0 * math.log2(1.5), 1200.0):
+        if abs(cents - target) < tol_cents:
             return True
     return False
 
@@ -113,11 +118,15 @@ def filter_f0(
         w.writerow(["time", "frequency", "confidence"])
         for t, hz, c in rows:
             speech = _in_seg(t, segs) if segs else True
-            drone = is_drone_harmonic(hz, sa_hz)
-            if speech and c >= conf_in_speech and hz > 50 and not drone:
+            if speech and c >= conf_in_speech and hz > 50:
                 w.writerow([f"{t:.4f}", f"{hz:.4f}", f"{c:.4f}"])
                 kept_speech += 1
-            elif (not speech) and c >= conf_rescue and hz > 50 and not drone:
+            elif (
+                (not speech)
+                and c >= conf_rescue
+                and hz > 50
+                and not is_drone_harmonic(hz, sa_hz)
+            ):
                 w.writerow([f"{t:.4f}", f"{hz:.4f}", f"{c:.4f}"])
                 kept_rescue += 1
             else:
