@@ -23,13 +23,21 @@ Listening is still the judge. This architecture makes a wrong Sa or a shaky fram
 
 ```bash
 cd "/Users/rajeshbhat/grok/hindustani notations/player"
-python3 -m http.server 8765 --bind 127.0.0.1
+python3 serve.py
 # then open http://127.0.0.1:8765/  (ICCR Side B loads automatically)
 ```
+
+Use `serve.py`, not `python3 -m http.server`. Chrome will not scrub or rewind unless the server answers byte **Range** requests (`206 Partial Content`). Plain `http.server` ignores Range, Chrome’s `currentTime` seek fails, and the timer snaps back to `0:00`.
 
 Open http://127.0.0.1:8765/
 
 Space play/pause · **N** notes/recording. Sa is fixed from the transcription (no on-screen tuner).
+
+## Loop transcribed notes (standalone)
+
+Same server, different page. Plays ICCR Side B or Jasraj Side A as an 8-beat looping stream (quantized like the Claude Code melody generator, but from the transcription, not random):
+
+http://127.0.0.1:8765/loop.html
 
 ## Transcribe a new recording
 

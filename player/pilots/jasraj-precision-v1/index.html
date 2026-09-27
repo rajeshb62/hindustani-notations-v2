@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jasraj · precision pilot</title>
+<style>body{font:17px system-ui;background:#111820;color:#e6edf3;max-width:740px;margin:8vh auto;padding:24px}h1{font-size:26px}p{line-height:1.5;color:#afbac5}button,select{font:inherit;background:#223342;color:inherit;border:1px solid #506273;border-radius:7px;padding:9px;margin:4px}input[type=range]{width:100%}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}#status{min-height:30px;font-size:23px;color:#abdac4}small{color:#aab7c4}a{color:#9fc9ef}</style>
+<h1>Jasraj · precision-first pilot</h1><p>Sa <b>136.18 Hz</b> · six short excerpts, original recording time.<br>Candidate gaps are <b>untranscribed</b>, not singer silence. No accuracy probability is claimed.</p>
+<label>Listen to <select id="mode"><option value="recording">Recording</option><option value="current">Current notes</option><option value="candidate">Conservative candidate</option></select></label>
+<div class="row"><button id="play" disabled>Play</button><button id="back">↶ 3s</button><span id="clock">Loading…</span></div>
+<input id="seek" aria-label="Recording position" type="range" min="0" max="2688" step="0.01" value="5">
+<div class="row"><select id="phrase" aria-label="Excerpt"></select><label><input type="checkbox" id="loop"> Loop excerpt</label></div>
+<p id="status" aria-live="polite">Loading…</p>
+<label>Volume <input id="volume" type="range" min="0" max="1" step="0.01" value="0.65"></label>
+<p><small>Both note tracks use exactly the same swara-tuned sine synth, gain and envelopes. This strict candidate retains 23 notes across 87 seconds (only 3.81 seconds of note playback); three excerpts are entirely withheld. This is an experiment, not a proven improvement. Historical VAD is imperfect for singing; pitch agreement may still follow bleed. Listening decides, not note count.</small></p>
+<a href="README.md">Method & limitations</a> · <a href="report.json">Evidence report</a>
+<audio id="audio" preload="metadata" src="../../data/pt-jasraj-side-a/source_audio.mp3"></audio>
+<script src="app.js"></script></html>

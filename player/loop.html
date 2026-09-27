@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Hindustani notations — loop</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,700;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#08070f; --text:#ece4dc; --dim:#6e6574; --accent:#c8b89a; --line:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow:hidden}
+#app{max-width:960px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+#bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.35);flex-wrap:wrap}
+button{font-family:inherit;cursor:pointer}
+#play{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
+.pill{padding:7px 12px;border-radius:999px;border:1px solid rgba(200,184,154,.35);background:rgba(200,184,154,.08);color:var(--accent);font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.pill.on{background:rgba(82,183,136,.16);border-color:rgba(82,183,136,.5);color:#9de0b8}
+.pill:disabled{opacity:.4;cursor:not-allowed}
+label.ctl{font-size:.68rem;color:var(--dim);display:flex;align-items:center;gap:6px}
+input[type="range"]{appearance:none;height:3px;background:rgba(255,255,255,.12);border-radius:2px;width:70px;accent-color:var(--accent)}
+input[type="range"]::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.val{font-size:.66rem;color:var(--dim);min-width:2.4em}
+select{background:#12101a;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-family:inherit}
+#stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+#oct-a,#oct-b{height:22px;font-size:16px;opacity:0}
+#oct-a.on,#oct-b.on{opacity:1}
+#note{font-family:'EB Garamond',Georgia,serif;font-size:clamp(84px,18vw,168px);font-weight:700;line-height:1}
+#note.komal{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:3px}
+#meta{margin-top:12px;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,224,216,.55);text-align:center}
+#cents{margin-top:6px;font-size:.72rem;color:var(--dim)}
+.cycle{display:flex;justify-content:center;gap:10px;margin-top:22px}
+.matra{
+  width:26px;height:26px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);color:var(--dim);font-size:.65rem;
+  display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.04em;
+}
+.matra.on{background:rgba(200,184,154,.2);border-color:var(--accent);color:var(--accent)}
+.matra.sam{border-color:rgba(200,184,154,.55)}
+.cycle-label{margin-top:8px;font-size:.65rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+#tl{height:76px;border-top:1px solid var(--line);background:rgba(0,0,0,.35);overflow:hidden;position:relative}
+#history{display:flex;align-items:center;height:100%;position:absolute;left:50%;white-space:nowrap}
+.tn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;height:70px;opacity:.35}
+.tn.cur{opacity:1}
+.tn.rest{opacity:.18}
+.tc{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:700}
+#tl::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.12)}
+#foot{display:flex;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--line);font-size:.65rem;color:var(--dim);gap:12px}
+#foot span:last-child{text-align:right}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar">
+    <button id="play" title="Space">▶</button>
+    <button class="pill" id="stop" disabled>Stop</button>
+    <button class="pill on" id="theka" title="Drum beat">Beat</button>
+    <select id="track" title="Performance"></select>
+    <label class="ctl">Start
+      <input type="range" id="start" min="0" max="600" step="1" value="0"/>
+      <span class="val" id="startVal">0s</span>
+    </label>
+    <label class="ctl">Tempo
+      <input type="range" id="tempo" min="60" max="160" value="96"/>
+      <span class="val" id="tempoVal">96</span>
+    </label>
+    <label class="ctl">Vol
+      <input type="range" id="volume" min="0" max="100" value="70"/>
+      <span class="val" id="volVal">70%</span>
+    </label>
+    <label class="ctl">Conf
+      <input type="range" id="conf" min="0" max="80" value="35"/>
+      <span class="val" id="confVal">35%</span>
+    </label>
+  </div>
+  <div id="stage">
+    <div id="oct-a">●</div>
+    <div id="note">—</div>
+    <div id="oct-b">●</div>
+    <div id="meta">8-beat loop of transcribed notes</div>
+    <div id="cents"></div>
+    <div class="cycle" id="cycle"></div>
+    <div class="cycle-label">8-beat groove</div>
+  </div>
+  <div id="tl"><div id="history"></div></div>
+  <div id="foot">
+    <span id="status">Load a track…</span>
+    <span>Space play / stop · loop.html</span>
+  </div>
+</div>
+
+<script>
+const JUST = {S:1,r:256/243,R:9/8,g:32/27,G:5/4,M:4/3,'M+':45/32,P:3/2,d:128/81,D:5/3,n:16/9,N:15/8};
+const COLORS = {S:'#E63946',r:'#F4845F',R:'#F4845F',g:'#E9C46A',G:'#E9C46A',M:'#52B788','M+':'#52B788',P:'#2EC4B6',d:'#4895EF',D:'#4895EF',n:'#C77DFF',N:'#C77DFF'};
+const KOMAL = new Set(['r','g','d','n']);
+const GRID = [0.5, 1, 1.5, 2];
+const CYCLE = 8;
+
+let catalog = [];
+let perf = null;
+let stream = [];
+let playIdx = 0;
+let beatInCycle = 0;
+let isPlaying = false;
+let timer = null;
+let audioCtx = null, masterGain = null, dryGain = null, delayNode = null, wetGain = null;
+let oscillators = [];
+let droneGain = null, droneOscs = [];
+let percGain = null, noiseBuf = null, percTimer = null, percBeat = 0, percEpoch = 0;
+let thekaOn = true;
+let history = [];
+// Straight 4/4 on the 8-step grid: kick on 1 & 5, snare on 3 & 7, hats on every step.
+const GROOVE = [
+  ['kick','hat'], ['hat'], ['snare','hat'], ['hat'],
+  ['kick','hat'], ['hat'], ['snare','hat'], ['hat']
+];
+
+const $ = id => document.getElementById(id);
+
+for (let i = 1; i <= CYCLE; i++) {
+  const d = document.createElement('div');
+  d.className = 'matra' + (i === 1 ? ' sam' : '');
+  d.textContent = i;
+  d.id = 'm' + i;
+  $('cycle').appendChild(d);
+}
+
+
+function fmt(t){
+  const m = Math.floor(t/60), s = Math.floor(t%60);
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function snapBeats(durSec, beatSec){
+  const raw = Math.max(0.25, durSec / beatSec);
+  let best = 1, err = 1e9;
+  for (const g of GRID){
+    const e = Math.abs(raw - g);
+    if (e < err){ err = e; best = g; }
+  }
+  return best;
+}
+
+function suffix(beats){
+  if (beats === 0.5) return "'";
+  if (beats === 1.5) return ".";
+  if (beats === 2) return "-";
+  return "";
+}
+
+// Presence of a pause comes from the transcription; length stays on the
+// ½ / 1 / 1½ grid so we do not follow the recording's clock.
+function restFromGap(gapSec){
+  if (gapSec < 0.15) return 0;
+  if (gapSec < 0.45) return 0.5;
+  if (gapSec < 1.2) return 1;
+  return 1.5;
+}
+
+function placeInCycle(out, filled, item){
+  let beats = item.beats;
+  if (filled + beats > CYCLE){
+    const pad = CYCLE - filled;
+    if (pad >= 0.5){
+      out.push({isRest:true, beats:pad, display:'~' + suffix(pad)});
+    }
+    filled = 0;
+  }
+  if (beats > CYCLE) beats = CYCLE;
+  item.beats = beats;
+  out.push(item);
+  filled += beats;
+  if (filled >= CYCLE - 0.001) filled = 0;
+  return filled;
+}
+
+function idealHz(sa, swara, oct){
+  const r = JUST[swara] ?? 1;
+  return sa * r * Math.pow(2, oct || 0);
+}
+
+function buildStream(){
+  if (!perf) return [];
+  const beatSec = 60 / parseFloat($('tempo').value);
+  const minConf = parseFloat($('conf').value) / 100;
+  const startT = parseFloat($('start').value) || 0;
+  const raw = perf.notes.filter(n =>
+    n.t >= startT && (n.conf || 0) >= minConf && (n.dur || 0) >= 0.06 && JUST[n.swara]
+  );
+  const merged = [];
+  for (const n of raw){
+    const prev = merged[merged.length - 1];
+    const gap = prev ? n.t - (prev.t + prev.dur) : 0;
+    if (prev && prev.swara === n.swara && prev.octave === n.octave && gap <= 0.08){
+      prev.dur = Math.max(prev.dur, (n.t + n.dur) - prev.t);
+      continue;
+    }
+    merged.push({...n});
+  }
+  const out = [];
+  let filled = 0;
+  for (let i = 0; i < merged.length; i++){
+    const n = merged[i];
+    const next = merged[i + 1];
+    const gapSec = next ? Math.max(0, next.t - (n.t + n.dur)) : 0;
+    const beats = snapBeats(n.dur, beatSec);
+    const display = `${n.swara}${n.octave >= 0 ? "'".repeat(n.octave) : ','.repeat(-n.octave)}${suffix(beats)}`;
+    filled = placeInCycle(out, filled, {
+      isRest:false, beats, swara:n.swara, octave:n.octave,
+      hz: idealHz(perf.sa_hz, n.swara, n.octave),
+      display, t:n.t
+    });
+    const restBeats = restFromGap(gapSec);
+    if (restBeats){
+      filled = placeInCycle(out, filled, {
+        isRest:true, beats:restBeats, display:'~' + suffix(restBeats)
+      });
+    }
+  }
+  if (filled > 0 && filled < CYCLE){
+    const rest = CYCLE - filled;
+    if (rest >= 0.5) out.push({isRest:true, beats:rest, display:'~' + suffix(rest)});
+  }
+  return out;
+}
+
+function setupAudio(){
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  dryGain = audioCtx.createGain();
+  wetGain = audioCtx.createGain();
+  delayNode = audioCtx.createDelay(0.5);
+  const fb = audioCtx.createGain();
+  delayNode.delayTime.value = 0.22;
+  fb.gain.value = 0.22;
+  delayNode.connect(fb); fb.connect(delayNode);
+  masterGain.gain.value = parseFloat($('volume').value) / 100;
+  dryGain.gain.value = 0.85;
+  wetGain.gain.value = 0.15;
+  dryGain.connect(masterGain);
+  delayNode.connect(wetGain); wetGain.connect(masterGain);
+  percGain = audioCtx.createGain();
+  percGain.gain.value = 0.12;
+  percGain.connect(masterGain);
+  const nb = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
+  const nd = nb.getChannelData(0);
+  for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+  noiseBuf = nb;
+  masterGain.connect(audioCtx.destination);
+}
+
+function startDrone(){
+  stopDrone();
+  if (!audioCtx || !perf) return;
+  const sa = perf.sa_hz;
+  const g = audioCtx.createGain();
+  g.gain.value = 0;
+  // Same partials as the note player (Sa, Sa', Pa); quieter mix so notes sit in front.
+  [[sa, 0.4], [sa * 2, 0.16], [sa * 3 / 2, 0.08]].forEach(([f, a]) => {
+    const o = audioCtx.createOscillator();
+    o.type = 'sine';
+    o.frequency.value = f;
+    const gg = audioCtx.createGain();
+    gg.gain.value = a;
+    o.connect(gg); gg.connect(g);
+    o.start();
+    droneOscs.push(o);
+  });
+  g.connect(masterGain);
+  droneGain = g;
+  const now = audioCtx.currentTime;
+  g.gain.setValueAtTime(0, now);
+  g.gain.linearRampToValueAtTime(0.08, now + 0.4);
+}
+
+function stopDrone(){
+  if (droneGain && audioCtx){
+    const now = audioCtx.currentTime;
+    droneGain.gain.cancelScheduledValues(now);
+    droneGain.gain.setValueAtTime(droneGain.gain.value, now);
+    droneGain.gain.linearRampToValueAtTime(0, now + 0.12);
+  }
+  droneOscs.forEach(o => { try { o.stop(audioCtx ? audioCtx.currentTime + 0.14 : 0); } catch (e) {} });
+  droneOscs = [];
+  droneGain = null;
+}
+
+function hitPerc(kind, time){
+  if (!percGain || !noiseBuf) return;
+  const t = Math.max(time, audioCtx.currentTime + 0.01);
+  function noise(bpHz, q, dur, amp){
+    const src = audioCtx.createBufferSource();
+    src.buffer = noiseBuf;
+    const bp = audioCtx.createBiquadFilter();
+    bp.type = 'bandpass'; bp.frequency.value = bpHz; bp.Q.value = q;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(amp, t + 0.008);
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp); bp.connect(g); g.connect(percGain);
+    src.start(t); src.stop(t + dur + 0.03);
+  }
+  function boom(hz, dur, amp){
+    const o = audioCtx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(hz, t);
+    o.frequency.linearRampToValueAtTime(hz * 0.7, t + dur);
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(amp, t + 0.01);
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(percGain);
+    o.start(t); o.stop(t + dur + 0.03);
+  }
+  if (kind === 'kick'){
+    boom(140, 0.18, 0.95);
+    boom(70, 0.16, 0.5);
+    noise(280, 0.8, 0.08, 0.25);
+  } else if (kind === 'snare'){
+    noise(1800, 1.1, 0.12, 0.7);
+    boom(220, 0.1, 0.45);
+  } else {
+    noise(7000, 4, 0.04, 0.28);
+  }
+}
+
+function stopPerc(){
+  if (percTimer){ clearTimeout(percTimer); percTimer = null; }
+  percBeat = 0;
+}
+
+function startPerc(){
+  stopPerc();
+  if (!thekaOn || !audioCtx) return;
+  percEpoch = audioCtx.currentTime + 0.04;
+  percBeat = 0;
+  const step = () => {
+    if (!isPlaying || !thekaOn) return;
+    const beatSec = 60 / parseFloat($('tempo').value);
+    const when = percEpoch + percBeat * beatSec;
+    const delay = Math.max(0, (when - audioCtx.currentTime) * 1000);
+    percTimer = setTimeout(() => {
+      if (!isPlaying || !thekaOn) return;
+      const hits = GROOVE[percBeat % CYCLE];
+      hits.forEach(kind => hitPerc(kind, audioCtx.currentTime));
+      markBeat(percBeat % CYCLE);
+      percBeat++;
+      step();
+    }, delay);
+  };
+  step();
+}
+
+function playTone(freq, dur){
+  const t = audioCtx.currentTime + 0.02;
+  const osc = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.28, t + 0.04);
+  g.gain.linearRampToValueAtTime(0.18, t + dur * 0.4);
+  g.gain.linearRampToValueAtTime(0, t + dur);
+  osc.connect(g); g.connect(dryGain); g.connect(delayNode);
+  osc.start(t); osc.stop(t + dur + 0.02);
+  oscillators.push(osc);
+}
+
+function markBeat(beat){
+  for (let i = 1; i <= CYCLE; i++){
+    $('m' + i).classList.toggle('on', i === beat + 1);
+  }
+}
+
+function showStage(note){
+  const el = $('note');
+  if (!note || note.isRest){
+    el.textContent = note ? '—' : '—';
+    el.style.color = 'rgba(255,255,255,.12)';
+    el.className = '';
+    $('oct-a').className = '';
+    $('oct-b').className = '';
+    $('meta').textContent = note ? 'Silence' : '8-beat loop of transcribed notes';
+    $('cents').textContent = '';
+    return;
+  }
+  el.textContent = note.swara === 'M+' ? 'M+' : note.swara;
+  el.style.color = COLORS[note.swara] || '#fff';
+  el.className = KOMAL.has(note.swara) ? 'komal' : '';
+  const oct = note.octave || 0;
+  $('oct-a').textContent = '●'.repeat(Math.max(1, oct));
+  $('oct-a').className = oct > 0 ? 'on' : '';
+  $('oct-b').textContent = '●'.repeat(Math.max(1, -oct));
+  $('oct-b').className = oct < 0 ? 'on' : '';
+  $('meta').textContent = note.display;
+  $('cents').textContent = `${note.hz.toFixed(1)} Hz  ·  orig ${fmt(note.t)}`;
+}
+
+function addHistory(note){
+  history.push(note);
+  if (history.length > 24) history.shift();
+  const strip = $('history');
+  strip.innerHTML = '';
+  history.forEach((n, i) => {
+    const d = document.createElement('div');
+    const isRest = !n || n.isRest || (typeof n === 'string' && n.startsWith('~'));
+    d.className = 'tn' + (i === history.length - 1 ? ' cur' : '') + (isRest ? ' rest' : '');
+    const label = isRest ? '~' : (n.swara === 'M+' ? 'M+' : (n.swara || n.display || n));
+    const color = isRest ? 'var(--dim)' : (COLORS[n.swara] || '#fff');
+    d.innerHTML = `<div class="tc" style="color:${color}">${label}</div>`;
+    strip.appendChild(d);
+  });
+  const last = strip.lastElementChild;
+  if (last){
+    const x = last.offsetLeft + last.offsetWidth / 2;
+    strip.style.transform = `translateX(${-x}px)`;
+  }
+}
+
+function playStep(){
+  if (!isPlaying || !stream.length) return;
+  const note = stream[playIdx];
+  const beatSec = 60 / parseFloat($('tempo').value);
+  const dur = note.beats * beatSec;
+  if (!thekaOn) markBeat(Math.floor(beatInCycle) % CYCLE);
+
+  if (note.isRest){
+    showStage(note);
+  } else {
+    playTone(note.hz, dur * 0.88);
+    showStage(note);
+  }
+  addHistory(note);
+
+  beatInCycle = (beatInCycle + note.beats) % CYCLE;
+  playIdx = (playIdx + 1) % stream.length;
+  timer = setTimeout(playStep, dur * 1000);
+}
+
+async function start(){
+  stream = buildStream();
+  if (!stream.length){
+    $('status').textContent = 'No notes after filters. Lower min confidence or start time.';
+    return;
+  }
+  setupAudio();
+  if (audioCtx.state === 'suspended'){
+    try { await audioCtx.resume(); } catch (e) {}
+  }
+  if (audioCtx.state !== 'running'){
+    $('meta').textContent = 'Audio blocked — click play again';
+    return;
+  }
+  stop();
+  isPlaying = true;
+  playIdx = 0;
+  beatInCycle = 0;
+  history = [];
+  $('history').innerHTML = '';
+  $('play').textContent = '❚❚';
+  $('stop').disabled = false;
+  $('status').textContent = `${stream.length} quantized notes · looping 8-beat cycles · Sa drone ${perf.sa_hz.toFixed(2)} Hz`;
+  startDrone();
+  startPerc();
+  playStep();
+}
+
+function stop(){
+  isPlaying = false;
+  if (timer){ clearTimeout(timer); timer = null; }
+  oscillators.forEach(o => { try { o.stop(); } catch (e) {} });
+  oscillators = [];
+  stopPerc();
+  stopDrone();
+  $('play').textContent = '▶';
+  $('play').disabled = false;
+  $('stop').disabled = true;
+  markBeat(-1);
+}
+
+async function loadTrack(path){
+  stop();
+  $('status').textContent = 'Loading…';
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(res.status);
+  perf = await res.json();
+  const last = perf.notes[perf.notes.length - 1];
+  const maxT = last ? Math.floor(last.t) : 0;
+  $('start').max = String(Math.max(0, maxT - 8));
+  $('start').value = '0';
+  $('startVal').textContent = '0s';
+  stream = buildStream();
+  $('status').textContent = `${perf.title} · ${perf.notes.length} raw · ${stream.length} in loop · Sa ${perf.sa_hz.toFixed(2)} Hz`;
+  showStage(null);
+}
+
+$('volume').oninput = () => {
+  $('volVal').textContent = $('volume').value + '%';
+  if (masterGain) masterGain.gain.value = parseFloat($('volume').value) / 100;
+};
+$('tempo').oninput = () => { $('tempoVal').textContent = $('tempo').value; };
+$('conf').oninput = () => { $('confVal').textContent = $('conf').value + '%'; };
+$('start').oninput = () => {
+  const t = parseFloat($('start').value) || 0;
+  $('startVal').textContent = fmt(t);
+};
+['tempo','conf','start'].forEach(id => {
+  $(id).addEventListener('change', () => {
+    if (perf && !isPlaying){
+      stream = buildStream();
+      $('status').textContent = `${perf.title} · ${stream.length} notes in loop`;
+    }
+  });
+});
+$('theka').onclick = () => {
+  thekaOn = !thekaOn;
+  $('theka').classList.toggle('on', thekaOn);
+  if (isPlaying){
+    if (thekaOn) startPerc();
+    else stopPerc();
+  }
+};
+$('play').onclick = () => { if (isPlaying) { stop(); $('status').textContent = 'Stopped'; } else start(); };
+$('stop').onclick = () => { stop(); $('status').textContent = 'Stopped'; };
+$('track').onchange = () => loadTrack($('track').value);
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.code === 'Space'){
+    e.preventDefault();
+    if (isPlaying) { stop(); $('status').textContent = 'Stopped'; }
+    else start();
+  }
+});
+
+(async function init(){
+  try {
+    catalog = await (await fetch('./catalog.json')).json();
+  } catch (e) {
+    $('status').textContent = 'Could not load catalog.json — run python3 serve.py in player/';
+    return;
+  }
+  catalog.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.path; o.textContent = c.title;
+    $('track').appendChild(o);
+  });
+  if (catalog[0]) await loadTrack(catalog[0].path);
+})();
+</script>
+</body>
+</html>

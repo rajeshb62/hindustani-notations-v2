@@ -1,0 +1,8 @@
+{
+  "model": "/Users/rajeshbhat/claudecode/hindustani notations/melody_improve_runs/rmvpe_tools/rmvpe.pt",
+  "sha256": "6d62215f4306e3ca278246188607209f09af3dc77ed4232efdd069798c4ec193",
+  "source": "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/separated/htdemucs/source_audio/vocals.wav",
+  "elapsed_seconds": 7.499013185501099,
+  "rows": 8700,
+  "note": "Fresh RMVPE on existing separated vocal stem; salience is not correctness probability"
+}

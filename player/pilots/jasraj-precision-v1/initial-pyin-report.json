@@ -1,0 +1,130 @@
+{
+  "windows": [
+    {
+      "start": 5,
+      "end": 20,
+      "title": "Opening / historically preferred slow region",
+      "frames": 1500,
+      "candidate_notes": 6,
+      "current_notes": 73,
+      "candidate_seconds": 1.46,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 80,
+        "weak_tracker_evidence": 715,
+        "unvoiced_tracker": 361,
+        "absolute_pitch_disagreement": 8,
+        "no_voice_evidence": 190
+      }
+    },
+    {
+      "start": 30,
+      "end": 43,
+      "title": "Upper-Sa anchor near 0:37",
+      "frames": 1300,
+      "candidate_notes": 1,
+      "current_notes": 86,
+      "candidate_seconds": 0.13,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 16,
+        "weak_tracker_evidence": 601,
+        "unvoiced_tracker": 637,
+        "absolute_pitch_disagreement": 33
+      }
+    },
+    {
+      "start": 699,
+      "end": 713,
+      "title": "Previously undertracked alaap",
+      "frames": 1400,
+      "candidate_notes": 0,
+      "current_notes": 39,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1260,
+        "unvoiced_tracker": 140
+      }
+    },
+    {
+      "start": 1500,
+      "end": 1515,
+      "title": "Later contrast A (tempo unverified)",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 4,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2490,
+      "end": 2505,
+      "title": "Later contrast B / historical VAD absent",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 51,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2630,
+      "end": 2645,
+      "title": "Closing / historical VAD present",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 111,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "unvoiced_tracker": 1125,
+        "weak_tracker_evidence": 362,
+        "absolute_pitch_disagreement": 13
+      }
+    }
+  ],
+  "total_notes": 7,
+  "total_analyzed_seconds": 87,
+  "transcribed_seconds": 1.59,
+  "elapsed_seconds": 35.38,
+  "librosa_version": "0.11.0",
+  "new_trackers": [
+    "librosa pYIN on existing Demucs vocal stem",
+    "librosa pYIN on original source mix"
+  ],
+  "reused_evidence": [
+    "historical raw CREPE (not VAD-rescue CSV)",
+    "historical Silero VAD segments, edges trimmed 500 ms"
+  ],
+  "settings": {
+    "sa_hz": 136.18,
+    "sample_rate": 16000,
+    "hop": 160,
+    "frame": 2048,
+    "fmin": 65,
+    "fmax": 700,
+    "padding_seconds": 1,
+    "crepe_score_min": 0.9,
+    "pyin_voiced_probability_min": 0.8,
+    "source_pyin_voiced_probability_min": null,
+    "absolute_agreement_cents": 35,
+    "min_contiguous_frames": 10
+  },
+  "inputs": {
+    "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/vocals.f0.csv": "c747baf907d50a78ad6889c35c5fdca630bc2a145029d3772d9691315c7aee35",
+    "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/vad_segments.json": "361ae17ae33549f8fe90756f76da4b03af58fded5fd783bdf61c22742dfb52ad",
+    "/Users/rajeshbhat/grok/hindustani notations/data/pt-jasraj-side-a/performance.json": "3fb3b1fdf493d053fdcb776f0841f55fed845a56cc9f737587a0acf71b62dd5e"
+  },
+  "limitations": [
+    "No human listening or annotated ground truth; precision not measured",
+    "pYIN source and stem are same algorithm; not independent models. New pYIN is algorithmically independent of historical CREPE",
+    "Historical speech VAD on separated vocals is imperfect for singing and can include bleed; no new separation or fresh neural voice detector",
+    "Agreement can still follow accompaniment; no singer identity guarantee",
+    "Conservative stable notes omit glides, ornaments, short notes and disagreements; gaps mean untranscribed, not singer silence",
+    "No full-recording extraction. Later windows selected by time, not verified tempo."
+  ]
+}

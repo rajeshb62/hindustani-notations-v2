@@ -1,0 +1,356 @@
+{
+  "title": "Jasraj precision-first excerpt pilot",
+  "sa_hz": 136.18,
+  "notes": [
+    {
+      "t": 7.92,
+      "dur": 0.1,
+      "hz": 203.521,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": -6.36,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 11.14
+    },
+    {
+      "t": 9.74,
+      "dur": 0.1,
+      "hz": 303.294,
+      "swara": "R",
+      "octave": 1,
+      "label": "R'",
+      "cents_off": -17.67,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 9.34
+    },
+    {
+      "t": 10.18,
+      "dur": 0.17,
+      "hz": 244.464,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": 16.84,
+      "support_frames": 17,
+      "max_tracker_disagreement_cents": 7.17
+    },
+    {
+      "t": 10.52,
+      "dur": 0.14,
+      "hz": 273.382,
+      "swara": "S",
+      "octave": 1,
+      "label": "S'",
+      "cents_off": 6.48,
+      "support_frames": 14,
+      "max_tracker_disagreement_cents": 7.03
+    },
+    {
+      "t": 11.18,
+      "dur": 0.12,
+      "hz": 242.891,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": 5.66,
+      "support_frames": 12,
+      "max_tracker_disagreement_cents": 5.63
+    },
+    {
+      "t": 11.31,
+      "dur": 0.29,
+      "hz": 241.07,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": -7.36,
+      "support_frames": 29,
+      "max_tracker_disagreement_cents": 7.48
+    },
+    {
+      "t": 12.93,
+      "dur": 0.15,
+      "hz": 205.397,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": 9.52,
+      "support_frames": 15,
+      "max_tracker_disagreement_cents": 5.58
+    },
+    {
+      "t": 13.32,
+      "dur": 0.19,
+      "hz": 241.004,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": -7.84,
+      "support_frames": 19,
+      "max_tracker_disagreement_cents": 3.41
+    },
+    {
+      "t": 13.87,
+      "dur": 0.11,
+      "hz": 242.563,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": 3.32,
+      "support_frames": 11,
+      "max_tracker_disagreement_cents": 6.05
+    },
+    {
+      "t": 14.56,
+      "dur": 0.1,
+      "hz": 243.78,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": 11.99,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 10.03
+    },
+    {
+      "t": 17.47,
+      "dur": 0.21,
+      "hz": 204.259,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": -0.09,
+      "support_frames": 21,
+      "max_tracker_disagreement_cents": 12.02
+    },
+    {
+      "t": 17.78,
+      "dur": 0.12,
+      "hz": 241.97,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": -0.92,
+      "support_frames": 12,
+      "max_tracker_disagreement_cents": 2.64
+    },
+    {
+      "t": 33.19,
+      "dur": 0.21,
+      "hz": 205.821,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": 13.1,
+      "support_frames": 21,
+      "max_tracker_disagreement_cents": 5.48
+    },
+    {
+      "t": 34.84,
+      "dur": 0.1,
+      "hz": 181.724,
+      "swara": "M",
+      "octave": 0,
+      "label": "M",
+      "cents_off": 1.43,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 7.37
+    },
+    {
+      "t": 35.16,
+      "dur": 0.12,
+      "hz": 203.8,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": -3.99,
+      "support_frames": 12,
+      "max_tracker_disagreement_cents": 12.99
+    },
+    {
+      "t": 36.99,
+      "dur": 0.33,
+      "hz": 272.735,
+      "swara": "S",
+      "octave": 1,
+      "label": "S'",
+      "cents_off": 2.38,
+      "support_frames": 33,
+      "max_tracker_disagreement_cents": 5.27
+    },
+    {
+      "t": 37.36,
+      "dur": 0.36,
+      "hz": 271.654,
+      "swara": "S",
+      "octave": 1,
+      "label": "S'",
+      "cents_off": -4.49,
+      "support_frames": 36,
+      "max_tracker_disagreement_cents": 8.32
+    },
+    {
+      "t": 40.5,
+      "dur": 0.1,
+      "hz": 181.973,
+      "swara": "M",
+      "octave": 0,
+      "label": "M",
+      "cents_off": 3.81,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 12.74
+    },
+    {
+      "t": 40.73,
+      "dur": 0.2,
+      "hz": 181.564,
+      "swara": "M",
+      "octave": 0,
+      "label": "M",
+      "cents_off": -0.08,
+      "support_frames": 20,
+      "max_tracker_disagreement_cents": 6.01
+    },
+    {
+      "t": 2633.2,
+      "dur": 0.21,
+      "hz": 182.066,
+      "swara": "M",
+      "octave": 0,
+      "label": "M",
+      "cents_off": 4.69,
+      "support_frames": 21,
+      "max_tracker_disagreement_cents": 5.25
+    },
+    {
+      "t": 2634.66,
+      "dur": 0.1,
+      "hz": 205.123,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": 7.21,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 6.6
+    },
+    {
+      "t": 2636.66,
+      "dur": 0.1,
+      "hz": 243.055,
+      "swara": "n",
+      "octave": 0,
+      "label": "n",
+      "cents_off": 6.83,
+      "support_frames": 10,
+      "max_tracker_disagreement_cents": 8.96
+    },
+    {
+      "t": 2642.55,
+      "dur": 0.18,
+      "hz": 205.325,
+      "swara": "P",
+      "octave": 0,
+      "label": "P",
+      "cents_off": 8.92,
+      "support_frames": 18,
+      "max_tracker_disagreement_cents": 11.23
+    }
+  ],
+  "windows": [
+    {
+      "start": 5,
+      "end": 20,
+      "title": "Opening / historically preferred slow region",
+      "frames": 1500,
+      "candidate_notes": 12,
+      "current_notes": 73,
+      "candidate_seconds": 1.8,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 210,
+        "ambiguous_swara": 259,
+        "weak_neural_evidence": 407,
+        "pyin_conflict": 8,
+        "unvoiced_neural_tracker": 245,
+        "no_voice_evidence": 190,
+        "absolute_neural_disagreement": 1
+      }
+    },
+    {
+      "start": 30,
+      "end": 43,
+      "title": "Upper-Sa anchor near 0:37",
+      "frames": 1300,
+      "candidate_notes": 7,
+      "current_notes": 86,
+      "candidate_seconds": 1.42,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 173,
+        "weak_neural_evidence": 575,
+        "ambiguous_swara": 257,
+        "pyin_conflict": 2,
+        "unvoiced_neural_tracker": 151
+      }
+    },
+    {
+      "start": 699,
+      "end": 713,
+      "title": "Previously undertracked alaap",
+      "frames": 1400,
+      "candidate_notes": 0,
+      "current_notes": 39,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 10,
+        "no_voice_evidence": 1260,
+        "unvoiced_neural_tracker": 6,
+        "weak_neural_evidence": 119,
+        "ambiguous_swara": 5
+      }
+    },
+    {
+      "start": 1500,
+      "end": 1515,
+      "title": "Later contrast A (tempo unverified)",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 4,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2490,
+      "end": 2505,
+      "title": "Later contrast B / historical VAD absent",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 51,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2630,
+      "end": 2645,
+      "title": "Closing / historical VAD present",
+      "frames": 1500,
+      "candidate_notes": 4,
+      "current_notes": 111,
+      "candidate_seconds": 0.59,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 270,
+        "weak_neural_evidence": 747,
+        "ambiguous_swara": 316,
+        "unvoiced_neural_tracker": 102,
+        "pyin_conflict": 2,
+        "absolute_neural_disagreement": 4
+      }
+    }
+  ],
+  "scope": "Only selected intervals analyzed; all other time untranscribed",
+  "confidence": "No probability of correctness assigned"
+}

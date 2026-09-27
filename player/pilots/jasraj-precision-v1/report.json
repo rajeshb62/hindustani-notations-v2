@@ -1,0 +1,144 @@
+{
+  "windows": [
+    {
+      "start": 5,
+      "end": 20,
+      "title": "Opening / historically preferred slow region",
+      "frames": 1500,
+      "candidate_notes": 12,
+      "current_notes": 73,
+      "candidate_seconds": 1.8,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 210,
+        "ambiguous_swara": 259,
+        "weak_neural_evidence": 407,
+        "pyin_conflict": 8,
+        "unvoiced_neural_tracker": 245,
+        "no_voice_evidence": 190,
+        "absolute_neural_disagreement": 1
+      }
+    },
+    {
+      "start": 30,
+      "end": 43,
+      "title": "Upper-Sa anchor near 0:37",
+      "frames": 1300,
+      "candidate_notes": 7,
+      "current_notes": 86,
+      "candidate_seconds": 1.42,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 173,
+        "weak_neural_evidence": 575,
+        "ambiguous_swara": 257,
+        "pyin_conflict": 2,
+        "unvoiced_neural_tracker": 151
+      }
+    },
+    {
+      "start": 699,
+      "end": 713,
+      "title": "Previously undertracked alaap",
+      "frames": 1400,
+      "candidate_notes": 0,
+      "current_notes": 39,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 10,
+        "no_voice_evidence": 1260,
+        "unvoiced_neural_tracker": 6,
+        "weak_neural_evidence": 119,
+        "ambiguous_swara": 5
+      }
+    },
+    {
+      "start": 1500,
+      "end": 1515,
+      "title": "Later contrast A (tempo unverified)",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 4,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2490,
+      "end": 2505,
+      "title": "Later contrast B / historical VAD absent",
+      "frames": 1500,
+      "candidate_notes": 0,
+      "current_notes": 51,
+      "candidate_seconds": 0,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 0,
+        "no_voice_evidence": 1500
+      }
+    },
+    {
+      "start": 2630,
+      "end": 2645,
+      "title": "Closing / historical VAD present",
+      "frames": 1500,
+      "candidate_notes": 4,
+      "current_notes": 111,
+      "candidate_seconds": 0.59,
+      "abstention_reasons": {
+        "short_temporal_support_frames": 270,
+        "weak_neural_evidence": 747,
+        "ambiguous_swara": 316,
+        "unvoiced_neural_tracker": 102,
+        "pyin_conflict": 2,
+        "absolute_neural_disagreement": 4
+      }
+    }
+  ],
+  "total_notes": 23,
+  "total_analyzed_seconds": 87,
+  "transcribed_seconds": 3.81,
+  "elapsed_seconds": 35.38,
+  "librosa_version": "0.11.0",
+  "new_trackers": [
+    "Fresh RMVPE on existing vocal stem",
+    "Fresh pYIN on vocal stem (conflict veto)",
+    "Fresh pYIN on original mix (diagnostic only)"
+  ],
+  "reused_evidence": [
+    "historical raw CREPE (not VAD-rescue CSV)",
+    "historical Silero VAD segments, edges trimmed 500 ms"
+  ],
+  "settings": {
+    "sa_hz": 136.18,
+    "crepe_score_min": 0.9,
+    "rmvpe_salience_min": 0.3,
+    "absolute_neural_agreement_cents": 30,
+    "pyin_conflict_min_probability": 0.5,
+    "pyin_conflict_cents": 35,
+    "swara_distance_cents_max": 25,
+    "min_contiguous_frames": 10
+  },
+  "inputs": {
+    "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/vocals.f0.csv": "c747baf907d50a78ad6889c35c5fdca630bc2a145029d3772d9691315c7aee35",
+    "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/vad_segments.json": "361ae17ae33549f8fe90756f76da4b03af58fded5fd783bdf61c22742dfb52ad",
+    "/Users/rajeshbhat/grok/hindustani notations/data/pt-jasraj-side-a/performance.json": "3fb3b1fdf493d053fdcb776f0841f55fed845a56cc9f737587a0acf71b62dd5e"
+  },
+  "limitations": [
+    "No human listening or annotated ground truth; precision not measured",
+    "pYIN source and stem are same algorithm; not independent models. New pYIN is algorithmically independent of historical CREPE",
+    "Historical speech VAD on separated vocals is imperfect for singing and can include bleed; no new separation or fresh neural voice detector",
+    "Agreement can still follow accompaniment; no singer identity guarantee",
+    "Conservative stable notes omit glides, ornaments, short notes and disagreements; gaps mean untranscribed, not singer silence",
+    "No full-recording extraction. Later windows selected by time, not verified tempo.",
+    "Still extremely sparse; this is an audition experiment, not a demonstrated improvement. Historical VAD prevents transcription of several excerpts."
+  ],
+  "rmvpe_provenance": {
+    "model": "/Users/rajeshbhat/claudecode/hindustani notations/melody_improve_runs/rmvpe_tools/rmvpe.pt",
+    "sha256": "6d62215f4306e3ca278246188607209f09af3dc77ed4232efdd069798c4ec193",
+    "source": "/Users/rajeshbhat/claudecode/hindustani notations/performances/jasraj-performance-b/working/separated/htdemucs/source_audio/vocals.wav",
+    "elapsed_seconds": 7.499013185501099,
+    "rows": 8700,
+    "note": "Fresh RMVPE on existing separated vocal stem; salience is not correctness probability"
+  },
+  "decision": "Initial pYIN mandatory agreement was nearly empty; use two neural trackers and pYIN conflict veto, not a lower pYIN threshold to fill gaps."
+}

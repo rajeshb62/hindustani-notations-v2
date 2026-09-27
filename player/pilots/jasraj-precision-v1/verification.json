@@ -1,0 +1,35 @@
+{
+  "candidate_notes": 23,
+  "analyzed_frames": 8700,
+  "transcribed_seconds": 3.81,
+  "current_notes_in_excerpts": 364,
+  "http": {
+    "pilots/jasraj-precision-v1/index.html": 200,
+    "pilots/jasraj-precision-v1/app.js": 200,
+    "pilots/jasraj-precision-v1/candidate.json": 200,
+    "pilots/jasraj-precision-v1/README.md": 200,
+    "data/pt-jasraj-side-a/performance.json": 200,
+    "audio_range": 206
+  },
+  "production_hashes_unchanged": {
+    "/Users/rajeshbhat/grok/hindustani notations/data/pt-jasraj-side-a/performance.json": true,
+    "/Users/rajeshbhat/grok/hindustani notations/player/catalog.json": true,
+    "/Users/rajeshbhat/grok/hindustani notations/player/index.html": true,
+    "/Users/rajeshbhat/grok/hindustani notations/player/loop.html": true
+  },
+  "browser": {
+    "loaded": {
+      "current": 11921,
+      "candidate": 23
+    },
+    "transportAdvanced": true,
+    "modePreservedTime": true,
+    "synthStarted": true,
+    "pauseStopsSynth": true,
+    "gapsSilent": true,
+    "phraseLoop": true,
+    "recordingUnmuted": true,
+    "pageErrors": []
+  },
+  "invariants": "all pass"
+}
