@@ -14,6 +14,7 @@ from .extract_f0 import extract_f0
 from .isolate import isolate
 from .transcribe import (
     build_contour,
+    error_spans,
     frames_to_notes,
     load_frames,
     prepare_frames,
@@ -123,7 +124,7 @@ def run(
         sa_hz=sa_hz,
         sa_meta=sa_meta,
         extra={"isolate": iso, "f0": f0_meta, "vad": vad_meta},
-        contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz)),
+        contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz), error_spans(notes, sa_hz)),
     )
     write_catalog()
     return dest / "performance.json"

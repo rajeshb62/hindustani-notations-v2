@@ -95,6 +95,29 @@ class Range(unittest.TestCase):
         self.assertEqual(c["runs"], [[0.0, [1200, 1200]], [0.03, [1200]]])
 
 
+class OctaveFlips(unittest.TestCase):
+    def test_flicker_keeps_the_octave_that_fits_the_phrase(self):
+        # P, then M / M' alternating every 20-30 ms, then P (Jasraj 21:46).
+        frames = run([702] * 10 + [498] * 2 + [1698] * 2 + [498] * 3 + [1698] * 3 + [702] * 10)
+        notes = frames_to_notes(frames, SA, prepared=True)
+        self.assertEqual([(n.label, n.flag) for n in notes if n.swara == "M"],
+                         [("M", None), ("M'", "octave"), ("M", None), ("M'", "octave")])
+
+    def test_curve_drops_flip_fragments_but_keeps_the_real_line(self):
+        from pipeline.transcribe import error_spans
+        frames = run([702] * 10 + [498] * 2 + [1698] * 2 + [498] * 3 + [1698] * 3 + [702] * 10)
+        notes = frames_to_notes(frames, SA, prepared=True)
+        c = build_contour(frames, SA, drop=error_spans(notes, SA))
+        kept = [x for _, run_ in c["runs"] for x in run_]
+        self.assertNotIn(1698, kept)
+        self.assertEqual(kept.count(498), 5)
+
+    def test_held_octave_leap_is_not_a_flip(self):
+        frames = run([0] * 30 + [1200] * 30 + [0] * 30)
+        notes = frames_to_notes(frames, SA, prepared=True)
+        self.assertTrue(all(n.flag is None for n in notes))
+
+
 class Contour(unittest.TestCase):
     def test_gap_splits_runs(self):
         frames = run([0, 10, 20]) + run([702, 702], t0=1.0)

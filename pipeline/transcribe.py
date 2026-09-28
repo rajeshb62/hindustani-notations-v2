@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import bisect
 import csv
 import json
 import math
@@ -31,7 +32,8 @@ class Note:
     label: str
     snap_quality: float
     # None = trusted. Otherwise why this is probably not a note the singer
-    # landed on: "offcentre", "passing" (flag_suspects) or "range" (flag_range).
+    # landed on: "offcentre", "passing" (flag_suspects), "range" (flag_range)
+    # or "octave" (flag_octave_flips). range/octave are errors, not ornaments.
     flag: str | None = None
 
 
@@ -215,7 +217,7 @@ def frames_to_notes(
                 snap_quality=round(snap, 4),
             )
         )
-    return flag_range(flag_suspects(notes, sa_hz), sa_hz)
+    return flag_octave_flips(flag_range(flag_suspects(notes, sa_hz), sa_hz), sa_hz)
 
 
 def flag_suspects(
@@ -293,16 +295,107 @@ def flag_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> list[N
     return notes
 
 
+def flag_octave_flips(
+    notes: list[Note],
+    sa_hz: float,
+    short: float = 0.080,
+    tol: float = 60.0,
+    gap: float = 0.075,
+) -> list[Note]:
+    """Flag short notes that flicker exactly an octave away from their neighbour.
+
+    E.g. Jasraj side A 21:46: P → M/M'/M/M' every 20-30 ms → P. No singer jumps
+    an octave for 20 ms and back; it is bleed or a tracker harmonic. Grow the
+    alternating cluster, then keep the octave that fits the notes just before
+    and after it (P→M→P is a step, P→M'→P is a 1000-cent leap) and flag the other.
+    """
+    cents = [1200.0 * math.log2(n.hz / sa_hz) for n in notes]
+
+    def joined(i: int, j: int) -> bool:
+        a, b = notes[min(i, j)], notes[max(i, j)]
+        return b.t - (a.t + a.dur) <= gap
+
+    def octave_apart(i: int, j: int) -> bool:
+        return abs(abs(cents[i] - cents[j]) - 1200.0) <= tol
+
+    i = 0
+    while i + 1 < len(notes):
+        a, b = notes[i], notes[i + 1]
+        if not (
+            joined(i, i + 1)
+            and octave_apart(i, i + 1)
+            and min(a.dur, b.dur) + _EPS < short
+            and "range" not in (a.flag, b.flag)
+        ):
+            i += 1
+            continue
+        low, high = sorted((cents[i], cents[i + 1]))
+
+        def on_level(k: int) -> bool:
+            return (
+                notes[k].dur + _EPS < short
+                and notes[k].flag != "range"
+                and (abs(cents[k] - low) <= tol or abs(cents[k] - high) <= tol)
+            )
+
+        lo_i, hi_i = i, i + 1
+        while lo_i - 1 >= 0 and joined(lo_i - 1, lo_i) and on_level(lo_i - 1):
+            lo_i -= 1
+        while hi_i + 1 < len(notes) and joined(hi_i, hi_i + 1) and on_level(hi_i + 1):
+            hi_i += 1
+        refs = [cents[k] for k in (lo_i - 1, hi_i + 1)
+                if 0 <= k < len(notes) and joined(k, lo_i if k < lo_i else hi_i)]
+        if refs:
+            ref = sum(refs) / len(refs)
+            bad = high if abs(high - ref) > abs(low - ref) else low
+            for k in range(lo_i, hi_i + 1):
+                if abs(cents[k] - bad) <= tol and notes[k].dur + _EPS < short:
+                    notes[k].flag = "octave"
+        i = hi_i + 1
+    return notes
+
+
+def _in_spans(t: float, c: float, spans: list[tuple[float, float, float | None]]) -> bool:
+    """True if a frame at time t / pitch c falls in an error span.
+
+    Spans are (start, end, level): level None drops everything in the span;
+    otherwise only frames within 60 cents of that pitch (the flip's octave).
+    """
+    k = bisect.bisect_right(spans, (t, math.inf, math.inf))
+    for s0, s1, level in spans[max(0, k - 3):k]:
+        if s0 - _EPS <= t <= s1 + _EPS and (level is None or abs(c - level) <= 60.0):
+            return True
+    return False
+
+
+def error_spans(notes: list[Note], sa_hz: float) -> list[tuple[float, float, float | None]]:
+    """Where the pitch curve must stay silent: notes flagged as errors.
+
+    Out-of-range notes drop their whole span. Octave flips drop only frames at
+    the flipped pitch, widened by a few frames: flicker fragments too short to
+    become notes still sit at that pitch just beside them.
+    """
+    spans: list[tuple[float, float, float | None]] = []
+    for n in notes:
+        if n.flag == "range":
+            spans.append((n.t, n.t + n.dur - 0.01, None))
+        elif n.flag == "octave":
+            spans.append((n.t - 0.04, n.t + n.dur + 0.04, 1200.0 * math.log2(n.hz / sa_hz)))
+    return sorted(spans)
+
+
 def build_contour(
     frames: list[Frame],
     sa_hz: float,
     cents_range: tuple[float, float] | None = None,
+    drop: list[tuple[float, float, float | None]] | None = None,
 ) -> dict:
     """Pitch curve for glide-faithful playback: runs of whole cents above Sa.
 
     Each run is [start_time, [cents, ...]] sampled every `step` seconds; a gap
     longer than 1.5 steps starts a new run (the player treats it as silence).
-    Frames outside `cents_range` (see singer_range) are dropped as silence.
+    Frames outside `cents_range` (see singer_range), or inside a `drop`
+    interval (notes flagged range/octave), are left out as silence.
     """
     if not frames:
         return {"step": 0.01, "runs": []}
@@ -313,6 +406,8 @@ def build_contour(
     for f in frames:
         c = round(1200.0 * math.log2(f.hz / sa_hz))
         if cents_range and not (cents_range[0] <= c <= cents_range[1]):
+            continue
+        if drop and _in_spans(f.t, c, drop):
             continue
         if prev_t is None or f.t - prev_t > 1.5 * step:
             runs.append([round(f.t, 3), [c]])
@@ -354,7 +449,7 @@ def write_performance(
             "trusted_notes": sum(1 for n in notes if n.flag is None),
             "flagged": {
                 k: sum(1 for n in notes if n.flag == k)
-                for k in ("offcentre", "passing", "range")
+                for k in ("offcentre", "passing", "range", "octave")
             },
         },
     }

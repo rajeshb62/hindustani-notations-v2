@@ -125,12 +125,13 @@ function remap(){
   applyView();
 }
 
+const ERROR_FLAGS = new Set(['range', 'octave']);
 function applyView(){
   schedStop();
-  // Out-of-range notes (instrument bleed / octave errors) are hidden in both
-  // views; strict also hides short off-centre / passing notes.
-  notes = allNotes.filter(n => strict ? !n.flag : n.flag !== 'range');
-  const flagged = allNotes.filter(n => n.flag && n.flag !== 'range').length;
+  // Errors (out-of-range bleed, octave flips) are hidden in both views;
+  // strict also hides suspect short off-centre / passing notes.
+  notes = allNotes.filter(n => strict ? !n.flag : !ERROR_FLAGS.has(n.flag));
+  const flagged = allNotes.filter(n => n.flag && !ERROR_FLAGS.has(n.flag)).length;
   $('strict').textContent = strict ? 'Notes: strict' : 'Notes: detailed';
   $('strict').classList.toggle('on', strict);
   $('strict').title = strict

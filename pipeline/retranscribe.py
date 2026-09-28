@@ -14,6 +14,7 @@ import json
 from .run import DATA, write_catalog
 from .transcribe import (
     build_contour,
+    error_spans,
     frames_to_notes,
     load_frames,
     prepare_frames,
@@ -39,7 +40,7 @@ def retranscribe(slug: str, sa_pin: float | None = None) -> dict:
         sa_hz=sa_hz,
         sa_meta=sa_meta,
         extra=perf.get("pipeline"),
-        contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz)),
+        contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz), error_spans(notes, sa_hz)),
     )
     return {"slug": slug, "sa_hz": sa_hz, "before": perf["stats"]["note_count"], "after": len(notes)}
 
