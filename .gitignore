@@ -13,3 +13,6 @@ node_modules/
 # Demucs stems and scratch output are regenerable and large (300 MB per stem)
 data/*/work/*.wav
 data/*/work/demucs/
+
+# Recordings come from the Internet Archive: python3 -m pipeline.fetch_audio
+data/**/*.mp3

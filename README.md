@@ -20,10 +20,25 @@ Accuracy is the product. Noise, tanpura/tabla, and a wrong Sa destroy the experi
 
 Listening is still the judge. This architecture makes a wrong Sa or a shaky frame *visible and fixable* instead of baked in.
 
+## Recordings
+
+Audio is not in git. All recordings are from the Internet Archive's NCPA collection; fetch them (checked by size) into `data/` before listening:
+
+```bash
+python3 -m pipeline.fetch_audio
+```
+
+| Performance | Internet Archive item | Side |
+|---|---|---|
+| Pandit Raja Kale, vocal recital | [ICCR-1854-AC](https://archive.org/details/dni.ncaa.ICCR-1854-AC) | B |
+| Pandit Jasraj, vocal recital | [SF-SFC000755-AC](https://archive.org/details/dni.ncaa.SF-SFC000755-AC) | A |
+| Todi — D. V. Paluskar | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) (Bandishes in Raga Todi, Vol. I) | A |
+| Todi — Ghulam Ali | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) | B |
+
 ## Listen
 
 ```bash
-cd "/Users/rajeshbhat/grok/hindustani notations/player"
+cd player
 python3 serve.py
 # then open http://127.0.0.1:8765/  (ICCR Side B loads automatically)
 ```
@@ -43,7 +58,6 @@ http://127.0.0.1:8765/loop.html
 ## Transcribe a new recording
 
 ```bash
-cd "/Users/rajeshbhat/grok/hindustani notations"
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
@@ -59,10 +73,10 @@ Options:
 - `--f0-csv path.csv` reuse an existing CREPE/pYIN file (`time,frequency,confidence`)
 - `--raga todi` (or any of the 16 in `pipeline/raga.py`) choose Sa as the tanpura peak — read as Sa, Pa or Ma, any octave — that puts the singing on the raga's swaras, and report how much held singing is on them (`raga_check`). Paluskar's Todi: the strongest tanpura peak was Pa; the raga fit picked Sa at 161.5 Hz (92% vs 44%).
 
-CREPE is not installed in this venv. For long recordings run the chunked, resumable tracker under any Python that has `crepe` (e.g. the legacy project's venv), then pass its CSV with `--f0-csv`:
+CREPE is not installed in this venv. For long recordings run the chunked, resumable tracker under any Python that has `crepe` (TensorFlow-based; separate from this venv), then pass its CSV with `--f0-csv`:
 
 ```bash
-"/Users/rajeshbhat/claudecode/hindustani notations/venv/bin/python" \
+/path/to/venv-with-crepe/bin/python \
     pipeline/crepe_chunked.py data/<slug>/work/vocals.wav data/<slug>/work/f0_crepe.csv
 ```
 

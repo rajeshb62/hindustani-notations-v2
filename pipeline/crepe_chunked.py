@@ -4,7 +4,7 @@
 Standalone (no package imports) so it can run under any Python that has
 crepe + tensorflow, e.g. the legacy project's venv:
 
-    /Users/rajeshbhat/claudecode/hindustani\\ notations/venv/bin/python \\
+    /path/to/venv-with-crepe/bin/python \\
         pipeline/crepe_chunked.py vocals.wav f0_crepe.csv
 
 Full-recording crepe.predict holds every 1024-sample frame in memory at once;
