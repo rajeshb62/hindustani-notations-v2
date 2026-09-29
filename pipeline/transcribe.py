@@ -10,6 +10,7 @@ import statistics
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from .swara import JUST_RATIOS as JUST_ORDER
 from .swara import nearest_swara
 
 
@@ -163,7 +164,10 @@ def frames_to_notes(
     bridge_gap: float = 0.085,
     *,
     prepared: bool = False,
+    positions: dict[str, float] | None = None,
 ) -> list[Note]:
+    # `positions`: swara cents measured for this performance (calibrate.py);
+    # None = the just-intonation table.
     # Defaults follow the by-ear known-good pipeline (gap 0.0748, bridge merge,
     # then a 20 ms floor). Two-frame kan swaras survive; lone frames do not.
     if not prepared:
@@ -174,7 +178,7 @@ def frames_to_notes(
     groups: list[_Group] = []
     cur: _Group | None = None
     for f in frames:
-        hit = nearest_swara(f.hz, sa_hz)
+        hit = nearest_swara(f.hz, sa_hz, positions)
         # Same swara in a different octave is a different note; merging across
         # octaves over-smooths and sounded worse by ear.
         if (
@@ -200,7 +204,7 @@ def frames_to_notes(
         # confidence-weighted mean Hz
         w = [max(0.05, c) for c in g.conf]
         hz = sum(h * wi for h, wi in zip(g.hz, w)) / sum(w)
-        hit = nearest_swara(hz, sa_hz)
+        hit = nearest_swara(hz, sa_hz, positions)
         # snap quality: 1 at 0 cents, 0 at 50 cents
         snap = max(0.0, 1.0 - abs(hit.cents_off) / 50.0)
         mean_conf = sum(g.conf) / len(g.conf)
@@ -290,7 +294,9 @@ def flag_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> list[N
     lo, hi = singer_range(notes, sa_hz, margin)
     for n in notes:
         c = 1200.0 * math.log2(n.hz / sa_hz)
-        if n.flag is None and not (lo <= c <= hi):
+        # Overrides the milder suspect flags: an off-centre S'' from bleed is
+        # still bleed, and detailed view shows off-centre notes.
+        if n.flag in (None, "offcentre", "passing") and not (lo <= c <= hi):
             n.flag = "range"
     return notes
 
@@ -427,6 +433,8 @@ def write_performance(
     sa_meta: dict,
     extra: dict | None = None,
     contour: dict | None = None,
+    calibration: dict | None = None,
+    raga: str | None = None,
 ) -> None:
     payload = {
         "schema": "hindustani-notation-v1",
@@ -435,7 +443,7 @@ def write_performance(
         "sa_hz": sa_hz,
         "sa_source": sa_meta.get("sa_source"),
         "sa_estimate": sa_meta,
-        "swara_system": "just",
+        "swara_system": "measured" if calibration else "just",
         "notes": [asdict(n) for n in notes],
         "stats": {
             "note_count": len(notes),
@@ -453,6 +461,27 @@ def write_performance(
             },
         },
     }
+    if raga:
+        from .raga import RAGAS
+
+        # Check, not constraint: how much trusted, held singing sits on the
+        # raga's swaras, and which other swaras appear (and for how long).
+        held = [n for n in notes if n.flag is None and n.dur >= 0.15]
+        total = sum(n.dur for n in held) or 1.0
+        outside: dict[str, float] = {}
+        for n in held:
+            if n.swara not in RAGAS[raga]:
+                outside[n.swara] = outside.get(n.swara, 0.0) + n.dur
+        payload["raga"] = raga
+        payload["raga_check"] = {
+            "swaras": sorted(RAGAS[raga], key=list(JUST_ORDER).index),
+            "held_time_on_raga": round(1 - sum(outside.values()) / total, 4),
+            "outside_seconds": {k: round(v, 1) for k, v in sorted(outside.items(), key=lambda kv: -kv[1])},
+        }
+    if calibration:
+        # Cents above Sa the player uses to label and synthesize each swara.
+        payload["swara_positions"] = calibration["positions"]
+        payload["calibration"] = calibration
     if contour:
         payload["contour"] = contour
     if extra:

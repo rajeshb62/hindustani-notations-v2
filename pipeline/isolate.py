@@ -27,7 +27,13 @@ def isolate(audio: Path, out_dir: Path) -> dict:
         str(audio),
     ]
     try:
-        subprocess.run(cmd, check=True)
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError:
+            # Apple MPS rejects htdemucs on long tracks ("Output channels >
+            # 65536 not supported"); CPU is slower but works.
+            print("demucs failed on the default device; retrying on CPU", file=sys.stderr)
+            subprocess.run(cmd[:3] + ["-d", "cpu"] + cmd[3:], check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         # Fall back: treat the mix as vocals. Sa detection will use the mix too.
         shutil.copy2(audio, vocals)

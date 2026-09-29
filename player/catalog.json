@@ -3,14 +3,21 @@
     "id": "iccr-1854-side-b",
     "title": "ICCR-1854 Side B",
     "path": "./data/iccr-1854-side-b/performance.json",
-    "sa_hz": 96.97,
-    "notes": 10576
+    "sa_hz": 97.38903286650023,
+    "notes": 10606
   },
   {
     "id": "pt-jasraj-side-a",
     "title": "Pt. Jasraj side A",
     "path": "./data/pt-jasraj-side-a/performance.json",
-    "sa_hz": 136.18,
-    "notes": 19940
+    "sa_hz": 136.79533241619654,
+    "notes": 19363
+  },
+  {
+    "id": "todi-paluskar-side-a",
+    "title": "Todi \u2014 Paluskar side A",
+    "path": "./data/todi-paluskar-side-a/performance.json",
+    "sa_hz": 161.1812095892971,
+    "notes": 12388
   }
 ]

@@ -175,9 +175,12 @@ function placeInCycle(out, filled, item){
   return filled;
 }
 
+// Uses the performance's measured swara positions when present (calibrated
+// by the pipeline), else the just table.
 function idealHz(sa, swara, oct){
-  const r = JUST[swara] ?? 1;
-  return sa * r * Math.pow(2, oct || 0);
+  const pos = perf && perf.swara_positions && perf.swara_positions[swara];
+  const cents = pos ?? 1200 * Math.log2(JUST[swara] ?? 1);
+  return sa * Math.pow(2, (cents + 1200 * (oct || 0)) / 1200);
 }
 
 function buildStream(){

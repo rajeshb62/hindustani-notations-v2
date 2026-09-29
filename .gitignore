@@ -9,3 +9,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 node_modules/
+
+# Demucs stems and scratch output are regenerable and large (300 MB per stem)
+data/*/work/*.wav
+data/*/work/demucs/

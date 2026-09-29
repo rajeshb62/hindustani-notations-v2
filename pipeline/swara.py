@@ -54,16 +54,21 @@ def hz_to_cents(hz: float, sa_hz: float) -> float:
     return 1200.0 * math.log2(hz / sa_hz)
 
 
-def nearest_swara(hz: float, sa_hz: float) -> SwaraHit:
+def nearest_swara(
+    hz: float, sa_hz: float, positions: dict[str, float] | None = None
+) -> SwaraHit:
+    """Nearest swara to hz. `positions` (cents above Sa) overrides the just
+    table, e.g. positions measured from this performance (calibrate.py)."""
     if hz <= 0 or sa_hz <= 0:
         raise ValueError("hz and sa_hz must be positive")
+    table = positions or SWARA_CENTS
     cents = hz_to_cents(hz, sa_hz)
     octave = math.floor(cents / 1200.0)
     local = cents - octave * 1200.0
     best_name = "S"
     best_err = 999.0
     best_oct = octave
-    for name, sw_cents in SWARA_CENTS.items():
+    for name, sw_cents in table.items():
         err = local - sw_cents
         cand_oct = octave
         # wrap near next Sa
@@ -76,7 +81,7 @@ def nearest_swara(hz: float, sa_hz: float) -> SwaraHit:
             best_err = err
             best_name = name
             best_oct = cand_oct
-    ideal = sa_hz * JUST_RATIOS[best_name] * (2.0 ** best_oct)
+    ideal = sa_hz * 2.0 ** ((table[best_name] + 1200.0 * best_oct) / 1200.0)
     if best_oct > 0:
         label = best_name + ("'" * best_oct)
     elif best_oct < 0:

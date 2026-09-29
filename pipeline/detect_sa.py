@@ -54,7 +54,7 @@ def _vocal_tonic_histogram(f0_hz: np.ndarray, lo: float = 70.0) -> list[dict]:
     voiced = f0_hz[(f0_hz > 50) & np.isfinite(f0_hz)]
     if len(voiced) < 20:
         return []
-        folded = []
+    folded = []
     for hz in voiced:
         x = float(hz)
         while x >= hi:
@@ -86,7 +86,13 @@ def estimate_sa(
     mix_wav: Path | None = None,
     f0_csv: Path | None = None,
     sr: int = 22050,
+    raga: str | None = None,
 ) -> dict:
+    """Sa from tanpura peaks, cross-checked against the voice.
+
+    With `raga`, the tanpura peak (as Sa, Pa or Ma, any octave) that puts the
+    confident singing on that raga's swaras wins; see raga.py.
+    """
     import librosa
 
     tanpura_cands: list[dict] = []
@@ -98,15 +104,26 @@ def estimate_sa(
         tanpura_cands = _stft_peak_scores(y, file_sr)
 
     vocal_cands: list[dict] = []
+    voiced = np.array([])
     if f0_csv and Path(f0_csv).exists():
         rows = np.genfromtxt(f0_csv, delimiter=",", names=True)
         if rows.dtype.names and "frequency" in rows.dtype.names:
             vocal_cands = _vocal_tonic_histogram(np.asarray(rows["frequency"], dtype=float))
+            hz = np.asarray(rows["frequency"], dtype=float)
+            conf = np.asarray(rows["confidence"], dtype=float)
+            voiced = hz[(conf >= 0.8) & (hz > 60)]
 
     chosen = None
     source = "unresolved"
+    raga_choice = None
+    if raga and tanpura_cands and len(voiced) > 500:
+        from .raga import RAGAS, choose_sa
+
+        raga_choice = choose_sa([c["hz"] for c in tanpura_cands], voiced, RAGAS[raga])
+        chosen = raga_choice["sa_hz"]
+        source = f"tanpura+raga-fit:{raga}"
     # Prefer accompaniment peak that also sits near a vocal tonic (or its octave).
-    if tanpura_cands:
+    if chosen is None and tanpura_cands:
         if vocal_cands:
             best = None
             best_d = 1e9
@@ -123,7 +140,7 @@ def estimate_sa(
         if chosen is None:
             chosen = tanpura_cands[0]["hz"]
             source = "tanpura-harmonic"
-    elif vocal_cands:
+    elif chosen is None and vocal_cands:
         chosen = vocal_cands[0]["hz"]
         source = "vocal-tonic-histogram"
 
@@ -133,6 +150,8 @@ def estimate_sa(
         "audio_used": source_name,
         "tanpura_candidates": tanpura_cands,
         "vocal_tonic_candidates": vocal_cands,
+        "raga": raga,
+        "raga_choice": raga_choice,
         "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz.",
     }
 

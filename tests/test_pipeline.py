@@ -90,6 +90,15 @@ class Range(unittest.TestCase):
         self.assertEqual([n.flag for n in notes if n.label == "S''"], ["range"])
         self.assertTrue(all(n.flag is None for n in notes if n.label != "S''"))
 
+    def test_out_of_range_beats_offcentre(self):
+        body = []
+        for k in range(60):
+            body += [0] * 30 + [702] * 30 + [1200] * 30
+        # 40 ms S'' 30 cents flat: short and off-centre, but still out of range.
+        frames = run(body + [1200] * 30 + [2370] * 4 + [1200] * 30)
+        notes = frames_to_notes(frames, SA, prepared=True)
+        self.assertEqual([n.flag for n in notes if n.octave == 2], ["range"])
+
     def test_contour_drops_out_of_range_frames(self):
         c = build_contour(run([1200, 1200, 2400, 1200]), SA, cents_range=(-500, 2000))
         self.assertEqual(c["runs"], [[0.0, [1200, 1200]], [0.03, [1200]]])
@@ -116,6 +125,54 @@ class OctaveFlips(unittest.TestCase):
         frames = run([0] * 30 + [1200] * 30 + [0] * 30)
         notes = frames_to_notes(frames, SA, prepared=True)
         self.assertTrue(all(n.flag is None for n in notes))
+
+
+class Calibration(unittest.TestCase):
+    def singer(self, sa_err=8, g=316, extra=()):
+        # Held phrases where Sa/Pa are sung sa_err cents sharp of the pin and
+        # komal Ga sits at g (table 294).
+        body = []
+        for _ in range(12):
+            body += [sa_err] * 30 + [g + sa_err] * 30 + [702 + sa_err] * 30 + list(extra)
+        return run(body)
+
+    def test_sa_shift_is_corrected_and_komal_ga_measured(self):
+        from pipeline.calibrate import calibrated_notes
+        notes, sa, cal = calibrated_notes(self.singer(), SA)
+        self.assertAlmostEqual(cal["sa_refine"]["shift_cents"], 8, delta=1)
+        self.assertAlmostEqual(1200 * math.log2(sa / SA), 8, delta=1)
+        self.assertAlmostEqual(cal["positions"]["g"], 316, delta=2)
+        self.assertEqual(cal["positions"]["S"], 0)
+        self.assertAlmostEqual(cal["positions"]["P"], 702, delta=0.1)
+        ga = [n for n in notes if n.swara == "g"]
+        self.assertTrue(ga and all(abs(n.cents_off) < 3 for n in ga))
+
+    def test_shift_is_clamped_and_rare_swaras_keep_the_table(self):
+        from pipeline.calibrate import calibrated_notes
+        _, _, cal = calibrated_notes(self.singer(sa_err=0, g=334), SA)
+        from pipeline.swara import SWARA_CENTS
+        self.assertAlmostEqual(cal["positions"]["g"], SWARA_CENTS["g"] + 30, delta=0.1)
+        self.assertEqual(cal["swaras"]["N"]["source"], "table")
+
+
+class SaDetection(unittest.TestCase):
+    def test_vocal_tonic_histogram_runs(self):
+        import numpy as np
+        from pipeline.detect_sa import _vocal_tonic_histogram
+        f0 = np.array([SA * 2 ** (c / 1200) for c in [0] * 200 + [702] * 100 + [1200] * 100])
+        cands = _vocal_tonic_histogram(f0)
+        self.assertTrue(cands)
+
+    def test_raga_fit_picks_sa_over_the_tanpura_pa(self):
+        import numpy as np
+        from pipeline.raga import RAGAS, choose_sa
+        # Todi phrase around Sa=161.5; the tanpura's strongest peak is Pa (242).
+        sa = 161.5
+        cents = [0] * 40 + [90] * 20 + [294] * 10 + [590] * 5 + [792] * 10 + [1088] * 15
+        hz = np.array([sa * 2 ** (c / 1200) for c in cents])
+        r = choose_sa([242.2, 121.1], hz, RAGAS["todi"])
+        self.assertAlmostEqual(r["sa_hz"], sa, delta=1.0)
+        self.assertGreater(r["fit"], 0.95)
 
 
 class Contour(unittest.TestCase):

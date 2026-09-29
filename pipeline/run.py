@@ -9,7 +9,9 @@ import re
 import shutil
 from pathlib import Path
 
+from .calibrate import calibrated_notes
 from .detect_sa import estimate_sa, write_estimate
+from .raga import RAGAS
 from .extract_f0 import extract_f0
 from .isolate import isolate
 from .transcribe import (
@@ -59,6 +61,8 @@ def run(
     skip_demucs: bool,
     f0_csv: Path | None,
     skip_vad: bool = False,
+    calibrate: bool = True,
+    raga: str | None = None,
 ) -> Path:
     slug = slugify(title)
     dest = DATA / slug
@@ -103,6 +107,7 @@ def run(
             accompaniment_wav=other if other.exists() else None,
             mix_wav=dest_audio,
             f0_csv=primary_f0,
+            raga=raga,
         )
     write_estimate(sa_meta, dest / "sa_estimate.json")
     sa_hz = float(sa_meta["sa_hz"] or 130.81)
@@ -114,7 +119,10 @@ def run(
     else:
         vad_meta = filter_f0(primary_f0, vocals, vad_csv, sa_hz=sa_hz)
     frames = prepare_frames(load_frames(vad_csv), sa_hz)
-    notes = frames_to_notes(frames, sa_hz, prepared=True)
+    if calibrate:
+        notes, sa_hz, calibration = calibrated_notes(frames, sa_hz)
+    else:
+        notes, calibration = frames_to_notes(frames, sa_hz, prepared=True), None
 
     write_performance(
         notes,
@@ -125,6 +133,8 @@ def run(
         sa_meta=sa_meta,
         extra={"isolate": iso, "f0": f0_meta, "vad": vad_meta},
         contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz), error_spans(notes, sa_hz)),
+        calibration=calibration,
+        raga=raga,
     )
     write_catalog()
     return dest / "performance.json"
@@ -138,9 +148,14 @@ def main() -> int:
     p.add_argument("--skip-demucs", action="store_true")
     p.add_argument("--f0-csv", type=Path, default=None)
     p.add_argument("--skip-vad", action="store_true")
+    p.add_argument("--no-calibrate", action="store_true",
+                   help="Keep the pinned Sa and the just table (no per-performance tuning)")
+    p.add_argument("--raga", choices=sorted(RAGAS), default=None,
+                   help="Use the raga's scale to choose Sa among tanpura peaks, and report fit")
     args = p.parse_args()
     title = args.title or args.audio.stem
-    out = run(args.audio, title, args.sa, args.skip_demucs, args.f0_csv, args.skip_vad)
+    out = run(args.audio, title, args.sa, args.skip_demucs, args.f0_csv, args.skip_vad,
+              calibrate=not args.no_calibrate, raga=args.raga)
     print(f"Wrote {out}")
     return 0
 

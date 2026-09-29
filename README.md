@@ -11,7 +11,7 @@ Accuracy is the product. Noise, tanpura/tabla, and a wrong Sa destroy the experi
 | Failure in the old path | What this app does instead |
 |---|---|
 | Labels frozen at one Sa | Notation is Hz-first; Sa comes from tanpura + vocal evidence and can be re-pinned |
-| 12 equal 100-cent steps | Just-intonation ratios, same ones the synth plays |
+| 12 equal 100-cent steps | Swara positions measured per performance (just table as the fallback); the synth plays the same positions |
 | Score loop vs CREPE (circular) | Confidence = tracker confidence × distance-to-swara |
 | One f0 source | CREPE if installed, else pYIN (both are saved; only one is used so far) |
 | Tanpura bleed as “notes” | Sa taken first from accompaniment; Sa/Pa pitches heard *outside* vocal segments are dropped (sung Sa/Pa are kept) |
@@ -57,6 +57,16 @@ Options:
 - `--sa 96.97` pin Sa if you already know it
 - `--skip-demucs` if you already have a vocal wav
 - `--f0-csv path.csv` reuse an existing CREPE/pYIN file (`time,frequency,confidence`)
+- `--raga todi` (or any of the 16 in `pipeline/raga.py`) choose Sa as the tanpura peak — read as Sa, Pa or Ma, any octave — that puts the singing on the raga's swaras, and report how much held singing is on them (`raga_check`). Paluskar's Todi: the strongest tanpura peak was Pa; the raga fit picked Sa at 161.5 Hz (92% vs 44%).
+
+CREPE is not installed in this venv. For long recordings run the chunked, resumable tracker under any Python that has `crepe` (e.g. the legacy project's venv), then pass its CSV with `--f0-csv`:
+
+```bash
+"/Users/rajeshbhat/claudecode/hindustani notations/venv/bin/python" \
+    pipeline/crepe_chunked.py data/<slug>/work/vocals.wav data/<slug>/work/f0_crepe.csv
+```
+
+Demucs falls back to CPU when the Mac GPU (MPS) rejects a long track.
 
 ## Re-transcribe without re-tracking
 
@@ -70,6 +80,16 @@ python3 -m pipeline.retranscribe iccr-1854-side-b --sa 97.2
 Grouping follows the by-ear known-good settings: join same-swara frames across gaps up to 75 ms, never across octaves; absorb sub-20 ms flickers inside a held note (A–x–A → A); then drop anything still under 20 ms. Two-frame kan swaras survive.
 
 Correctness before granularity: short notes (< 80 ms) are **flagged** when they are probably glide fragments rather than swaras the singer landed on — more than 25¢ off the swara (`offcentre`), or lying between their neighbours' pitches inside a meend (`passing`). A kan that turns above or below both neighbours is kept. Notes of any length are flagged `range` when they fall more than 5 semitones outside the singer's own range (time-weighted 1st–99th percentile): instrument bleed or the tracker jumping to the voice's 2nd harmonic, e.g. Jasraj side A 25:33, where a held S' flips to S'' at exactly 2×. The pitch curve drops those frames too. The player defaults to **detailed** (suspect short notes shown, dimmed); **S** toggles strict, which hides them.
+
+## Per-performance tuning (`pipeline/calibrate.py`)
+
+Intonation depends on raga and singer, so each performance gets its own swara positions:
+
+1. **Sa** is refined by the median offset of held Sa and Pa notes (the fixed reference swaras). Always re-derived from the original pin, so re-running is stable.
+2. **Other swaras** move to the median of their held (≥150 ms), trusted notes, clamped to ±30¢ of the just table; swaras with fewer than 8 held notes keep the table value.
+3. Everything is relabelled against those positions. They are stored in `performance.json` (`swara_positions`, `calibration`) and used by both players.
+
+Checked against sargam sung by the singer (Jasraj side A 0:00–0:39): the pinned Sa was ~8¢ low, komal Ga/Dha sit ~14/12¢ above the table, and the transcription agrees with 39 of 43 sung syllables matched to held pitches. `--no-calibrate` reverts to the pinned Sa and the just table.
 
 ## Tests
 
