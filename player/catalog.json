@@ -1,10 +1,10 @@
 [
   {
     "id": "iccr-1854-side-b",
-    "title": "ICCR-1854 Side B",
+    "title": "Chhayanat \u2014 Raja Kale",
     "path": "./data/iccr-1854-side-b/performance.json",
-    "sa_hz": 97.38903286650023,
-    "notes": 10606
+    "sa_hz": 171.98365792317122,
+    "notes": 10639
   },
   {
     "id": "pt-jasraj-side-a",
@@ -12,6 +12,13 @@
     "path": "./data/pt-jasraj-side-a/performance.json",
     "sa_hz": 136.79533241619654,
     "notes": 19363
+  },
+  {
+    "id": "todi-ghulam-ali",
+    "title": "Todi \u2014 Ghulam Ali",
+    "path": "./data/todi-ghulam-ali/performance.json",
+    "sa_hz": 133.64255958068588,
+    "notes": 15615
   },
   {
     "id": "todi-paluskar-side-a",

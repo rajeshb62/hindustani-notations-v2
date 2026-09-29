@@ -30,8 +30,8 @@ python3 -m pipeline.fetch_audio
 
 | Performance | Internet Archive item | Side |
 |---|---|---|
-| Pandit Raja Kale, vocal recital | [ICCR-1854-AC](https://archive.org/details/dni.ncaa.ICCR-1854-AC) | B |
-| Pandit Jasraj, vocal recital | [SF-SFC000755-AC](https://archive.org/details/dni.ncaa.SF-SFC000755-AC) | A |
+| Chhayanat — Pandit Raja Kale (Sa ≈ 172 Hz; the tape's Shuddh Kalyan is on side A) | [ICCR-1854-AC](https://archive.org/details/dni.ncaa.ICCR-1854-AC) | B |
+| Pandit Jasraj — Jaunpuri for the first ~15 min; the rest not identified (both Ni, no Dha) | [SF-SFC000755-AC](https://archive.org/details/dni.ncaa.SF-SFC000755-AC) | A |
 | Todi — D. V. Paluskar | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) (Bandishes in Raga Todi, Vol. I) | A |
 | Todi — Ghulam Ali | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) | B |
 

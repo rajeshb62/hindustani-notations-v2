@@ -31,6 +31,8 @@ RAGAS: dict[str, set[str]] = {
     "bhimpalasi": {"S", "R", "g", "M", "P", "D", "n"},
     "bageshri": {"S", "R", "g", "M", "P", "D", "n"},
     "desh": {"S", "R", "G", "M", "P", "D", "n", "N"},
+    "chhayanat": {"S", "R", "G", "M", "M+", "P", "D", "N"},  # tivra Ma as an accidental
+    "shuddh-kalyan": {"S", "R", "G", "M+", "P", "D", "N"},  # M+ and N sparing
 }
 
 

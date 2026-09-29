@@ -16,6 +16,7 @@ import argparse
 import json
 
 from .calibrate import calibrated_notes
+from .raga import RAGAS
 from .run import DATA, write_catalog
 from .transcribe import (
     build_contour,
@@ -28,7 +29,9 @@ from .transcribe import (
 )
 
 
-def retranscribe(slug: str, sa_pin: float | None = None, calibrate: bool = True) -> dict:
+def retranscribe(
+    slug: str, sa_pin: float | None = None, calibrate: bool = True, raga: str | None = None
+) -> dict:
     dest = DATA / slug
     perf = json.loads((dest / "performance.json").read_text())
     sa_meta = perf.get("sa_estimate") or {"sa_source": perf.get("sa_source")}
@@ -50,7 +53,7 @@ def retranscribe(slug: str, sa_pin: float | None = None, calibrate: bool = True)
         extra=perf.get("pipeline"),
         contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz), error_spans(notes, sa_hz)),
         calibration=calibration,
-        raga=perf.get("raga"),
+        raga=raga or perf.get("raga"),
     )
     return {"slug": slug, "sa_hz": round(sa_hz, 3), "before": perf["stats"]["note_count"], "after": len(notes)}
 
@@ -59,16 +62,18 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("slugs", nargs="*")
     p.add_argument("--sa", type=float, default=None, help="Pin Sa in Hz (needs exactly one slug)")
+    p.add_argument("--raga", choices=sorted(RAGAS), default=None,
+                   help="Record the performance's raga and report fit (needs one slug)")
     p.add_argument("--no-calibrate", action="store_true",
                    help="Keep the pinned Sa and the just table (no per-performance tuning)")
     args = p.parse_args()
     slugs = args.slugs or [
         d.name for d in sorted(DATA.iterdir()) if (d / "work" / "f0.vad.csv").exists()
     ]
-    if args.sa and len(slugs) != 1:
-        p.error("--sa applies to one performance; name its slug")
+    if (args.sa or args.raga) and len(slugs) != 1:
+        p.error("--sa/--raga apply to one performance; name its slug")
     for slug in slugs:
-        print(retranscribe(slug, args.sa, calibrate=not args.no_calibrate))
+        print(retranscribe(slug, args.sa, calibrate=not args.no_calibrate, raga=args.raga))
     write_catalog()
     return 0
 
