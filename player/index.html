@@ -37,7 +37,6 @@ button{font-family:inherit;cursor:pointer}
 .tn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;height:70px;cursor:pointer;opacity:.35}
 .tn.cur{opacity:1}
 .tn.low{opacity:.18}
-.tn.flag .tc{font-style:italic;font-weight:500;opacity:.55}
 .tc{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:700}
 #tl::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.12)}
 #foot{display:flex;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--line);font-size:.65rem;color:var(--dim)}
@@ -55,7 +54,6 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
       <div id="time">0:00 / 0:00</div>
     </div>
     <button class="pill" id="mode" title="N cycles recording / notes / pitch curve">Hearing: Recording</button>
-    <button class="pill" id="strict" title="S toggles strict / detailed">Notes: detailed</button>
     <button class="pill" id="drone">Sa drone</button>
     <label style="font-size:.68rem;color:var(--dim)">Vol
       <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" style="width:70px;vertical-align:middle"/>
@@ -73,7 +71,7 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
   <div id="tl"><div id="track"></div></div>
   <div id="foot">
     <span id="sa-src">Sa from the transcription</span>
-    <span>Space play · N recording / notes / pitch curve · S strict / detailed</span>
+    <span>Space play · N recording / notes / pitch curve</span>
   </div>
 </div>
 <audio id="audio" preload="auto"></audio>
@@ -90,8 +88,7 @@ const KOMAL = new Set(['r','g','d','n']);
 let perf = null;
 let baseSa = 96.97;
 let allNotes = [];
-let notes = [];      // what is shown and played: allNotes minus flagged ones when strict
-let strict = false;  // detailed by default: keep short ornaments, even suspect ones
+let notes = [];      // what is shown and played
 let mode = 'audio';
 let playing = false;
 let idx = -1;
@@ -128,18 +125,11 @@ function remap(){
   applyView();
 }
 
-const ERROR_FLAGS = new Set(['range', 'octave']);
 function applyView(){
   schedStop();
-  // Errors (out-of-range bleed, octave flips) are hidden in both views;
-  // strict also hides suspect short off-centre / passing notes.
-  notes = allNotes.filter(n => strict ? !n.flag : !ERROR_FLAGS.has(n.flag));
-  const flagged = allNotes.filter(n => n.flag && !ERROR_FLAGS.has(n.flag)).length;
-  $('strict').textContent = strict ? 'Notes: strict' : 'Notes: detailed';
-  $('strict').classList.toggle('on', strict);
-  $('strict').title = strict
-    ? `Hiding ${flagged} short notes flagged as glide fragments`
-    : `Showing ${notes.length} notes; ${flagged} suspect short ones are dimmed`;
+  // Errors (out-of-range bleed, octave flips) are already removed by the
+  // pipeline; see performance.json removed_notes.
+  notes = allNotes;
   buildTimeline();
 }
 
@@ -299,7 +289,7 @@ function showNote(i){
   $('oct-a').className=n.octave>0?'on':'';
   $('oct-b').textContent='●'.repeat(Math.max(1,-n.octave));
   $('oct-b').className=n.octave<0?'on':'';
-  meta.textContent = `${n.name}  ·  ${n.octave===0?'madhya':n.octave>0?'taar':'mandra'}` + (n.flag ? `  ·  suspect (${n.flag})` : '');
+  meta.textContent = `${n.name}  ·  ${n.octave===0?'madhya':n.octave>0?'taar':'mandra'}`;
   const off = n.cents_off;
   cents.textContent = `${off>=0?'+':''}${off.toFixed(1)} ¢ from ideal  ·  ${n.hz.toFixed(1)} Hz  ·  conf ${(n.conf*100).toFixed(0)}%`;
   cents.className = Math.abs(off)>25 ? 'bad' : '';
@@ -314,7 +304,7 @@ function buildTimeline(){
   hl = -1; idx = -1;
   notes.forEach((n,i)=>{
     const d=document.createElement('div');
-    d.className='tn'+(n.conf<0.35?' low':'')+(n.flag?' flag':'');
+    d.className='tn'+(n.conf<0.35?' low':'');
     d.innerHTML=`<div class="tc" style="color:${n.color}">${n.swara==='M+'?'M+':n.swara}</div>`;
     d.onclick=()=>{ seek(n.t); };
     track.appendChild(d);
@@ -506,7 +496,6 @@ async function init(){
   $('play').onclick=toggle;
   $('rw').onclick=()=>seek(Math.max(0,tnow()-5));
   $('mode').onclick=()=>setMode(nextMode());
-  $('strict').onclick=()=>{ strict=!strict; applyView(); };
   $('drone').onclick=()=>{ droneOn=!droneOn; setDrone(droneOn); };
   $('vol').oninput=()=>applyMix();
   $('scrub').oninput=e=>{ if(audio.duration) seek((e.target.value/100)*audio.duration); };
@@ -514,7 +503,6 @@ async function init(){
     if(['INPUT','SELECT'].includes(e.target.tagName)) return;
     if(e.code==='Space'){ e.preventDefault(); toggle(); }
     if(e.key==='n'||e.key==='N') setMode(nextMode());
-    if(e.key==='s'||e.key==='S'){ strict=!strict; applyView(); }
   });
   requestAnimationFrame(tick);
 }

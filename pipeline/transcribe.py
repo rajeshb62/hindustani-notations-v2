@@ -32,9 +32,9 @@ class Note:
     octave: int
     label: str
     snap_quality: float
-    # None = trusted. Otherwise why this is probably not a note the singer
-    # landed on: "offcentre", "passing" (flag_suspects), "range" (flag_range)
-    # or "octave" (flag_octave_flips). range/octave are errors, not ornaments.
+    # None = a note. Otherwise why it is an error, not something the singer
+    # sang: "range" (flag_range: bleed / 2nd harmonic) or "octave"
+    # (flag_octave_flips). Players hide flagged notes.
     flag: str | None = None
 
 
@@ -221,53 +221,26 @@ def frames_to_notes(
                 snap_quality=round(snap, 4),
             )
         )
-    return flag_octave_flips(flag_range(flag_suspects(notes, sa_hz), sa_hz), sa_hz)
+    return flag_octave_flips(flag_range(notes, sa_hz), sa_hz)
 
 
-def flag_suspects(
-    notes: list[Note],
-    sa_hz: float,
-    short: float = 0.080,
-    max_off: float = 25.0,
-    gap: float = 0.075,
-) -> list[Note]:
-    """Mark short notes that are probably glide fragments, not landed swaras.
-
-    Long notes are always trusted. A note under `short` seconds is suspect if
-    - "offcentre": its pitch is more than `max_off` cents from the swara, i.e.
-      it sampled the voice between swaras; or
-    - "passing": it lies strictly between its neighbours' pitches (Sa→Re→Ga
-      inside a meend). A real kan/turn goes above or below both neighbours.
-      A clearly centred note of 50 ms+ is kept even when passing.
-    Correctness over granularity: the player hides flagged notes by default.
-    """
-    cents = [1200.0 * math.log2(n.hz / sa_hz) for n in notes]
-    for i, n in enumerate(notes):
-        n.flag = None
-        if n.dur + _EPS >= short:
-            continue
-        if abs(n.cents_off) > max_off:
-            n.flag = "offcentre"
-            continue
-        joined_prev = i > 0 and n.t - (notes[i - 1].t + notes[i - 1].dur) <= gap
-        joined_next = i + 1 < len(notes) and notes[i + 1].t - (n.t + n.dur) <= gap
-        if joined_prev and joined_next:
-            a, b, c = cents[i - 1], cents[i], cents[i + 1]
-            passing = a < b < c or a > b > c
-            if passing and not (n.dur + _EPS >= 0.050 and abs(n.cents_off) <= 12.0):
-                n.flag = "passing"
-    return notes
-
-
-def singer_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> tuple[float, float]:
+def singer_range(
+    notes: list[Note], sa_hz: float, margin: float = 500.0, short: float = 0.080
+) -> tuple[float, float]:
     """(low, high) cents from Sa the singer plausibly reaches.
 
     Time-weighted 1st-99th percentile of trusted notes, widened by `margin`
     (5 semitones). Relative to each singer: ICCR really does sing two octaves
     above its Sa, Jasraj almost never does.
     """
+    # Skip short notes caught between swaras (>25 cents off): thousands of
+    # glide fragments otherwise stretch the percentiles enough to admit bleed
+    # (Paluskar's r'' at 2521 cents sits right at the edge).
     pts = sorted(
-        (1200.0 * math.log2(n.hz / sa_hz), n.dur) for n in notes if n.flag in (None, "range")
+        (1200.0 * math.log2(n.hz / sa_hz), n.dur)
+        for n in notes
+        if n.flag in (None, "range")
+        and not (n.dur + _EPS < short and abs(n.cents_off) > 25.0)
     )
     if not pts:
         return (-math.inf, math.inf)
@@ -294,9 +267,7 @@ def flag_range(notes: list[Note], sa_hz: float, margin: float = 500.0) -> list[N
     lo, hi = singer_range(notes, sa_hz, margin)
     for n in notes:
         c = 1200.0 * math.log2(n.hz / sa_hz)
-        # Overrides the milder suspect flags: an off-centre S'' from bleed is
-        # still bleed, and detailed view shows off-centre notes.
-        if n.flag in (None, "offcentre", "passing") and not (lo <= c <= hi):
+        if n.flag is None and not (lo <= c <= hi):
             n.flag = "range"
     return notes
 
@@ -436,6 +407,10 @@ def write_performance(
     calibration: dict | None = None,
     raga: str | None = None,
 ) -> None:
+    """`notes` must still include flagged errors: build the contour's
+    error_spans from them first. They are dropped here."""
+    kept = [n for n in notes if n.flag is None]
+    removed = [n for n in notes if n.flag is not None]
     payload = {
         "schema": "hindustani-notation-v1",
         "title": title,
@@ -444,20 +419,21 @@ def write_performance(
         "sa_source": sa_meta.get("sa_source"),
         "sa_estimate": sa_meta,
         "swara_system": "measured" if calibration else "just",
-        "notes": [asdict(n) for n in notes],
+        # Errors (flag_range / flag_octave_flips) are removed from the
+        # transcription; only an audit list of what was removed is kept.
+        "notes": [{k: v for k, v in asdict(n).items() if k != "flag"} for n in kept],
+        "removed_notes": [[n.t, n.dur, n.label, n.flag] for n in removed],
         "stats": {
-            "note_count": len(notes),
+            "note_count": len(kept),
             "mean_abs_cents": round(
-                statistics.mean(abs(n.cents_off) for n in notes) if notes else 0.0, 2
+                statistics.mean(abs(n.cents_off) for n in kept) if kept else 0.0, 2
             ),
             "mean_conf": round(
-                statistics.mean(n.conf for n in notes) if notes else 0.0, 4
+                statistics.mean(n.conf for n in kept) if kept else 0.0, 4
             ),
-            "low_conf_notes": sum(1 for n in notes if n.conf < 0.35),
-            "trusted_notes": sum(1 for n in notes if n.flag is None),
-            "flagged": {
-                k: sum(1 for n in notes if n.flag == k)
-                for k in ("offcentre", "passing", "range", "octave")
+            "low_conf_notes": sum(1 for n in kept if n.conf < 0.35),
+            "removed": {
+                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave")
             },
         },
     }

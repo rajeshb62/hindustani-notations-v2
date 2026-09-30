@@ -47,7 +47,7 @@ Use `serve.py`, not `python3 -m http.server`. Chrome will not scrub or rewind un
 
 Open http://127.0.0.1:8765/
 
-Space play/pause · **N** cycles what you hear: **Recording → Notes** (each note at its ideal just-intonation pitch) **→ Pitch curve** (the measured f0, so glides and ornaments stay intact). **S** toggles detailed (default) / strict (suspect short notes hidden). Out-of-range notes are hidden in both. Notes are scheduled on the Web Audio clock and glide into short notes, so fast passages don't click. Sa is fixed from the transcription.
+Space play/pause · **N** cycles what you hear: **Recording → Notes** (each note at its ideal just-intonation pitch) **→ Pitch curve** (the measured f0, so glides and ornaments stay intact). Notes are scheduled on the Web Audio clock and glide into short notes, so fast passages don't click. Sa is fixed from the transcription.
 
 ## Loop transcribed notes (standalone)
 
@@ -93,7 +93,7 @@ python3 -m pipeline.retranscribe iccr-1854-side-b --sa 97.2
 
 Grouping follows the by-ear known-good settings: join same-swara frames across gaps up to 75 ms, never across octaves; absorb sub-20 ms flickers inside a held note (A–x–A → A); then drop anything still under 20 ms. Two-frame kan swaras survive.
 
-Correctness before granularity: short notes (< 80 ms) are **flagged** when they are probably glide fragments rather than swaras the singer landed on — more than 25¢ off the swara (`offcentre`), or lying between their neighbours' pitches inside a meend (`passing`). A kan that turns above or below both neighbours is kept. Notes of any length are flagged `range` when they fall more than 5 semitones outside the singer's own range (time-weighted 1st–99th percentile): instrument bleed or the tracker jumping to the voice's 2nd harmonic, e.g. Jasraj side A 25:33, where a held S' flips to S'' at exactly 2×. The pitch curve drops those frames too. The player defaults to **detailed** (suspect short notes shown, dimmed); **S** toggles strict, which hides them.
+Notes that are not something the singer sang are **removed from the transcription** (listed with the reason in `performance.json` → `removed_notes`): `range` — more than 5 semitones outside the singer's own range (time-weighted 1st–99th percentile), i.e. instrument bleed or the tracker jumping to the voice's 2nd harmonic (Jasraj side A 25:33, where a held S' flips to S'' at exactly 2×); `octave` — short notes flickering exactly an octave from their neighbour (Jasraj 21:46). The pitch curve drops those frames too. Every other note, including fast ornaments and glide fragments, is kept.
 
 ## Per-performance tuning (`pipeline/calibrate.py`)
 

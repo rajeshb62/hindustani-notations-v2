@@ -50,33 +50,6 @@ class Grouping(unittest.TestCase):
         self.assertEqual([n.label for n in notes], ["S"])
 
 
-class Suspects(unittest.TestCase):
-    def test_passing_tone_in_meend_is_flagged(self):
-        # Sa held, 30 ms through Re, Ga held: Re lies between its neighbours.
-        frames = run([0] * 30 + [204] * 3 + [386] * 30)
-        notes = frames_to_notes(frames, SA)
-        self.assertEqual([(n.label, n.flag) for n in notes],
-                         [("S", None), ("R", "passing"), ("G", None)])
-
-    def test_kan_turn_is_trusted(self):
-        # Sa, 30 ms touch of Re above, back to Sa: a turn, not a passage.
-        frames = run([0] * 30 + [204] * 3 + [0] * 30)
-        notes = frames_to_notes(frames, SA)
-        self.assertEqual([n.flag for n in notes], [None, None, None])
-
-    def test_offcentre_short_note_is_flagged(self):
-        # 30 ms at 150 cents: between r and R, sampled mid-glide.
-        frames = run([0] * 30 + [150] * 3 + [0] * 30)
-        notes = frames_to_notes(frames, SA)
-        self.assertEqual(notes[1].flag, "offcentre")
-
-    def test_long_notes_are_always_trusted(self):
-        # Held 30 cents off komal Re: off-centre, but long, so trusted.
-        frames = run([0] * 30 + [120] * 30 + [386] * 30)
-        notes = frames_to_notes(frames, SA)
-        self.assertTrue(all(n.flag is None for n in notes))
-
-
 class Range(unittest.TestCase):
     def test_octave_jump_above_singers_range_is_flagged(self):
         # Minutes in madhya/taar; then held S' jumps to S'' (2x) as bleed does.
@@ -89,15 +62,6 @@ class Range(unittest.TestCase):
         notes = frames_to_notes(frames, SA, prepared=True)
         self.assertEqual([n.flag for n in notes if n.label == "S''"], ["range"])
         self.assertTrue(all(n.flag is None for n in notes if n.label != "S''"))
-
-    def test_out_of_range_beats_offcentre(self):
-        body = []
-        for k in range(60):
-            body += [0] * 30 + [702] * 30 + [1200] * 30
-        # 40 ms S'' 30 cents flat: short and off-centre, but still out of range.
-        frames = run(body + [1200] * 30 + [2370] * 4 + [1200] * 30)
-        notes = frames_to_notes(frames, SA, prepared=True)
-        self.assertEqual([n.flag for n in notes if n.octave == 2], ["range"])
 
     def test_contour_drops_out_of_range_frames(self):
         c = build_contour(run([1200, 1200, 2400, 1200]), SA, cents_range=(-500, 2000))
@@ -173,6 +137,25 @@ class SaDetection(unittest.TestCase):
         r = choose_sa([242.2, 121.1], hz, RAGAS["todi"])
         self.assertAlmostEqual(r["sa_hz"], sa, delta=1.0)
         self.assertGreater(r["fit"], 0.95)
+
+
+class Output(unittest.TestCase):
+    def test_error_notes_are_removed_but_audited(self):
+        import json, tempfile
+        from pathlib import Path
+        from pipeline.transcribe import write_performance
+        body = []
+        for _ in range(60):
+            body += [0] * 30 + [702] * 30 + [1200] * 30
+        notes = frames_to_notes(run(body + [1200] * 30 + [2400] * 30 + [1200] * 30), SA, prepared=True)
+        with tempfile.TemporaryDirectory() as d:
+            out = Path(d) / "performance.json"
+            write_performance(notes, out, title="t", audio_rel="a.mp3", sa_hz=SA, sa_meta={})
+            perf = json.loads(out.read_text())
+        self.assertNotIn("S''", [n["label"] for n in perf["notes"]])
+        self.assertTrue(all("flag" not in n for n in perf["notes"]))
+        self.assertEqual([r[2:] for r in perf["removed_notes"]], [["S''", "range"]])
+        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0})
 
 
 class Contour(unittest.TestCase):

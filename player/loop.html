@@ -188,11 +188,9 @@ function buildStream(){
   const beatSec = 60 / parseFloat($('tempo').value);
   const minConf = parseFloat($('conf').value) / 100;
   const startT = parseFloat($('start').value) || 0;
-  // Skip notes the transcriber flagged as errors (instrument bleed / octave
-  // flips, e.g. Jasraj 25:33 S''), same as the main player's detailed view.
+  // Errors (instrument bleed / octave flips) are removed by the pipeline.
   const raw = perf.notes.filter(n =>
     n.t >= startT && (n.conf || 0) >= minConf && (n.dur || 0) >= 0.06 && JUST[n.swara]
-    && n.flag !== 'range' && n.flag !== 'octave'
   );
   const merged = [];
   for (const n of raw){
