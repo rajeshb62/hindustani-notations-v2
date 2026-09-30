@@ -27,6 +27,10 @@ SOURCES: dict[str, tuple[str, str, str, int]] = {
         "dni.ncaa.SF-SFC000755-AC",  # Hindustani Vocal Recital by Pandit Jasraj
         "SF-SFC000755-AC_SIDE_A.mp3", "source_audio.mp3", 42998784,
     ),
+    "pt-jasraj-side-b": (
+        "dni.ncaa.SF-SFC000755-AC",
+        "SF-SFC000755-AC_SIDE_B.mp3", "SF-SFC000755-AC_SIDE_B.mp3", 43328640,
+    ),
     "todi-paluskar-side-a": (
         "dni.ncaa.SKSS-T206-AC",  # A Collection of Bandishes in Raga Todi (Vol. I)
         "SKSS-T206-AC_SIDE_A.mp3", "SKSS-T206-AC_SIDE_A.mp3", 27480576,

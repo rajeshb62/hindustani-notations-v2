@@ -14,6 +14,13 @@
     "notes": 19320
   },
   {
+    "id": "pt-jasraj-side-b",
+    "title": "Pt. Jasraj side B",
+    "path": "./data/pt-jasraj-side-b/performance.json",
+    "sa_hz": 137.59153697872242,
+    "notes": 20732
+  },
+  {
     "id": "todi-ghulam-ali",
     "title": "Todi \u2014 Ghulam Ali",
     "path": "./data/todi-ghulam-ali/performance.json",

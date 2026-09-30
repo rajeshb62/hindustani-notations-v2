@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -81,6 +82,45 @@ def _vocal_tonic_histogram(f0_hz: np.ndarray, lo: float = 70.0) -> list[dict]:
     return out
 
 
+def _madhya_octave(sa: float, voiced: np.ndarray) -> float:
+    """The octave of sa whose [Sa, 2 Sa) band (a semitone lower) holds the most singing."""
+    if len(voiced) == 0:
+        return sa
+    lo = 2 ** (-100 / 1200)
+    return max(
+        (sa * 2.0**k for k in range(-2, 3)),
+        key=lambda s: float(((voiced >= s * lo) & (voiced < 2 * s * lo)).mean()),
+    )
+
+
+def _pitch_class_share(voiced: np.ndarray, sa: float, cents: float, tol: float = 50.0) -> float:
+    d = (1200.0 * np.log2(voiced / sa) - cents + 600.0) % 1200.0 - 600.0
+    return float((np.abs(d) < tol).mean())
+
+
+def _sa_by_resting_notes(tanpura_cands: list[dict], voiced: np.ndarray) -> dict | None:
+    """Sa = the tanpura peak (read as Sa, Pa or Ma) the singing rests on most.
+
+    Score: share of confident singing on Sa, plus half the share on Pa — the
+    resting notes of nearly every raga. The most-sung pitch alone is not
+    enough (Chhayanat dwells on Re), and a strong tanpura peak is often the
+    Pa or Ma string (Jasraj side B: 91.5 Hz is mandra Ma of Sa 137.3). Checked
+    on all five recordings: within 12 cents of the established Sa.
+    """
+    if len(voiced) < 500:
+        return None
+    best = None
+    for rank, t in enumerate(tanpura_cands[:6]):
+        for as_what, ratio in (("sa", 1.0), ("pa", 2 / 3), ("ma", 3 / 4)):
+            sa = t["hz"] * ratio
+            score = _pitch_class_share(voiced, sa, 0.0) + 0.5 * _pitch_class_share(voiced, sa, 702.0)
+            if best is None or score > best[0] + 1e-9:
+                best = (score, sa, t["hz"], as_what)
+    score, sa, peak, as_what = best
+    return {"sa_hz": round(_madhya_octave(sa, voiced), 3), "peak": peak, "peak_as": as_what,
+            "resting_score": round(score, 3)}
+
+
 def estimate_sa(
     accompaniment_wav: Path | None = None,
     mix_wav: Path | None = None,
@@ -123,20 +163,13 @@ def estimate_sa(
         chosen = raga_choice["sa_hz"]
         source = f"tanpura+raga-fit:{raga}"
     # Prefer accompaniment peak that also sits near a vocal tonic (or its octave).
+    agreement = None
     if chosen is None and tanpura_cands:
         if vocal_cands:
-            best = None
-            best_d = 1e9
-            for t in tanpura_cands[:5]:
-                for v in vocal_cands[:4]:
-                    for k in (0.5, 1.0, 2.0):
-                        d = abs(t["hz"] - v["hz"] * k)
-                        if d < best_d:
-                            best_d = d
-                            best = t
-            if best and best_d < 4.0:
-                chosen = best["hz"]
-                source = "tanpura+vocal-agreement"
+            agreement = _sa_by_resting_notes(tanpura_cands, voiced)
+            if agreement:
+                chosen = agreement["sa_hz"]
+                source = f"tanpura({agreement['peak_as']})+resting-notes"
         if chosen is None:
             chosen = tanpura_cands[0]["hz"]
             source = "tanpura-harmonic"
@@ -152,6 +185,7 @@ def estimate_sa(
         "vocal_tonic_candidates": vocal_cands,
         "raga": raga,
         "raga_choice": raga_choice,
+        "agreement": agreement,
         "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz.",
     }
 

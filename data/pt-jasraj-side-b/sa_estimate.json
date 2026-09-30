@@ -1,0 +1,82 @@
+{
+  "sa_hz": 137.274,
+  "sa_source": "tanpura(ma)+resting-notes",
+  "audio_used": "/Users/rajeshbhat/grok/hindustani notations/data/pt-jasraj-side-b/work/no_vocals.wav",
+  "tanpura_candidates": [
+    {
+      "hz": 88.824,
+      "harmonic_score": 19.0056,
+      "band_energy": 1.0
+    },
+    {
+      "hz": 86.133,
+      "harmonic_score": 15.8779,
+      "band_energy": 0.8224
+    },
+    {
+      "hz": 91.516,
+      "harmonic_score": 11.4714,
+      "band_energy": 0.5792
+    },
+    {
+      "hz": 110.358,
+      "harmonic_score": 7.9279,
+      "band_energy": 0.3864
+    },
+    {
+      "hz": 107.666,
+      "harmonic_score": 7.0622,
+      "band_energy": 0.357
+    },
+    {
+      "hz": 83.441,
+      "harmonic_score": 6.8401,
+      "band_energy": 0.3247
+    },
+    {
+      "hz": 113.049,
+      "harmonic_score": 6.8178,
+      "band_energy": 0.3516
+    },
+    {
+      "hz": 104.974,
+      "harmonic_score": 6.1473,
+      "band_energy": 0.3085
+    }
+  ],
+  "vocal_tonic_candidates": [
+    {
+      "hz": 137.812,
+      "count": 22877
+    },
+    {
+      "hz": 103.688,
+      "count": 10361
+    },
+    {
+      "hz": 108.938,
+      "count": 6924
+    },
+    {
+      "hz": 92.312,
+      "count": 5900
+    },
+    {
+      "hz": 77.438,
+      "count": 5567
+    },
+    {
+      "hz": 70.438,
+      "count": 4180
+    }
+  ],
+  "raga": null,
+  "raga_choice": null,
+  "agreement": {
+    "sa_hz": 137.274,
+    "peak": 91.516,
+    "peak_as": "ma",
+    "resting_score": 0.355
+  },
+  "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz."
+}

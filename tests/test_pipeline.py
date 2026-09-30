@@ -127,6 +127,18 @@ class SaDetection(unittest.TestCase):
         cands = _vocal_tonic_histogram(f0)
         self.assertTrue(cands)
 
+    def test_resting_notes_read_a_ma_tuned_tanpura(self):
+        import numpy as np
+        from pipeline.detect_sa import _sa_by_resting_notes
+        # Jasraj side B: the tanpura's strongest usable peak is mandra Ma
+        # (91.5 Hz); the singing rests on Sa=137.3 and Pa.
+        sa = 137.3
+        cents = [0] * 40 + [702] * 15 + [133] * 10 + [300] * 10 + [608] * 10 + [812] * 10 + [1120] * 5
+        voiced = np.array([sa * 2 ** (c / 1200) for c in cents * 10])
+        r = _sa_by_resting_notes([{"hz": 88.8}, {"hz": 86.1}, {"hz": 91.5}], voiced)
+        self.assertEqual(r["peak_as"], "ma")
+        self.assertAlmostEqual(r["sa_hz"], sa, delta=1.0)
+
     def test_raga_fit_picks_sa_over_the_tanpura_pa(self):
         import numpy as np
         from pipeline.raga import RAGAS, choose_sa
