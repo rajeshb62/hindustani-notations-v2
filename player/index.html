@@ -93,7 +93,6 @@ let mode = 'audio';
 let playing = false;
 let idx = -1;
 let ctx, master, flute, fluteGain, droneGain, droneSa = null, droneOn = false;
-let lastFreq = null;
 
 const audio = document.getElementById('audio');
 const $ = id => document.getElementById(id);
@@ -153,13 +152,6 @@ async function resumeAudio(){
   return ctx.state === 'running';
 }
 
-function setParam(param, value, now, ramp=0.03){
-  param.cancelScheduledValues(now);
-  const cur = Number.isFinite(param.value) ? param.value : value;
-  param.setValueAtTime(Math.max(0.0001, cur), now);
-  param.linearRampToValueAtTime(Math.max(0.0001, value), now + ramp);
-}
-
 function initFlute(freq){
   ensureAudio();
   if(flute) return;
@@ -173,7 +165,6 @@ function initFlute(freq){
   fluteGain.connect(lp); lp.connect(master);
   fund.start(now); h2.start(now);
   flute = {fund, h2, h2g};
-  lastFreq = freq;
 }
 
 function openFlute(){
@@ -183,17 +174,6 @@ function openFlute(){
   fluteGain.gain.setValueAtTime(Math.max(0.0001, fluteGain.gain.value), now);
   fluteGain.gain.linearRampToValueAtTime(0.62, now + 0.05);
   fluteOpen = true;
-}
-
-function playFreq(freq, dur, glideOverride){
-  if(!freq || !Number.isFinite(freq)) return;
-  initFlute(freq);
-  const now = ctx.currentTime;
-  const glide = glideOverride ?? (dur < 0.05 ? 0.006 : Math.min(0.04, dur * 0.14));
-  setParam(flute.fund.frequency, freq, now, glide);
-  setParam(flute.h2.frequency, freq * 2, now, glide);
-  if(!fluteOpen) openFlute();
-  lastFreq = freq;
 }
 
 function stopFlute(){
@@ -331,12 +311,19 @@ function applyMix(){
   audio.volume = (mode === 'audio') ? v : 0;
 }
 
-// Notes mode is scheduled on the Web Audio clock a little ahead of time, so
-// 20-40 ms ornaments start on time instead of on the next animation frame.
-const LOOKAHEAD = 0.15;   // s of notes scheduled ahead
+// Synth playback is scheduled on the Web Audio clock ahead of time, so 20-40 ms
+// ornaments start on time. It is driven by a Web Worker timer, not
+// requestAnimationFrame: browsers pause or throttle rAF (and main-thread
+// timers) in background tabs — Firefox to ~1/s — and the synth then held one
+// note for many seconds. Hidden tabs also schedule further ahead in case
+// wake-ups are late.
+const LOOKAHEAD_VISIBLE = 0.25;
+const LOOKAHEAD_HIDDEN = 2.0;
+function lookahead(){ return document.hidden ? LOOKAHEAD_HIDDEN : LOOKAHEAD_VISIBLE; }
 const LEGATO_GAP = 0.12;  // hold the tone across gaps shorter than this
 const LEVEL = 0.62;
-let sched = null;         // {i, lastFreq, lastEnd, minAt}
+let sched = null;         // notes mode: {i, lastFreq, lastEnd, minAt}
+let csched = null;        // pitch-curve mode: {tNext, open, minAt}
 
 // Glide into each note: a short note is approached, not snapped to (snapping
 // makes fast passages click). Capped so held notes still land promptly.
@@ -344,6 +331,7 @@ function glideFor(n){ return Math.max(0.012, Math.min(0.045, n.dur * 0.35)); }
 
 function schedStop(){
   sched = null;
+  csched = null;
   if(!ctx || !flute) return;
   const now = ctx.currentTime;
   for(const p of [flute.fund.frequency, flute.h2.frequency]){
@@ -367,7 +355,7 @@ function schedStart(t){
 function pump(t){
   const now = ctx.currentTime;
   const f1 = flute.fund.frequency, f2 = flute.h2.frequency, gain = fluteGain.gain;
-  while(sched.i < notes.length && notes[sched.i].t < t + LOOKAHEAD){
+  while(sched.i < notes.length && notes[sched.i].t < t + lookahead()){
     const n = notes[sched.i];
     const at = Math.max(sched.minAt, now + (n.t - t));
     const legato = sched.lastEnd !== null && n.t - sched.lastEnd <= LEGATO_GAP;
@@ -390,30 +378,63 @@ function pump(t){
   }
 }
 
-function drive(t, i){
-  if(!playing || mode==='audio') return;
+// Pitch curve: one automation point per 10 ms contour frame, scheduled ahead.
+const CURVE_STEP = 0.01;
+function pumpContour(t){
+  if(!csched){
+    initFlute(contourHz(t) || currentSa());
+    csched = {tNext: t, open: false, minAt: ctx.currentTime + 0.025};
+  }
+  if(csched.tNext < t) csched.tNext = t;  // fell behind (e.g. long stall): resync
+  const now = ctx.currentTime;
+  const f1 = flute.fund.frequency, f2 = flute.h2.frequency, gain = fluteGain.gain;
+  const until = t + lookahead();
+  while(csched.tNext < until){
+    const tt = csched.tNext;
+    const at = Math.max(csched.minAt, now + (tt - t));
+    const hz = contourHz(tt);
+    if(hz){
+      if(!csched.open){
+        f1.setValueAtTime(hz, at); f2.setValueAtTime(hz * 2, at);
+        gain.setValueAtTime(0.0001, at); gain.linearRampToValueAtTime(LEVEL, at + 0.03);
+        csched.open = true;
+      } else {
+        f1.linearRampToValueAtTime(hz, at); f2.linearRampToValueAtTime(hz * 2, at);
+      }
+    } else if(csched.open){
+      gain.setValueAtTime(LEVEL, at); gain.linearRampToValueAtTime(0.0001, at + 0.04);
+      csched.open = false;
+    }
+    csched.minAt = at;
+    csched.tNext = tt + CURVE_STEP;
+  }
+}
+
+function drive(t){
+  if(!playing || mode==='audio' || !ctx) return;
   if(mode==='notes'){
     if(!sched) schedStart(t);
     pump(t);
   } else {
-    const hz = contourHz(t);
-    // Updated every animation frame (~16 ms); ramp slightly longer so the curve is smooth, not stepped.
-    if(hz) playFreq(hz, 0, 0.02);
-    else stopFlute();
+    pumpContour(t);
   }
 }
+
+// Audio clock: a worker timer keeps firing in background tabs.
+const audioTicker = new Worker(URL.createObjectURL(new Blob(
+  ['setInterval(() => postMessage(0), 50);'], {type: 'text/javascript'})));
+audioTicker.onmessage = () => drive(tnow());
 
 function seek(t){
   audio.currentTime = t;
   schedStop();
-  drive(t, findNote(t));
+  drive(t);
 }
 
 function tick(){
   const t=tnow();
   const i=findNote(t);
-  showNote(i);
-  drive(t, i);
+  showNote(i);  // display only; sound is driven by audioTicker
   $('scrub').value = audio.duration ? (t/audio.duration)*100 : 0;
   $('time').textContent = `${fmt(t)} / ${fmt(audio.duration||0)}`;
   requestAnimationFrame(tick);
@@ -427,7 +448,7 @@ async function toggle(){
     applyMix();
     try{ await audio.play(); }catch(e){}
     playing=true; $('play').textContent='❚❚';
-    drive(tnow(), findNote(tnow()));
+    drive(tnow());
   }
 }
 // Recording → quantized notes → measured pitch curve (keeps meend/gamak).
@@ -450,7 +471,7 @@ async function setMode(next){
     await resumeAudio();
     if(playing){
       try{ await audio.play(); }catch(e){}
-      drive(tnow(), findNote(tnow()));
+      drive(tnow());
     }
   }
 }
