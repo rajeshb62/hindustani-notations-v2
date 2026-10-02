@@ -16,7 +16,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space 
 button{font-family:inherit;cursor:pointer}
 #play{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff}
 #rw{height:32px;padding:0 10px;border-radius:999px;border:1px solid rgba(200,184,154,.3);background:transparent;color:var(--accent);font-size:.7rem;font-weight:700}
-#scrub-wrap{flex:1;min-width:140px}
+#scrub-wrap{flex:1;min-width:140px;position:relative}
+#fb-marks{position:relative;height:6px;margin-top:3px}
+.fbm{position:absolute;top:0;height:6px;min-width:3px;border-radius:2px;background:rgba(244,132,95,.75);cursor:pointer}
+.fbm.sel{background:#ffd27a;box-shadow:0 0 0 1px #ffd27a}
+.fbm.live{background:rgba(255,210,122,.45)}
+#fb-dialog{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:10}
+#fb-dialog.on{display:flex}
+#fb-card{background:#14111d;border:1px solid var(--line);border-radius:10px;padding:16px;width:min(560px,92vw)}
+#fb-range{font-size:.78rem;color:var(--accent);margin-bottom:8px;letter-spacing:.04em}
+#fb-text{width:100%;height:120px;background:#0d0b14;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px;font-family:inherit;font-size:.9rem;resize:vertical}
+#fb-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:.68rem;color:var(--dim)}
+#fb-actions button{margin-left:6px}
+#fb-panel{display:none;max-height:28vh;overflow:auto;border-top:1px solid var(--line);background:rgba(0,0,0,.35);font-size:.78rem}
+#fb-panel.on{display:block}
+.fbi{display:flex;gap:10px;align-items:flex-start;padding:7px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.fbi:hover{background:rgba(255,255,255,.04)}
+.fbi .r{color:var(--accent);white-space:nowrap;min-width:110px}
+.fbi .x{margin-left:auto;color:var(--dim);background:none;border:none;font-size:.9rem}
+.fbi.sel{background:rgba(255,210,122,.08)}
 #scrub{width:100%;appearance:none;height:3px;background:rgba(255,255,255,.12);border-radius:2px}
 #scrub::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent)}
 #time{font-size:.7rem;color:var(--dim);letter-spacing:.04em}
@@ -51,10 +69,14 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
     <button id="rw" title="Rewind 5s">↺ 5s</button>
     <div id="scrub-wrap">
       <input id="scrub" type="range" min="0" max="100" step="0.01" value="0"/>
+      <div id="fb-marks"></div>
       <div id="time">0:00 / 0:00</div>
     </div>
     <button class="pill" id="mode" title="N cycles recording / notes / pitch curve">Hearing: Recording</button>
     <button class="pill" id="drone">Sa drone</button>
+    <button class="pill" id="fb" title="F: mark start, F again: mark end and write feedback">✎ Feedback</button>
+    <button class="pill" id="loop" title="L: loop the selected range · again: loop A/B (recording ↔ notes each pass) · again: off">Loop: off</button>
+    <button class="pill" id="speed" title="Playback speed (pitch preserved)">1×</button>
     <label style="font-size:.68rem;color:var(--dim)">Vol
       <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" style="width:70px;vertical-align:middle"/>
     </label>
@@ -69,10 +91,17 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
     <div id="confbar"><div id="conffill"></div></div>
   </div>
   <div id="tl"><div id="track"></div></div>
+  <div id="fb-panel"></div>
   <div id="foot">
     <span id="sa-src">Sa from the transcription</span>
-    <span>Space play · N recording / notes / pitch curve</span>
+    <span><a href="#" id="fb-list" style="color:var(--accent)">Feedback (0)</a> · Space play · N recording / notes / pitch curve · F feedback · L loop</span>
   </div>
+  <div id="fb-dialog"><div id="fb-card">
+    <div id="fb-range"></div>
+    <textarea id="fb-text" placeholder="What's wrong (or right) in this stretch?"></textarea>
+    <div id="fb-actions"><span>⌘/Ctrl+Enter save · Esc cancel</span>
+      <span><button class="pill" id="fb-cancel">Cancel</button><button class="pill on" id="fb-save">Save</button></span></div>
+  </div></div>
 </div>
 <audio id="audio" preload="auto"></audio>
 <script>
@@ -320,6 +349,9 @@ function applyMix(){
 const LOOKAHEAD_VISIBLE = 0.25;
 const LOOKAHEAD_HIDDEN = 2.0;
 function lookahead(){ return document.hidden ? LOOKAHEAD_HIDDEN : LOOKAHEAD_VISIBLE; }
+// Playback speed: audio seconds advance at `rate` per wall-clock second, so
+// a note dt audio-seconds away starts dt/rate later on the Web Audio clock.
+let rate = 1;
 const LEGATO_GAP = 0.12;  // hold the tone across gaps shorter than this
 const LEVEL = 0.62;
 let sched = null;         // notes mode: {i, lastFreq, lastEnd, minAt}
@@ -355,12 +387,12 @@ function schedStart(t){
 function pump(t){
   const now = ctx.currentTime;
   const f1 = flute.fund.frequency, f2 = flute.h2.frequency, gain = fluteGain.gain;
-  while(sched.i < notes.length && notes[sched.i].t < t + lookahead()){
+  while(sched.i < notes.length && notes[sched.i].t < t + lookahead() * rate){
     const n = notes[sched.i];
-    const at = Math.max(sched.minAt, now + (n.t - t));
+    const at = Math.max(sched.minAt, now + (n.t - t) / rate);
     const legato = sched.lastEnd !== null && n.t - sched.lastEnd <= LEGATO_GAP;
     if(legato){
-      const g = glideFor(n);
+      const g = glideFor(n) / rate;
       f1.setValueAtTime(sched.lastFreq, at);     f1.linearRampToValueAtTime(n.ideal, at + g);
       f2.setValueAtTime(sched.lastFreq * 2, at); f2.linearRampToValueAtTime(n.ideal * 2, at + g);
     } else {
@@ -371,7 +403,7 @@ function pump(t){
     const end = n.t + n.dur;
     const next = notes[sched.i + 1];
     if(!next || next.t - end > LEGATO_GAP){
-      const endAt = Math.max(at + 0.03, now + (end - t));
+      const endAt = Math.max(at + 0.03, now + (end - t) / rate);
       gain.setValueAtTime(LEVEL, endAt); gain.linearRampToValueAtTime(0.0001, endAt + 0.06);
     }
     sched.lastFreq = n.ideal; sched.lastEnd = end; sched.i++;
@@ -388,10 +420,10 @@ function pumpContour(t){
   if(csched.tNext < t) csched.tNext = t;  // fell behind (e.g. long stall): resync
   const now = ctx.currentTime;
   const f1 = flute.fund.frequency, f2 = flute.h2.frequency, gain = fluteGain.gain;
-  const until = t + lookahead();
+  const until = t + lookahead() * rate;
   while(csched.tNext < until){
     const tt = csched.tNext;
-    const at = Math.max(csched.minAt, now + (tt - t));
+    const at = Math.max(csched.minAt, now + (tt - t) / rate);
     const hz = contourHz(tt);
     if(hz){
       if(!csched.open){
@@ -423,7 +455,7 @@ function drive(t){
 // Audio clock: a worker timer keeps firing in background tabs.
 const audioTicker = new Worker(URL.createObjectURL(new Blob(
   ['setInterval(() => postMessage(0), 50);'], {type: 'text/javascript'})));
-audioTicker.onmessage = () => drive(tnow());
+audioTicker.onmessage = () => { checkLoop(); drive(tnow()); };
 
 function seek(t){
   audio.currentTime = t;
@@ -432,6 +464,7 @@ function seek(t){
 }
 
 function tick(){
+  checkLoop();
   const t=tnow();
   const i=findNote(t);
   showNote(i);  // display only; sound is driven by audioTicker
@@ -476,6 +509,94 @@ async function setMode(next){
   }
 }
 
+// ---- Listening feedback: a time range + free text, saved per performance ----
+let slug = null;
+let feedback = [];      // [{start, end, text, mode, created}]
+let fbStart = null;     // mark in progress (audio seconds)
+let selected = null;    // {start, end}: range for Loop (clicked feedback or last mark)
+
+function fmtPrecise(t){ const m=Math.floor(t/60); return m+':'+(t%60).toFixed(1).padStart(4,'0'); }
+
+async function loadFeedback(){
+  feedback = [];
+  try{ const r = await fetch(`./data/${slug}/feedback.json`); if(r.ok) feedback = await r.json(); }catch(e){}
+  renderFeedback();
+}
+async function saveFeedback(){
+  const r = await fetch(`/api/feedback/${slug}`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(feedback)});
+  if(!r.ok) alert('Could not save feedback: ' + r.status);
+  renderFeedback();
+}
+function renderFeedback(){
+  const dur = audio.duration || perf?.notes?.at(-1)?.t || 1;
+  const marks = $('fb-marks'); marks.innerHTML = '';
+  const span = (a, b, cls, title, onclick) => {
+    const d = document.createElement('div'); d.className = 'fbm ' + cls;
+    d.style.left = (100*a/dur) + '%'; d.style.width = Math.max(0.15, 100*(b-a)/dur) + '%';
+    if(title) d.title = title; if(onclick) d.onclick = onclick; marks.appendChild(d);
+  };
+  feedback.forEach(f => span(f.start, f.end, isSel(f) ? 'sel' : '', `${fmtPrecise(f.start)}–${fmtPrecise(f.end)}  ${f.text}`, () => select(f)));
+  if(fbStart !== null) span(fbStart, Math.max(fbStart, tnow()), 'live');
+  $('fb-list').textContent = `Feedback (${feedback.length})`;
+  const panel = $('fb-panel'); panel.innerHTML = '';
+  feedback.forEach((f, k) => {
+    const row = document.createElement('div'); row.className = 'fbi' + (isSel(f) ? ' sel' : '');
+    row.innerHTML = `<span class="r">${fmtPrecise(f.start)} – ${fmtPrecise(f.end)}</span><span class="t"></span><button class="x" title="Delete">✕</button>`;
+    row.querySelector('.t').textContent = f.text;
+    row.onclick = () => select(f);
+    row.querySelector('.x').onclick = ev => { ev.stopPropagation(); if(confirm('Delete this feedback?')){ feedback.splice(k, 1); saveFeedback(); } };
+    panel.appendChild(row);
+  });
+}
+function isSel(f){ return selected && selected.start === f.start && selected.end === f.end; }
+function select(f){ selected = {start: f.start, end: f.end}; seek(f.start); renderFeedback(); }
+
+function feedbackKey(){
+  if(fbStart === null){ fbStart = tnow(); $('fb').classList.add('on'); $('fb').textContent = `● ${fmtPrecise(fbStart)} … F`; renderFeedback(); return; }
+  let a = fbStart, b = tnow(); if(b < a) [a, b] = [b, a];
+  if(b - a < 0.5) b = a + 0.5;  // a single tap marks a short stretch
+  fbStart = null; $('fb').classList.remove('on'); $('fb').textContent = '✎ Feedback';
+  selected = {start: a, end: b};
+  if(playing) toggle();
+  $('fb-range').textContent = `${fmtPrecise(a)} – ${fmtPrecise(b)}  ·  ${perf.title}  ·  hearing ${MODE_LABEL[mode]}`;
+  $('fb-text').value = ''; $('fb-dialog').classList.add('on'); $('fb-text').focus();
+  $('fb-save').onclick = () => {
+    const text = $('fb-text').value.trim(); closeDialog();
+    if(!text) return;
+    feedback.push({start: +a.toFixed(2), end: +b.toFixed(2), text, mode, created: new Date().toISOString()});
+    feedback.sort((x, y) => x.start - y.start); saveFeedback();
+  };
+}
+function closeDialog(){ $('fb-dialog').classList.remove('on'); renderFeedback(); }
+
+// ---- Loop the selected range; A/B alternates recording and notes each pass ----
+let loopMode = 'off';  // off | loop | ab
+function cycleLoop(){
+  loopMode = {off: 'loop', loop: 'ab', ab: 'off'}[loopMode];
+  if(loopMode !== 'off' && !selected){
+    const t = tnow(); selected = {start: Math.max(0, t - 4), end: t + 4};  // nothing selected: ±4 s around here
+  }
+  $('loop').textContent = {off: 'Loop: off', loop: 'Loop', ab: 'Loop A/B'}[loopMode];
+  $('loop').classList.toggle('on', loopMode !== 'off');
+  if(loopMode !== 'off' && (tnow() < selected.start || tnow() > selected.end)) seek(selected.start);
+  renderFeedback();
+}
+function checkLoop(){
+  if(loopMode === 'off' || !selected || !playing) return;
+  if(tnow() >= selected.end){
+    if(loopMode === 'ab') setMode(mode === 'audio' ? 'notes' : 'audio');
+    seek(selected.start);
+  }
+}
+
+// ---- Speed: pitch-preserved slow playback for fast passages ----
+function cycleSpeed(){
+  rate = {1: 0.75, 0.75: 0.5, 0.5: 1}[rate];
+  audio.preservesPitch = true; audio.mozPreservesPitch = true; audio.playbackRate = rate;
+  $('speed').textContent = rate + '×'; $('speed').classList.toggle('on', rate !== 1);
+  schedStop(); drive(tnow());
+}
+
 async function loadPerf(url){
   const res=await fetch(url);
   if(!res.ok) throw new Error('Could not load '+url+' ('+res.status+')');
@@ -488,12 +609,17 @@ async function loadPerf(url){
     + ' · ' + (perf.swara_positions ? 'measured swaras' : 'just table')
     + ' · ' + (perf.stats?.note_count||0) + ' notes';
   const dir = url.replace(/performance\.json$/, '');
+  slug = dir.split('/').filter(Boolean).pop();
+  fbStart = null; selected = null;
   audio.src = dir + perf.audio;
   if(mode==='contour' && !perf.contour) await setMode('audio');
   applyMix();
   remap();
   if(droneGain) setDrone(droneOn);
   $('meta').textContent = perf.title + ' · press play';
+  audio.playbackRate = rate;
+  await loadFeedback();
+  audio.addEventListener('loadedmetadata', renderFeedback, {once: true});
 }
 
 async function init(){
@@ -519,11 +645,23 @@ async function init(){
   $('mode').onclick=()=>setMode(nextMode());
   $('drone').onclick=()=>{ droneOn=!droneOn; setDrone(droneOn); };
   $('vol').oninput=()=>applyMix();
+  $('fb').onclick=feedbackKey;
+  $('loop').onclick=cycleLoop;
+  $('speed').onclick=cycleSpeed;
+  $('fb-cancel').onclick=closeDialog;
+  $('fb-list').onclick=e=>{ e.preventDefault(); $('fb-panel').classList.toggle('on'); };
+  $('fb-text').addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ e.preventDefault(); closeDialog(); }
+    if(e.key==='Enter' && (e.metaKey||e.ctrlKey)){ e.preventDefault(); $('fb-save').click(); }
+  });
+  setInterval(()=>{ if(fbStart!==null) renderFeedback(); }, 250);  // grow the live range
   $('scrub').oninput=e=>{ if(audio.duration) seek((e.target.value/100)*audio.duration); };
   document.addEventListener('keydown', e=>{
-    if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+    if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
     if(e.code==='Space'){ e.preventDefault(); toggle(); }
     if(e.key==='n'||e.key==='N') setMode(nextMode());
+    if(e.key==='f'||e.key==='F'){ e.preventDefault(); feedbackKey(); }
+    if(e.key==='l'||e.key==='L') cycleLoop();
   });
   requestAnimationFrame(tick);
 }

@@ -52,6 +52,12 @@ Open http://127.0.0.1:8765/
 
 Space play/pause · **N** cycles what you hear: **Recording → Notes** (each note at its ideal just-intonation pitch) **→ Pitch curve** (the measured f0, so glides and ornaments stay intact). Notes are scheduled on the Web Audio clock and glide into short notes, so fast passages don't click. Sa is fixed from the transcription.
 
+## Listening feedback
+
+While listening, press **F** to mark the start of a stretch and **F** again to mark its end; playback pauses and a text box opens (⌘/Ctrl+Enter saves, Esc cancels). Feedback is saved by `serve.py` to `data/<slug>/feedback.json` (start, end, text, and which mode you were hearing) and committed with the transcription. Marks show under the scrub bar; **Feedback (n)** in the footer lists them — click one to jump there, ✕ to delete.
+
+To check a stretch: select a feedback (or nothing, for ±4 s around the playhead) and press **L** — once to loop it, again to loop **A/B** (recording and notes alternate each pass), again to stop. The **1×** button slows playback to 0.75× / 0.5× with pitch preserved; notes stay in sync.
+
 ## Loop transcribed notes (standalone)
 
 Same server, different page. Plays ICCR Side B or Jasraj Side A as an 8-beat looping stream (quantized like the Claude Code melody generator, but from the transcription, not random):

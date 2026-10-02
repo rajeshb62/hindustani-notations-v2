@@ -3,11 +3,16 @@
 
 python3 -m http.server ignores Range and returns the whole file as 200.
 Chrome then refuses currentTime changes and the playhead snaps to 0:00.
+
+Also saves listening feedback: POST /api/feedback/<slug> with the full JSON
+list writes data/<slug>/feedback.json (read back as a normal static file).
 """
 
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import mimetypes
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -42,6 +47,36 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_error(404, "File not found")
             return
         self._send_file(path)
+
+    def do_POST(self) -> None:
+        m = re.fullmatch(r"/api/feedback/([a-z0-9-]+)", urlparse(self.path).path)
+        perf_dir = ROOT / "data" / m.group(1) if m else None
+        if not perf_dir or not (perf_dir / "performance.json").is_file():
+            self.send_error(404, "Unknown performance")
+            return
+        try:
+            body = self.rfile.read(int(self.headers.get("Content-Length", 0)))
+            items = json.loads(body)
+            if not isinstance(items, list):
+                raise ValueError("expected a list")
+            for it in items:
+                if not (isinstance(it, dict) and isinstance(it.get("text"), str)
+                        and float(it["start"]) <= float(it["end"])):
+                    raise ValueError("each item needs start <= end and text")
+        except (ValueError, KeyError, TypeError) as exc:
+            self.send_error(400, f"Bad feedback: {exc}")
+            return
+        items.sort(key=lambda it: float(it["start"]))
+        dest = perf_dir / "feedback.json"
+        tmp = dest.with_suffix(".json.tmp")
+        tmp.write_text(json.dumps(items, indent=1, ensure_ascii=False) + "\n")
+        tmp.replace(dest)
+        out = json.dumps({"saved": len(items)}).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(out)))
+        self.end_headers()
+        self.wfile.write(out)
 
     def do_HEAD(self) -> None:
         path = Path(self.translate_path(self.path))
