@@ -1,0 +1,131 @@
+{
+  "sa_hz": 142.657,
+  "sa_source": "tanpura+raga-fit:desh",
+  "audio_used": "/Users/rajeshbhat/grok/hindustani notations/data/desh-kalyan-chattopadhyay/work/no_vocals.wav",
+  "tanpura_candidates": [
+    {
+      "hz": 102.283,
+      "harmonic_score": 37.824,
+      "band_energy": 1.0
+    },
+    {
+      "hz": 142.657,
+      "harmonic_score": 34.856,
+      "band_energy": 0.3922
+    },
+    {
+      "hz": 269.165,
+      "harmonic_score": 24.5883,
+      "band_energy": 0.6079
+    },
+    {
+      "hz": 99.591,
+      "harmonic_score": 24.2789,
+      "band_energy": 0.6359
+    },
+    {
+      "hz": 134.583,
+      "harmonic_score": 23.4539,
+      "band_energy": 0.2436
+    },
+    {
+      "hz": 104.974,
+      "harmonic_score": 18.2604,
+      "band_energy": 0.4236
+    },
+    {
+      "hz": 271.857,
+      "harmonic_score": 16.7465,
+      "band_energy": 0.4314
+    },
+    {
+      "hz": 107.666,
+      "harmonic_score": 15.724,
+      "band_energy": 0.1645
+    }
+  ],
+  "vocal_tonic_candidates": [
+    {
+      "hz": 71.312,
+      "count": 14506
+    },
+    {
+      "hz": 135.188,
+      "count": 9453
+    },
+    {
+      "hz": 80.938,
+      "count": 7872
+    },
+    {
+      "hz": 94.938,
+      "count": 6170
+    },
+    {
+      "hz": 137.812,
+      "count": 4339
+    },
+    {
+      "hz": 90.562,
+      "count": 3830
+    }
+  ],
+  "raga": "desh",
+  "raga_choice": {
+    "sa_hz": 142.657,
+    "fit": 0.905,
+    "madhya_share": 0.592,
+    "candidates": [
+      {
+        "hz": 71.777,
+        "peak": 107.666,
+        "peak_as": "pa",
+        "fit": 0.9109
+      },
+      {
+        "hz": 142.657,
+        "peak": 142.657,
+        "peak_as": "sa",
+        "fit": 0.905
+      },
+      {
+        "hz": 107.666,
+        "peak": 107.666,
+        "peak_as": "sa",
+        "fit": 0.8645
+      },
+      {
+        "hz": 106.993,
+        "peak": 142.657,
+        "peak_as": "ma",
+        "fit": 0.8626
+      },
+      {
+        "hz": 69.983,
+        "peak": 104.974,
+        "peak_as": "pa",
+        "fit": 0.7977
+      },
+      {
+        "hz": 80.749,
+        "peak": 107.666,
+        "peak_as": "ma",
+        "fit": 0.7963
+      },
+      {
+        "hz": 104.974,
+        "peak": 104.974,
+        "peak_as": "sa",
+        "fit": 0.7756
+      },
+      {
+        "hz": 78.731,
+        "peak": 104.974,
+        "peak_as": "ma",
+        "fit": 0.7341
+      }
+    ]
+  },
+  "agreement": null,
+  "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz."
+}

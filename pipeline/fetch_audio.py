@@ -43,6 +43,10 @@ SOURCES: dict[str, tuple[str, str, str, int]] = {
         "dni.ncaa.SKSS-T208-AC",  # A Collection of Bandishes in Raga Todi (Vol. III)
         "SKSS-T208-AC_SIDE_A.mp3", "SKSS-T208-AC_SIDE_A.mp3", 29272320,
     ),
+    "desh-kalyan-chattopadhyay": (
+        "dni.ncaa.ICCR-923-AC",  # Vocal recital by Shri Kalyan Chattopadhyay
+        "ICCR-923-AC_SIDE_A.mp3", "ICCR-923-AC_SIDE_A.mp3", 38402688,
+    ),
 }
 
 
