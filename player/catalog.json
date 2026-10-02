@@ -21,6 +21,13 @@
     "notes": 20732
   },
   {
+    "id": "todi-ashwini-bhide",
+    "title": "Todi \u2014 Ashwini Bhide",
+    "path": "./data/todi-ashwini-bhide/performance.json",
+    "sa_hz": 233.84553855003892,
+    "notes": 10833
+  },
+  {
     "id": "todi-ghulam-ali",
     "title": "Todi \u2014 Ghulam Ali",
     "path": "./data/todi-ghulam-ali/performance.json",

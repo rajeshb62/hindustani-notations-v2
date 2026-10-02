@@ -39,6 +39,10 @@ SOURCES: dict[str, tuple[str, str, str, int]] = {
         "dni.ncaa.SKSS-T206-AC",
         "SKSS-T206-AC_SIDE_B.mp3", "SKSS-T206-AC_SIDE_B.mp3", 28987392,
     ),
+    "todi-ashwini-bhide": (
+        "dni.ncaa.SKSS-T208-AC",  # A Collection of Bandishes in Raga Todi (Vol. III)
+        "SKSS-T208-AC_SIDE_A.mp3", "SKSS-T208-AC_SIDE_A.mp3", 29272320,
+    ),
 }
 
 

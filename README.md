@@ -35,6 +35,7 @@ python3 -m pipeline.fetch_audio
 | Pandit Jasraj — Gujari Todi for the first ~15 min (Todi without Pa; Ma-tuned tanpura); the rest not identified (mixed Ga/Dha, then near Asavari) | [SF-SFC000755-AC](https://archive.org/details/dni.ncaa.SF-SFC000755-AC) | B |
 | Todi — D. V. Paluskar | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) (Bandishes in Raga Todi, Vol. I) | A |
 | Todi — Ghulam Ali | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) | B |
+| Todi — Vidushi Ashwini Bhide Deshpande | [SKSS-T208-AC](https://archive.org/details/dni.ncaa.SKSS-T208-AC) (Bandishes in Raga Todi, Vol. III) | A |
 
 ## Listen
 
