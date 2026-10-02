@@ -2,7 +2,6 @@ import math
 import unittest
 
 from pipeline.transcribe import Frame, build_contour, frames_to_notes
-from pipeline.vad_filter import is_drone_harmonic
 
 SA = 96.97
 
@@ -15,14 +14,27 @@ def run(cents_list, t0=0.0, step=0.01):
     return [Frame(t0 + i * step, hz(c), 0.9) for i, c in enumerate(cents_list)]
 
 
-class DroneFilter(unittest.TestCase):
-    def test_sa_and_pa_in_any_octave_are_drone_pitches(self):
-        for c in (0, 1200, 2400, -1200, 702, 1902):
-            self.assertTrue(is_drone_harmonic(hz(c), SA), c)
-
-    def test_other_swaras_are_not(self):
-        for c in (204, 386, 498, 884, 1088):
-            self.assertFalse(is_drone_harmonic(hz(c), SA), c)
+class VoiceGate(unittest.TestCase):
+    def test_keeps_sung_frames_and_drops_silent_residue(self):
+        import csv, tempfile
+        import numpy as np, soundfile as sf
+        from pathlib import Path
+        from pipeline.vad_filter import filter_f0
+        sr = 16000
+        t = np.arange(0, 3.0, 1 / sr)
+        # 1 s near-silent residue, 1 s "singing", 1 s near-silent residue.
+        y = np.where((t >= 1) & (t < 2), 0.3, 0.3 * 10 ** (-70 / 20)) * np.sin(2 * np.pi * 220 * t)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            sf.write(d / "vocals.wav", y, sr)
+            with (d / "f0.csv").open("w", newline="") as f:
+                w = csv.writer(f); w.writerow(["time", "frequency", "confidence"])
+                for k in range(300):
+                    w.writerow([f"{k * 0.01:.2f}", "220.0", "0.9"])
+            meta = filter_f0(d / "f0.csv", d / "vocals.wav", d / "out.csv")
+            kept = [float(r["time"]) for r in csv.DictReader((d / "out.csv").open())]
+        self.assertTrue(all(0.85 <= k <= 2.15 for k in kept), (min(kept), max(kept)))
+        self.assertGreater(meta["kept"], 95)
 
 
 class Grouping(unittest.TestCase):

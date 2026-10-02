@@ -126,5 +126,6 @@
       }
     ]
   },
+  "agreement": null,
   "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz."
 }

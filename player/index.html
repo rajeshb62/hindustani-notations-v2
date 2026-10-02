@@ -73,7 +73,6 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
       <div id="time">0:00 / 0:00</div>
     </div>
     <button class="pill" id="mode" title="N cycles recording / notes / pitch curve">Hearing: Recording</button>
-    <button class="pill" id="drone">Sa drone</button>
     <button class="pill" id="fb" title="F: mark start, F again: mark end and write feedback">✎ Feedback</button>
     <button class="pill" id="loop" title="L: loop the selected range · again: loop A/B (recording ↔ notes each pass) · again: off">Loop: off</button>
     <button class="pill" id="speed" title="Playback speed (pitch preserved)">1×</button>
@@ -121,7 +120,7 @@ let notes = [];      // what is shown and played
 let mode = 'audio';
 let playing = false;
 let idx = -1;
-let ctx, master, flute, fluteGain, droneGain, droneSa = null, droneOn = false;
+let ctx, master, flute, fluteGain, droneGain, droneSa = null;
 
 const audio = document.getElementById('audio');
 const $ = id => document.getElementById(id);
@@ -238,8 +237,11 @@ async function setDrone(on){
   if(droneGain){
     droneGain.gain.setTargetAtTime(on?0.28:0, ctx.currentTime, 0.08);
   }
-  $('drone').classList.toggle('on', on);
 }
+
+// The Sa drone accompanies the synth: on whenever notes or the pitch curve
+// are playing, off for the recording (which has its own tanpura) and when paused.
+function syncDrone(){ setDrone(playing && mode !== 'audio'); }
 
 // Measured pitch curve (cents above Sa) for glide-faithful playback.
 const BRIDGE_GAP = 0.075;
@@ -483,6 +485,7 @@ async function toggle(){
     playing=true; $('play').textContent='❚❚';
     drive(tnow());
   }
+  syncDrone();
 }
 // Recording → quantized notes → measured pitch curve (keeps meend/gamak).
 const MODES = ['audio','notes','contour'];
@@ -507,6 +510,7 @@ async function setMode(next){
       drive(tnow());
     }
   }
+  syncDrone();
 }
 
 // ---- Listening feedback: a time range + free text, saved per performance ----
@@ -615,7 +619,7 @@ async function loadPerf(url){
   if(mode==='contour' && !perf.contour) await setMode('audio');
   applyMix();
   remap();
-  if(droneGain) setDrone(droneOn);
+  if(droneGain) syncDrone();  // rebuilds at the new Sa
   $('meta').textContent = perf.title + ' · press play';
   audio.playbackRate = rate;
   await loadFeedback();
@@ -643,7 +647,6 @@ async function init(){
   $('play').onclick=toggle;
   $('rw').onclick=()=>seek(Math.max(0,tnow()-5));
   $('mode').onclick=()=>setMode(nextMode());
-  $('drone').onclick=()=>{ droneOn=!droneOn; setDrone(droneOn); };
   $('vol').oninput=()=>applyMix();
   $('fb').onclick=feedbackKey;
   $('loop').onclick=cycleLoop;

@@ -3,8 +3,8 @@
     "id": "desh-kalyan-chattopadhyay",
     "title": "Desh \u2014 Kalyan Chattopadhyay",
     "path": "./data/desh-kalyan-chattopadhyay/performance.json",
-    "sa_hz": 142.8590276089402,
-    "notes": 16681
+    "sa_hz": 142.7728216815537,
+    "notes": 22021
   },
   {
     "id": "iccr-1854-side-b",
@@ -24,28 +24,28 @@
     "id": "pt-jasraj-side-b",
     "title": "Pt. Jasraj side B",
     "path": "./data/pt-jasraj-side-b/performance.json",
-    "sa_hz": 137.59153697872242,
-    "notes": 20732
+    "sa_hz": 137.6730239870504,
+    "notes": 27051
   },
   {
     "id": "todi-ashwini-bhide",
     "title": "Todi \u2014 Ashwini Bhide",
     "path": "./data/todi-ashwini-bhide/performance.json",
-    "sa_hz": 233.84553855003892,
-    "notes": 10833
+    "sa_hz": 234.1483012109805,
+    "notes": 13451
   },
   {
     "id": "todi-ghulam-ali",
     "title": "Todi \u2014 Ghulam Ali",
     "path": "./data/todi-ghulam-ali/performance.json",
-    "sa_hz": 133.64255958068588,
-    "notes": 15547
+    "sa_hz": 133.91842996190348,
+    "notes": 21941
   },
   {
     "id": "todi-paluskar-side-a",
     "title": "Todi \u2014 Paluskar side A",
     "path": "./data/todi-paluskar-side-a/performance.json",
-    "sa_hz": 161.1812095892971,
-    "notes": 12348
+    "sa_hz": 161.12303139307497,
+    "notes": 15961
   }
 ]
