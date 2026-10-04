@@ -2,7 +2,7 @@
 
 A fresh transcription + listening app. Goal: sargam that is accurate enough that switching from the recording to the notes at any moment still feels like the same performance.
 
-The older Claude Code app baked **labels** at a pinned Sa. If Sa or a CREPE octave hop was wrong, the player could only replay the mistake. This app stores **measured pitch (Hz)** and derives swaras from Sa, so a wrong Sa is fixed by re-pinning it (`pipeline.retranscribe --sa`) without re-running Demucs or pitch tracking.
+The older Claude Code app baked **labels** at a pinned Sa. If Sa or a CREPE octave hop was wrong, the player could only replay the mistake. This app stores **measured pitch (Hz)** and derives swaras from Sa, so a wrong Sa is fixed by re-pinning it (`pipeline.retranscribe --sa`) without re-running voice separation or pitch tracking.
 
 ## Why a new app
 
@@ -89,7 +89,9 @@ CREPE is not installed in this venv. For long recordings run the chunked, resuma
     pipeline/crepe_chunked.py data/<slug>/work/vocals.wav data/<slug>/work/f0_crepe.csv
 ```
 
-Demucs falls back to CPU when the Mac GPU (MPS) rejects a long track.
+**Voice separation** uses the MelBand RoFormer "bleedless" model (`audio-separator`, overlap 2; `pipeline/isolate.py`), with htdemucs as a fallback. On listener-labelled Desh stretches htdemucs had it backwards — singing lost to the accompaniment (−74 dB in the voice stem), harmonium leaked into it (−30 dB) — while RoFormer put singing at −25 dB, harmonium at −88 dB and silence at digital silence. Re-running all recordings with it raised agreement with Jasraj's sung sargam from 38/43 to 41/43 and fixed 10 of 12 feedback stretches. About 1.5× real time on Apple GPU. A sarangi (Paluskar 10:49–10:58) is still kept as "voice".
+
+Pitch is then kept only where the voice stem is within 30 dB of its 95th-percentile level (`pipeline/vad_filter.py`).
 
 ## Re-transcribe without re-tracking
 

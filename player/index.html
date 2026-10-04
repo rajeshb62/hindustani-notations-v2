@@ -66,7 +66,7 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
 <div id="app">
   <div id="bar">
     <button id="play" title="Space">▶</button>
-    <button id="rw" title="Rewind 5s">↺ 5s</button>
+    <button id="rw" title="Rewind 5s (← key)">↺ 5s</button>
     <div id="scrub-wrap">
       <input id="scrub" type="range" min="0" max="100" step="0.01" value="0"/>
       <div id="fb-marks"></div>
@@ -93,7 +93,7 @@ select{background:#12101a;color:var(--text);border:1px solid var(--line);border-
   <div id="fb-panel"></div>
   <div id="foot">
     <span id="sa-src">Sa from the transcription</span>
-    <span><a href="#" id="fb-list" style="color:var(--accent)">Feedback (0)</a> · Space play · N recording / notes / pitch curve · F feedback · L loop</span>
+    <span><a href="#" id="fb-list" style="color:var(--accent)">Feedback (0)</a> · Space play · 1 recording · 2 notes · 3 pitch curve · ←/→ 5 s · F feedback · L loop</span>
   </div>
   <div id="fb-dialog"><div id="fb-card">
     <div id="fb-range"></div>
@@ -663,6 +663,11 @@ async function init(){
     if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
     if(e.code==='Space'){ e.preventDefault(); toggle(); }
     if(e.key==='n'||e.key==='N') setMode(nextMode());
+    if(e.key==='1') setMode('audio');
+    if(e.key==='2') setMode('notes');
+    if(e.key==='3' && perf && perf.contour) setMode('contour');
+    if(e.key==='ArrowLeft'){ e.preventDefault(); seek(Math.max(0, tnow() - 5)); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); seek(Math.min(audio.duration || 1e9, tnow() + 5)); }
     if(e.key==='f'||e.key==='F'){ e.preventDefault(); feedbackKey(); }
     if(e.key==='l'||e.key==='L') cycleLoop();
   });

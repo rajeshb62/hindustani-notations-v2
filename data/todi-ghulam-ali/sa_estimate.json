@@ -5,124 +5,124 @@
   "tanpura_candidates": [
     {
       "hz": 269.165,
-      "harmonic_score": 10.9826,
-      "band_energy": 0.827
-    },
-    {
-      "hz": 134.583,
-      "harmonic_score": 7.2317,
-      "band_energy": 0.5321
-    },
-    {
-      "hz": 266.473,
-      "harmonic_score": 6.7232,
-      "band_energy": 0.7272
-    },
-    {
-      "hz": 94.208,
-      "harmonic_score": 6.082,
-      "band_energy": 0.7047
-    },
-    {
-      "hz": 91.516,
-      "harmonic_score": 6.0423,
+      "harmonic_score": 15.2884,
       "band_energy": 1.0
     },
     {
+      "hz": 134.583,
+      "harmonic_score": 11.2273,
+      "band_energy": 0.6209
+    },
+    {
       "hz": 201.874,
-      "harmonic_score": 5.9774,
-      "band_energy": 0.613
+      "harmonic_score": 9.1038,
+      "band_energy": 0.5816
+    },
+    {
+      "hz": 266.473,
+      "harmonic_score": 8.5244,
+      "band_energy": 0.8224
+    },
+    {
+      "hz": 94.208,
+      "harmonic_score": 8.038,
+      "band_energy": 0.6021
     },
     {
       "hz": 212.64,
-      "harmonic_score": 5.1769,
-      "band_energy": 0.5378
+      "harmonic_score": 7.6171,
+      "band_energy": 0.497
     },
     {
-      "hz": 88.824,
-      "harmonic_score": 4.7812,
-      "band_energy": 0.6567
+      "hz": 91.516,
+      "harmonic_score": 7.4692,
+      "band_energy": 0.8476
+    },
+    {
+      "hz": 158.807,
+      "harmonic_score": 6.5451,
+      "band_energy": 0.4082
     }
   ],
   "vocal_tonic_candidates": [
     {
+      "hz": 136.938,
+      "count": 23472
+    },
+    {
       "hz": 133.438,
-      "count": 6672
+      "count": 6140
     },
     {
       "hz": 70.438,
-      "count": 5966
-    },
-    {
-      "hz": 130.812,
-      "count": 3885
-    },
-    {
-      "hz": 136.062,
-      "count": 3682
+      "count": 5206
     },
     {
       "hz": 73.062,
-      "count": 3647
+      "count": 3487
     },
     {
       "hz": 106.312,
-      "count": 3218
+      "count": 2894
+    },
+    {
+      "hz": 130.812,
+      "count": 2852
     }
   ],
   "raga": "todi",
   "raga_choice": {
     "sa_hz": 134.583,
-    "fit": 0.8087,
-    "madhya_share": 0.727,
+    "fit": 0.8041,
+    "madhya_share": 0.758,
     "candidates": [
       {
         "hz": 269.165,
         "peak": 269.165,
         "peak_as": "sa",
-        "fit": 0.8087
-      },
-      {
-        "hz": 134.583,
-        "peak": 134.583,
-        "peak_as": "sa",
-        "fit": 0.8087
+        "fit": 0.8041
       },
       {
         "hz": 134.583,
         "peak": 201.874,
         "peak_as": "pa",
-        "fit": 0.8087
+        "fit": 0.8041
       },
       {
-        "hz": 66.618,
-        "peak": 88.824,
-        "peak_as": "ma",
-        "fit": 0.8033
+        "hz": 134.583,
+        "peak": 134.583,
+        "peak_as": "sa",
+        "fit": 0.804
       },
       {
         "hz": 266.473,
         "peak": 266.473,
         "peak_as": "sa",
-        "fit": 0.8032
+        "fit": 0.7985
       },
       {
         "hz": 68.637,
         "peak": 91.516,
         "peak_as": "ma",
-        "fit": 0.7823
+        "fit": 0.7782
       },
       {
         "hz": 179.443,
         "peak": 269.165,
         "peak_as": "pa",
-        "fit": 0.7312
+        "fit": 0.7344
       },
       {
         "hz": 89.722,
         "peak": 134.583,
         "peak_as": "pa",
-        "fit": 0.7312
+        "fit": 0.7344
+      },
+      {
+        "hz": 177.649,
+        "peak": 266.473,
+        "peak_as": "pa",
+        "fit": 0.73
       }
     ]
   },

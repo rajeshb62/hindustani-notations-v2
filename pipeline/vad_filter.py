@@ -8,8 +8,14 @@ those cases: relative to the stem's 95th percentile, singing sits around
 -49 dB median and silence-with-residue around -65 dB. Frames above GATE_DB,
 with a short hangover so onsets and note tails are not clipped, are kept.
 
-Known gap: when Demucs puts a harmonium into the voice stem it is as loud as
-singing (Desh 0:42-0:45), so loudness cannot remove it.
+With RoFormer stems (isolate.py) voice and residue are far apart: on the
+listener-labelled stretches singing sits at ~-4 dB and no-voice stretches at
+-40 to -75 dB. -30 dB keeps 95.6-98.9% of confidently pitched frames in every
+recording while letting through 10% of labelled no-voice frames (-55 dB, tuned
+on the noisier Demucs stems, let 38% through).
+
+Known gap: a voice-like instrument the separator keeps in the voice stem
+(sarangi, confirmed by ear: Paluskar 10:49-10:58) is as loud as singing; loudness cannot help.
 """
 
 from __future__ import annotations
@@ -20,7 +26,7 @@ from pathlib import Path
 import numpy as np
 
 HOP_S = 0.01         # matches the 10 ms pitch frames
-GATE_DB = -55.0      # relative to the voice stem's 95th-percentile level
+GATE_DB = -30.0      # relative to the voice stem's 95th-percentile level
 HANGOVER_S = 0.10    # keep this much either side of active frames
 
 

@@ -4,125 +4,125 @@
   "audio_used": "/Users/rajeshbhat/grok/hindustani notations/data/todi-paluskar-side-a/work/no_vocals.wav",
   "tanpura_candidates": [
     {
+      "hz": 161.499,
+      "harmonic_score": 16.618,
+      "band_energy": 0.9774
+    },
+    {
       "hz": 242.249,
-      "harmonic_score": 11.7729,
-      "band_energy": 0.9218
+      "harmonic_score": 15.8168,
+      "band_energy": 0.6938
     },
     {
       "hz": 244.94,
-      "harmonic_score": 9.3544,
-      "band_energy": 0.7636
-    },
-    {
-      "hz": 161.499,
-      "harmonic_score": 8.679,
-      "band_energy": 0.4935
+      "harmonic_score": 11.5413,
+      "band_energy": 0.5551
     },
     {
       "hz": 96.899,
-      "harmonic_score": 8.2136,
+      "harmonic_score": 10.7454,
       "band_energy": 1.0
     },
     {
-      "hz": 121.124,
-      "harmonic_score": 5.8891,
-      "band_energy": 0.0946
-    },
-    {
-      "hz": 99.591,
-      "harmonic_score": 4.8061,
-      "band_energy": 0.6662
-    },
-    {
       "hz": 164.191,
-      "harmonic_score": 4.5203,
-      "band_energy": 0.3838
+      "harmonic_score": 8.6111,
+      "band_energy": 0.7127
+    },
+    {
+      "hz": 121.124,
+      "harmonic_score": 8.0418,
+      "band_energy": 0.1106
     },
     {
       "hz": 80.75,
-      "harmonic_score": 4.369,
-      "band_energy": 0.0549
+      "harmonic_score": 6.7113,
+      "band_energy": 0.115
+    },
+    {
+      "hz": 99.591,
+      "harmonic_score": 5.5842,
+      "band_energy": 0.6648
     }
   ],
   "vocal_tonic_candidates": [
     {
       "hz": 80.938,
-      "count": 15044
+      "count": 16768
+    },
+    {
+      "hz": 136.938,
+      "count": 5620
     },
     {
       "hz": 86.188,
-      "count": 5514
+      "count": 5462
     },
     {
       "hz": 128.188,
-      "count": 5150
+      "count": 5050
     },
     {
       "hz": 77.438,
-      "count": 4162
+      "count": 3908
     },
     {
       "hz": 121.188,
-      "count": 3388
-    },
-    {
-      "hz": 115.938,
-      "count": 2577
+      "count": 2680
     }
   ],
   "raga": "todi",
   "raga_choice": {
     "sa_hz": 161.499,
-    "fit": 0.8898,
-    "madhya_share": 0.718,
+    "fit": 0.8843,
+    "madhya_share": 0.713,
     "candidates": [
-      {
-        "hz": 161.499,
-        "peak": 242.249,
-        "peak_as": "pa",
-        "fit": 0.8898
-      },
       {
         "hz": 161.499,
         "peak": 161.499,
         "peak_as": "sa",
-        "fit": 0.8898
+        "fit": 0.8843
+      },
+      {
+        "hz": 161.499,
+        "peak": 242.249,
+        "peak_as": "pa",
+        "fit": 0.8843
       },
       {
         "hz": 80.749,
         "peak": 121.124,
         "peak_as": "pa",
-        "fit": 0.8898
+        "fit": 0.8843
       },
       {
         "hz": 80.75,
         "peak": 80.75,
         "peak_as": "sa",
-        "fit": 0.8898
+        "fit": 0.8843
       },
       {
         "hz": 163.293,
         "peak": 244.94,
         "peak_as": "pa",
-        "fit": 0.8864
+        "fit": 0.8785
       },
       {
         "hz": 164.191,
         "peak": 164.191,
         "peak_as": "sa",
-        "fit": 0.8805
+        "fit": 0.8706
       },
       {
         "hz": 107.666,
         "peak": 161.499,
         "peak_as": "pa",
-        "fit": 0.7642
+        "fit": 0.7631
       },
       {
         "hz": 53.833,
         "peak": 80.75,
         "peak_as": "pa",
-        "fit": 0.7642
+        "fit": 0.7631
       }
     ]
   },

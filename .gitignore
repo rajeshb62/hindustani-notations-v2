@@ -16,3 +16,6 @@ data/*/work/demucs/
 
 # Recordings come from the Internet Archive: python3 -m pipeline.fetch_audio
 data/**/*.mp3
+
+# Pitch tracks from before a re-separation (kept locally for comparison)
+data/*/work/*.demucs.csv

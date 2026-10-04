@@ -63,8 +63,9 @@ def run(
     skip_vad: bool = False,
     calibrate: bool = True,
     raga: str | None = None,
+    slug: str | None = None,
 ) -> Path:
-    slug = slugify(title)
+    slug = slug or slugify(title)
     dest = DATA / slug
     dest.mkdir(parents=True, exist_ok=True)
     audio = audio.resolve()
@@ -150,12 +151,14 @@ def main() -> int:
     p.add_argument("--skip-vad", action="store_true")
     p.add_argument("--no-calibrate", action="store_true",
                    help="Keep the pinned Sa and the just table (no per-performance tuning)")
+    p.add_argument("--slug", default=None,
+                   help="data/ folder name (default: from the title)")
     p.add_argument("--raga", choices=sorted(RAGAS), default=None,
                    help="Use the raga's scale to choose Sa among tanpura peaks, and report fit")
     args = p.parse_args()
     title = args.title or args.audio.stem
     out = run(args.audio, title, args.sa, args.skip_demucs, args.f0_csv, args.skip_vad,
-              calibrate=not args.no_calibrate, raga=args.raga)
+              calibrate=not args.no_calibrate, raga=args.raga, slug=args.slug)
     print(f"Wrote {out}")
     return 0
 
