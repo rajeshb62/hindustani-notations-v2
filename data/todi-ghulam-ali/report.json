@@ -1,0 +1,58 @@
+{
+ "slug": "todi-ghulam-ali",
+ "title": "Todi — Ghulam Ali",
+ "notes": 21371,
+ "removed": {
+  "range": 62,
+  "octave": 38
+ },
+ "coverage": {
+  "voice_seconds": 1544.5,
+  "covered": 0.886,
+  "notes_outside_voice_seconds": 0.8,
+  "gaps_total_seconds": 5.7,
+  "longest_gaps": [
+   {
+    "start": 448.26,
+    "end": 449.91
+   },
+   {
+    "start": 450.5,
+    "end": 451.77
+   },
+   {
+    "start": 1108.56,
+    "end": 1109.17
+   },
+   {
+    "start": 451.8,
+    "end": 452.4
+   },
+   {
+    "start": 636.41,
+    "end": 636.97
+   },
+   {
+    "start": 449.94,
+    "end": 450.47
+   },
+   {
+    "start": 453.45,
+    "end": 453.97
+   }
+  ]
+ },
+ "out_of_raga": [
+  {
+   "t": 919.67,
+   "dur": 0.3,
+   "label": "D."
+  },
+  {
+   "t": 1207.26,
+   "dur": 0.4,
+   "label": "R"
+  }
+ ],
+ "feedback": []
+}

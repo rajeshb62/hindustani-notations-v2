@@ -1,0 +1,44 @@
+{
+ "slug": "pt-jasraj-side-a",
+ "title": "Pt. Jasraj side A",
+ "notes": 32106,
+ "removed": {
+  "range": 27,
+  "octave": 39
+ },
+ "coverage": {
+  "voice_seconds": 2447.4,
+  "covered": 0.907,
+  "notes_outside_voice_seconds": 1.8,
+  "gaps_total_seconds": 0.7,
+  "longest_gaps": [
+   {
+    "start": 1613.4,
+    "end": 1614.1
+   }
+  ]
+ },
+ "out_of_raga": null,
+ "feedback": [],
+ "sargam": [
+  {
+   "start": 0.0,
+   "end": 39.0,
+   "syllables": 57,
+   "matched": 43,
+   "agree": 41,
+   "misses": [
+    {
+     "t": 9.52,
+     "sung": "ga",
+     "transcribed": "R'"
+    },
+    {
+     "t": 19.0,
+     "sung": "ma",
+     "transcribed": "P"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "slug": "pt-jasraj-side-b",
+ "title": "Pt. Jasraj side B",
+ "notes": 27646,
+ "removed": {
+  "range": 82,
+  "octave": 28
+ },
+ "coverage": {
+  "voice_seconds": 2419.8,
+  "covered": 0.92,
+  "notes_outside_voice_seconds": 2.1,
+  "gaps_total_seconds": 7.6,
+  "longest_gaps": [
+   {
+    "start": 713.97,
+    "end": 717.13
+   },
+   {
+    "start": 2681.29,
+    "end": 2683.53
+   },
+   {
+    "start": 2684.19,
+    "end": 2684.98
+   },
+   {
+    "start": 2380.86,
+    "end": 2381.63
+   },
+   {
+    "start": 2368.44,
+    "end": 2369.1
+   }
+  ]
+ },
+ "out_of_raga": null,
+ "feedback": []
+}

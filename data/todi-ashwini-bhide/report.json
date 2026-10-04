@@ -1,0 +1,103 @@
+{
+ "slug": "todi-ashwini-bhide",
+ "title": "Todi — Ashwini Bhide",
+ "notes": 12760,
+ "removed": {
+  "range": 0,
+  "octave": 25
+ },
+ "coverage": {
+  "voice_seconds": 1584.8,
+  "covered": 0.958,
+  "notes_outside_voice_seconds": 1.2,
+  "gaps_total_seconds": 0.5,
+  "longest_gaps": [
+   {
+    "start": 896.01,
+    "end": 896.53
+   }
+  ]
+ },
+ "out_of_raga": [
+  {
+   "t": 150.77,
+   "dur": 0.47,
+   "label": "R"
+  },
+  {
+   "t": 161.23,
+   "dur": 0.32,
+   "label": "R"
+  },
+  {
+   "t": 230.75,
+   "dur": 0.4,
+   "label": "R"
+  },
+  {
+   "t": 241.25,
+   "dur": 0.36,
+   "label": "R"
+  },
+  {
+   "t": 568.49,
+   "dur": 0.38,
+   "label": "R"
+  },
+  {
+   "t": 580.91,
+   "dur": 0.31,
+   "label": "R"
+  }
+ ],
+ "feedback": [
+  {
+   "start": 962.09,
+   "end": 964.17,
+   "check": "no notes two octaves up",
+   "pass": true,
+   "measured": "0 such notes",
+   "text": "there is a r** that does not belong in the voice of the artist"
+  },
+  {
+   "start": 1043.83,
+   "end": 1047.08,
+   "check": "no notes two octaves up",
+   "pass": true,
+   "measured": "0 such notes",
+   "text": "there is a sa** (and may be a few more?) that does not belong in the aritst voice"
+  },
+  {
+   "start": 1043.9,
+   "end": 1050.6,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "100% covered",
+   "text": "all parts of this the voice of the singer continues, no breaths taken no stops"
+  },
+  {
+   "start": 1093.41,
+   "end": 1096.82,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "10% covered",
+   "text": "no artist voice here only background instruments"
+  },
+  {
+   "start": 1130.14,
+   "end": 1134.77,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "98% covered",
+   "text": "singer is continuously singing here no breaks"
+  },
+  {
+   "start": 1640.15,
+   "end": 1644.2,
+   "check": "no notes two octaves up",
+   "pass": true,
+   "measured": "0 such notes",
+   "text": "the sa** that appear in this stretch (and may be a second or two before this stretch starts) are not in the singer's voice and appear out of no where (bleed? if yes maybe too low to"
+  }
+ ]
+}

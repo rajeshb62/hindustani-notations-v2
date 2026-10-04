@@ -182,6 +182,20 @@ class Output(unittest.TestCase):
         self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0})
 
 
+class Report(unittest.TestCase):
+    def test_feedback_becomes_checks(self):
+        from pipeline.report import feedback_checks
+        notes = [{"t": 10.0, "dur": 5.0, "label": "S", "swara": "S", "octave": 0},
+                 {"t": 30.0, "dur": 0.3, "label": "S''", "swara": "S", "octave": 2}]
+        fb = [{"start": 10, "end": 15, "text": "singer is continuously singing here"},
+              {"start": 20, "end": 25, "text": "no artist voice here only background instruments"},
+              {"start": 29, "end": 31, "text": "the sa** here is not in the singer's voice"},
+              {"start": 40, "end": 45, "text": "sounds odd"}]
+        got = [(c["check"], c["pass"]) for c in feedback_checks({"notes": notes}, fb)]
+        self.assertEqual(got, [("singing → covered", True), ("no voice → few notes", True),
+                               ("no notes two octaves up", False), ("unclassified", None)])
+
+
 class Contour(unittest.TestCase):
     def test_gap_splits_runs(self):
         frames = run([0, 10, 20]) + run([702, 702], t0=1.0)

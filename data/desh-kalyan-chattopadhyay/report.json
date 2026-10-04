@@ -1,0 +1,85 @@
+{
+ "slug": "desh-kalyan-chattopadhyay",
+ "title": "Desh — Kalyan Chattopadhyay",
+ "notes": 20879,
+ "removed": {
+  "range": 6,
+  "octave": 49
+ },
+ "coverage": {
+  "voice_seconds": 1985.4,
+  "covered": 0.942,
+  "notes_outside_voice_seconds": 1.7,
+  "gaps_total_seconds": 0.6,
+  "longest_gaps": [
+   {
+    "start": 2026.1,
+    "end": 2026.7
+   }
+  ]
+ },
+ "out_of_raga": [
+  {
+   "t": 244.73,
+   "dur": 0.31,
+   "label": "r"
+  },
+  {
+   "t": 1345.32,
+   "dur": 0.49,
+   "label": "d"
+  },
+  {
+   "t": 2239.51,
+   "dur": 0.31,
+   "label": "g"
+  },
+  {
+   "t": 2388.78,
+   "dur": 0.3,
+   "label": "M+"
+  }
+ ],
+ "feedback": [
+  {
+   "start": 2.48,
+   "end": 14.52,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "8% covered",
+   "text": "this is all background music no vocals"
+  },
+  {
+   "start": 19.89,
+   "end": 41.05,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "93% covered",
+   "text": "this is about where the singing starts (maybe 1 second before this start time) and the entire duration of this there is singing ongoing and continues beyond the end time of this comment/ feedback"
+  },
+  {
+   "start": 42.54,
+   "end": 45.59,
+   "check": "no voice → few notes",
+   "pass": false,
+   "measured": "43% covered",
+   "text": "this section is no singer just background instrument (harmonium?) and tanpura, maybe towards end last second or 2 voice starts again"
+  },
+  {
+   "start": 93.29,
+   "end": 99.12,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "99% covered",
+   "text": "this is continuous voice on, the singer has not taken a breath between this entire period yet there are gaps in notes. check"
+  },
+  {
+   "start": 120.89,
+   "end": 124.86,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "6% covered",
+   "text": "instruments / background only in thsi stretch no singing (the singer starts singing in the last second, there was a lag in my ending this period)"
+  }
+ ]
+}

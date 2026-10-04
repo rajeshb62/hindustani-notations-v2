@@ -116,6 +116,14 @@ Intonation depends on raga and singer, so each performance gets its own swara po
 
 Checked against sargam sung by the singer (Jasraj side A 0:00–0:39): the pinned Sa was ~8¢ low, komal Ga/Dha sit ~14/12¢ above the table, and the transcription agrees with 39 of 43 sung syllables matched to held pitches. `--no-calibrate` reverts to the pinned Sa and the just table.
 
+## Where is it weakest? (`pipeline/report.py`)
+
+```bash
+python3 -m pipeline.report            # all performances; also writes data/<slug>/report.json
+```
+
+Per performance: how much of the time the voice stem is sounding is covered by notes, and the longest uncovered stretches; held notes outside the raga (when known); every listening-feedback entry as a pass/fail check ("no voice" → few notes, "continuous singing" → covered, "Sa'' not in the voice" → no notes two octaves up); and agreement with sung sargam where `sargam_labels.json` exists (Jasraj side A 0:00–0:39, written down by ear by a listener). Coverage needs the local voice stem.
+
 ## Tests
 
 ```bash

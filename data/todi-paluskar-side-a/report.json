@@ -1,0 +1,38 @@
+{
+ "slug": "todi-paluskar-side-a",
+ "title": "Todi — Paluskar side A",
+ "notes": 15516,
+ "removed": {
+  "range": 11,
+  "octave": 39
+ },
+ "coverage": {
+  "voice_seconds": 1633.3,
+  "covered": 0.945,
+  "notes_outside_voice_seconds": 0.7,
+  "gaps_total_seconds": 0,
+  "longest_gaps": []
+ },
+ "out_of_raga": [
+  {
+   "t": 177.88,
+   "dur": 0.3,
+   "label": "R"
+  },
+  {
+   "t": 1009.34,
+   "dur": 0.37,
+   "label": "M'"
+  }
+ ],
+ "feedback": [
+  {
+   "start": 649.59,
+   "end": 658.18,
+   "check": "instrument → few notes",
+   "pass": false,
+   "measured": "88% covered",
+   "text": "this stretch the notes imo are transcribing the instrument in the bg.."
+  }
+ ]
+}
