@@ -116,6 +116,10 @@ Intonation depends on raga and singer, so each performance gets its own swara po
 
 Checked against sargam sung by the singer (Jasraj side A 0:00–0:39): the pinned Sa was ~8¢ low, komal Ga/Dha sit ~14/12¢ above the table, and the transcription agrees with 39 of 43 sung syllables matched to held pitches. `--no-calibrate` reverts to the pinned Sa and the just table.
 
+## Listener corrections (`data/<slug>/corrections.json`)
+
+Curated by hand from each recording's listening feedback, only where the feedback clearly says what is there: `no_voice` ranges (sarangi/harmonium/tanpura only — pitch dropped there before notes are formed, so neither notes nor the pitch curve play) and `drop_notes` (a specific note heard as not the singer's, audited in `removed_notes` as `listener`). Applied by `pipeline.run` and `pipeline.retranscribe`. Automatic detection of instrument-only passages was tried and parked: timbre embeddings (PANNs) and accompaniment-pitch overlap both flagged soft singing under loud accompaniment as "no voice" when checked by ear.
+
 ## Where is it weakest? (`pipeline/report.py`)
 
 ```bash

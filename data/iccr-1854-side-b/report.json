@@ -1,17 +1,35 @@
 {
  "slug": "iccr-1854-side-b",
  "title": "Chhayanat — Raja Kale",
- "notes": 16991,
+ "notes": 16961,
  "removed": {
   "range": 8,
-  "octave": 44
+  "octave": 42,
+  "listener": 0
  },
  "coverage": {
   "voice_seconds": 1260.0,
-  "covered": 0.922,
+  "covered": 0.919,
   "notes_outside_voice_seconds": 1.9,
-  "gaps_total_seconds": 0,
-  "longest_gaps": []
+  "gaps_total_seconds": 3.1,
+  "longest_gaps": [
+   {
+    "start": 385.94,
+    "end": 387.2
+   },
+   {
+    "start": 384.31,
+    "end": 384.93
+   },
+   {
+    "start": 383.64,
+    "end": 384.25
+   },
+   {
+    "start": 382.48,
+    "end": 383.09
+   }
+  ]
  },
  "out_of_raga": [
   {
@@ -20,5 +38,46 @@
    "label": "g"
   }
  ],
- "feedback": []
+ "feedback": [
+  {
+   "start": 35.47,
+   "end": 43.54,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "89% covered",
+   "text": "singing is lower in volume (singer is conserving energy? as he prepares to launch into louder singing?) compared to harmonium volume in bg"
+  },
+  {
+   "start": 145.21,
+   "end": 150.3,
+   "check": "singing → covered",
+   "pass": false,
+   "measured": "62% covered",
+   "text": "this section is alaap fast notes"
+  },
+  {
+   "start": 380.4,
+   "end": 388.03,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "background music only here- tanpura tabla notes"
+  },
+  {
+   "start": 841.53,
+   "end": 850.48,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "89% covered",
+   "text": "the singing reduces in audio volume relative to the bg harmonium, and it is possible that as a result the harmonium notes are being transcribed more than the singing"
+  },
+  {
+   "start": 1262.48,
+   "end": 1272.49,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "84% covered",
+   "text": "there is both singing and harmonium in the bg, not clear if note transcribing is transcribing both siging and harmonium or only singing"
+  }
+ ]
 }

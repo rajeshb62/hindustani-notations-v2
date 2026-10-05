@@ -16,6 +16,7 @@ import argparse
 import json
 
 from .calibrate import calibrated_notes
+from . import corrections
 from .raga import RAGAS
 from .run import DATA, write_catalog
 from .transcribe import (
@@ -38,11 +39,13 @@ def retranscribe(
     if sa_pin:
         sa_meta = {**sa_meta, "sa_hz": float(sa_pin), "sa_source": "user-pin"}
     base_sa = float(sa_meta.get("sa_hz") or perf["sa_hz"])
-    frames = prepare_frames(load_frames(dest / "work" / "f0.vad.csv"), base_sa)
+    corr = corrections.load(dest)
+    frames = corrections.drop_no_voice(prepare_frames(load_frames(dest / "work" / "f0.vad.csv"), base_sa), corr)
     if calibrate:
         notes, sa_hz, calibration = calibrated_notes(frames, base_sa)
     else:
         notes, sa_hz, calibration = frames_to_notes(frames, base_sa, prepared=True), base_sa, None
+    notes = corrections.flag_listener_notes(notes, corr)
     write_performance(
         notes,
         dest / "performance.json",

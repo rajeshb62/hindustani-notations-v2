@@ -1,9 +1,100 @@
 [
  {
+  "start": 13.82,
+  "end": 18.53,
+  "text": "here the note transcription is transcribing the background instrument (sarangi?) instead of the voice maybe the voice is fading in teh background but the transcription is busy and is tracking the instrument (last second or two voice starts over again)",
+  "mode": "audio",
+  "created": "2026-10-05T09:35:16.055Z"
+ },
+ {
+  "start": 85.89,
+  "end": 87.96,
+  "text": "all instrument here only instrument no voice",
+  "mode": "audio",
+  "created": "2026-10-05T09:36:44.913Z"
+ },
+ {
+  "start": 88.89,
+  "end": 89.68,
+  "text": "this is voice and only voice instrument has not yet entered in this window",
+  "mode": "audio",
+  "created": "2026-10-05T09:37:16.245Z"
+ },
+ {
+  "start": 365.65,
+  "end": 367.2,
+  "text": "this is voice mostly maybe instrument weak in the background",
+  "mode": "audio",
+  "created": "2026-10-05T09:42:37.719Z"
+ },
+ {
+  "start": 385.61,
+  "end": 388.7,
+  "text": "this is. almost entirely instrument only (maybe first half second is voice) then only instrument",
+  "mode": "audio",
+  "created": "2026-10-05T09:43:30.564Z"
+ },
+ {
+  "start": 397.23,
+  "end": 399.18,
+  "text": "voice + instrument (towards the end instrument becomes strong) but predominently voice dominant",
+  "mode": "audio",
+  "created": "2026-10-05T09:44:09.416Z"
+ },
+ {
+  "start": 556.39,
+  "end": 564.64,
+  "text": "this stretch is just the bg music likily the sarangi like instrument (the singer starts in the last second or so of the time range here)",
+  "mode": "audio",
+  "created": "2026-10-04T20:43:10.098Z"
+ },
+ {
+  "start": 565.99,
+  "end": 574.45,
+  "text": "voice dominant here, there is instrument here in the bg but maybe same notes as voice? or it is in discernability lower than voice here",
+  "mode": "audio",
+  "created": "2026-10-05T09:49:43.152Z"
+ },
+ {
   "start": 649.59,
   "end": 658.18,
   "text": "this stretch the notes imo are transcribing the instrument in the bg..",
   "mode": "audio",
   "created": "2026-10-02T18:34:00.754Z"
+ },
+ {
+  "start": 674.3,
+  "end": 678.54,
+  "text": "bg instruments only here tabla and (sarangi?)",
+  "mode": "audio",
+  "created": "2026-10-05T18:07:57.390Z"
+ },
+ {
+  "start": 1008.72,
+  "end": 1013.47,
+  "text": "only instrument/ background instruments in this stretch no voice. likely notes tracking sarangi like instrument",
+  "mode": "audio",
+  "created": "2026-10-04T20:51:23.823Z"
+ },
+ {
+  "start": 1009.12,
+  "end": 1013.9,
+  "text": "this section is only bg instrument no voice",
+  "mode": "audio",
+  "created": "2026-10-05T09:57:34.362Z"
+ },
+ {
+  "start": 1185.66,
+  "end": 1191.18,
+  "text": "singing by singer. yes i can hear sarangi too in this section",
+  "mode": "audio",
+  "created": "2026-10-05T17:22:59.334Z"
+ },
+ {
+  "start": 1464.7,
+  "end": 1471.33,
+  "text": "there is no voice in this stretch only instruments",
+  "mode": "audio",
+  "created": "2026-10-04T20:59:32.149Z"
  }
 ]

@@ -1,0 +1,11 @@
+{
+ "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+ "no_voice": [
+  {
+   "start": 380.4,
+   "end": 388.03,
+   "feedback": "background music only here- tanpura tabla notes"
+  }
+ ],
+ "drop_notes": []
+}

@@ -179,7 +179,7 @@ class Output(unittest.TestCase):
         self.assertNotIn("S''", [n["label"] for n in perf["notes"]])
         self.assertTrue(all("flag" not in n for n in perf["notes"]))
         self.assertEqual([r[2:] for r in perf["removed_notes"]], [["S''", "range"]])
-        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0})
+        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0})
 
 
 class Report(unittest.TestCase):
@@ -191,9 +191,24 @@ class Report(unittest.TestCase):
               {"start": 20, "end": 25, "text": "no artist voice here only background instruments"},
               {"start": 29, "end": 31, "text": "the sa** here is not in the singer's voice"},
               {"start": 40, "end": 45, "text": "sounds odd"}]
-        got = [(c["check"], c["pass"]) for c in feedback_checks({"notes": notes}, fb)]
+        corr = {"no_voice": [{"start": 20, "end": 25}], "drop_notes": []}
+        got = [(c["check"], c["pass"]) for c in feedback_checks({"notes": notes}, fb, corr)]
         self.assertEqual(got, [("singing → covered", True), ("no voice → few notes", True),
                                ("no notes two octaves up", False), ("unclassified", None)])
+
+
+class Corrections(unittest.TestCase):
+    def test_no_voice_and_drop_notes(self):
+        from pipeline import corrections
+        corr = {"no_voice": [{"start": 0.3, "end": 0.6}],
+                "drop_notes": [{"start": 0.0, "end": 1.0, "labels": ["S'"]}]}
+        frames = run([0] * 100)
+        kept = corrections.drop_no_voice(frames, corr)
+        self.assertTrue(all(not (0.3 <= f.t < 0.6) for f in kept))
+        self.assertEqual(len(kept), 70)
+        notes = frames_to_notes(run([0] * 30 + [1200] * 30 + [0] * 30), SA, prepared=True)
+        notes = corrections.flag_listener_notes(notes, corr)
+        self.assertEqual([(n.label, n.flag) for n in notes], [("S", None), ("S'", "listener"), ("S", None)])
 
 
 class Contour(unittest.TestCase):

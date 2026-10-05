@@ -1,0 +1,46 @@
+{
+ "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+ "no_voice": [
+  {
+   "start": 13.82,
+   "end": 16.5,
+   "feedback": "transcribing the background instrument (sarangi?) instead of the voice (last second or two voice starts over again)"
+  },
+  {
+   "start": 85.89,
+   "end": 87.96,
+   "feedback": "all instrument here only instrument no voice"
+  },
+  {
+   "start": 386.1,
+   "end": 388.7,
+   "feedback": "almost entirely instrument only (maybe first half second is voice)"
+  },
+  {
+   "start": 556.39,
+   "end": 563.6,
+   "feedback": "just the bg music likely the sarangi (the singer starts in the last second or so)"
+  },
+  {
+   "start": 649.59,
+   "end": 658.18,
+   "feedback": "the notes are transcribing the instrument in the bg (sarangi, confirmed)"
+  },
+  {
+   "start": 674.3,
+   "end": 678.54,
+   "feedback": "bg instruments only here tabla and (sarangi?)"
+  },
+  {
+   "start": 1008.72,
+   "end": 1013.9,
+   "feedback": "only instrument/ background instruments, no voice"
+  },
+  {
+   "start": 1464.7,
+   "end": 1471.33,
+   "feedback": "no voice in this stretch only instruments"
+  }
+ ],
+ "drop_notes": []
+}

@@ -356,7 +356,7 @@ def error_spans(notes: list[Note], sa_hz: float) -> list[tuple[float, float, flo
     for n in notes:
         if n.flag == "range":
             spans.append((n.t, n.t + n.dur - 0.01, None))
-        elif n.flag == "octave":
+        elif n.flag in ("octave", "listener"):
             spans.append((n.t - 0.04, n.t + n.dur + 0.04, 1200.0 * math.log2(n.hz / sa_hz)))
     return sorted(spans)
 
@@ -433,7 +433,7 @@ def write_performance(
             ),
             "low_conf_notes": sum(1 for n in kept if n.conf < 0.35),
             "removed": {
-                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave")
+                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave", "listener")
             },
         },
     }

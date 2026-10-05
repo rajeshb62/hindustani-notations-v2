@@ -1,17 +1,30 @@
 {
  "slug": "desh-kalyan-chattopadhyay",
  "title": "Desh — Kalyan Chattopadhyay",
- "notes": 20879,
+ "notes": 20851,
  "removed": {
   "range": 6,
-  "octave": 49
+  "octave": 49,
+  "listener": 0
  },
  "coverage": {
   "voice_seconds": 1985.4,
-  "covered": 0.942,
+  "covered": 0.941,
   "notes_outside_voice_seconds": 1.7,
-  "gaps_total_seconds": 0.6,
+  "gaps_total_seconds": 3.5,
   "longest_gaps": [
+   {
+    "start": 2046.6,
+    "end": 2047.77
+   },
+   {
+    "start": 9.74,
+    "end": 10.69
+   },
+   {
+    "start": 4.58,
+    "end": 5.35
+   },
    {
     "start": 2026.1,
     "end": 2026.7
@@ -46,7 +59,7 @@
    "end": 14.52,
    "check": "no voice → few notes",
    "pass": true,
-   "measured": "8% covered",
+   "measured": "0% covered",
    "text": "this is all background music no vocals"
   },
   {
@@ -60,9 +73,9 @@
   {
    "start": 42.54,
    "end": 45.59,
-   "check": "no voice → few notes",
-   "pass": false,
-   "measured": "43% covered",
+   "check": "unclassified",
+   "pass": null,
+   "measured": "29% covered",
    "text": "this section is no singer just background instrument (harmonium?) and tanpura, maybe towards end last second or 2 voice starts again"
   },
   {
@@ -78,8 +91,32 @@
    "end": 124.86,
    "check": "no voice → few notes",
    "pass": true,
-   "measured": "6% covered",
+   "measured": "0% covered",
    "text": "instruments / background only in thsi stretch no singing (the singer starts singing in the last second, there was a lag in my ending this period)"
+  },
+  {
+   "start": 1346.77,
+   "end": 1353.69,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "88% covered",
+   "text": "all sargam here by singer (may be bg too?)"
+  },
+  {
+   "start": 1627.36,
+   "end": 1636.86,
+   "check": "singing → covered",
+   "pass": false,
+   "measured": "77% covered",
+   "text": "fast sargam by singer here. maybe like 1 second breath break between at like 27:10 or something"
+  },
+  {
+   "start": 2045.58,
+   "end": 2048.56,
+   "check": "unclassified",
+   "pass": null,
+   "measured": "46% covered",
+   "text": "can hear voice in the first second or so, swaras, followed by instruments playing similar swaras, then voice starts at the fag end of the section, instrument bg right through these seconds"
   }
  ]
 }

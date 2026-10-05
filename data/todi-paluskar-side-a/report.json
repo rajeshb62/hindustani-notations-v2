@@ -1,38 +1,175 @@
 {
  "slug": "todi-paluskar-side-a",
  "title": "Todi — Paluskar side A",
- "notes": 15516,
+ "notes": 15147,
  "removed": {
-  "range": 11,
-  "octave": 39
+  "range": 7,
+  "octave": 38,
+  "listener": 0
  },
  "coverage": {
   "voice_seconds": 1633.3,
-  "covered": 0.945,
+  "covered": 0.924,
   "notes_outside_voice_seconds": 0.7,
-  "gaps_total_seconds": 0,
-  "longest_gaps": []
+  "gaps_total_seconds": 37.2,
+  "longest_gaps": [
+   {
+    "start": 649.6,
+    "end": 658.18
+   },
+   {
+    "start": 556.4,
+    "end": 563.61
+   },
+   {
+    "start": 1008.73,
+    "end": 1013.9
+   },
+   {
+    "start": 674.31,
+    "end": 678.55
+   },
+   {
+    "start": 13.82,
+    "end": 16.5
+   },
+   {
+    "start": 386.11,
+    "end": 388.7
+   },
+   {
+    "start": 1466.93,
+    "end": 1469.43
+   },
+   {
+    "start": 1464.71,
+    "end": 1466.92
+   },
+   {
+    "start": 85.9,
+    "end": 87.96
+   }
+  ]
  },
  "out_of_raga": [
   {
    "t": 177.88,
    "dur": 0.3,
    "label": "R"
-  },
-  {
-   "t": 1009.34,
-   "dur": 0.37,
-   "label": "M'"
   }
  ],
  "feedback": [
   {
+   "start": 13.82,
+   "end": 18.53,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "here the note transcription is transcribing the background instrument (sarangi?) instead of the voice maybe the voice is fading in teh background but the transcription is busy and is tracking the instrument (last second or two voice starts over again)"
+  },
+  {
+   "start": 85.89,
+   "end": 87.96,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "all instrument here only instrument no voice"
+  },
+  {
+   "start": 88.89,
+   "end": 89.68,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "95% covered",
+   "text": "this is voice and only voice instrument has not yet entered in this window"
+  },
+  {
+   "start": 365.65,
+   "end": 367.2,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "97% covered",
+   "text": "this is voice mostly maybe instrument weak in the background"
+  },
+  {
+   "start": 385.61,
+   "end": 388.7,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this is. almost entirely instrument only (maybe first half second is voice) then only instrument"
+  },
+  {
+   "start": 397.23,
+   "end": 399.18,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "99% covered",
+   "text": "voice + instrument (towards the end instrument becomes strong) but predominently voice dominant"
+  },
+  {
+   "start": 556.39,
+   "end": 564.64,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this stretch is just the bg music likily the sarangi like instrument (the singer starts in the last second or so of the time range here)"
+  },
+  {
+   "start": 565.99,
+   "end": 574.45,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "100% covered",
+   "text": "voice dominant here, there is instrument here in the bg but maybe same notes as voice? or it is in discernability lower than voice here"
+  },
+  {
    "start": 649.59,
    "end": 658.18,
-   "check": "instrument → few notes",
-   "pass": false,
-   "measured": "88% covered",
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
    "text": "this stretch the notes imo are transcribing the instrument in the bg.."
+  },
+  {
+   "start": 674.3,
+   "end": 678.54,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "bg instruments only here tabla and (sarangi?)"
+  },
+  {
+   "start": 1008.72,
+   "end": 1013.47,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "only instrument/ background instruments in this stretch no voice. likely notes tracking sarangi like instrument"
+  },
+  {
+   "start": 1009.12,
+   "end": 1013.9,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this section is only bg instrument no voice"
+  },
+  {
+   "start": 1185.66,
+   "end": 1191.18,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "81% covered",
+   "text": "singing by singer. yes i can hear sarangi too in this section"
+  },
+  {
+   "start": 1464.7,
+   "end": 1471.33,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "there is no voice in this stretch only instruments"
   }
  ]
 }

@@ -86,22 +86,39 @@ def _covered(notes: list[dict], a: float, b: float) -> float:
     return sum(max(0.0, min(n["t"] + n["dur"], b) - max(n["t"], a)) for n in notes)
 
 
-def feedback_checks(perf: dict, feedback: list[dict]) -> list[dict]:
-    """Turn free-text listener feedback into pass/fail checks where it says what to expect."""
+def feedback_checks(perf: dict, feedback: list[dict], corr: dict | None = None) -> list[dict]:
+    """Turn listener feedback into pass/fail checks where it says what to expect.
+
+    Stretches the curated corrections.json marks as no-voice must have almost
+    no notes; stretches where the listener says the singer is singing (even
+    softly, or over sarangi/harmonium) must be covered; "Sa'' not in the voice"
+    stretches must have no notes two octaves up. Anything else is unclassified.
+    """
+    corr = corr or {}
+    no_voice = [(c["start"], c["end"]) for c in corr.get("no_voice", [])]
+    drops = corr.get("drop_notes", [])
     out = []
     for f in feedback:
         a, b, text = f["start"], f["end"], f["text"].lower()
-        cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
-        if "**" in text or re.search(r"not (in|belong)[^.]*voice", text):
+        nv = [(max(a, x), min(b, y)) for x, y in no_voice if x < b and y > a]
+        nv_len = sum(y - x for x, y in nv)
+        dropped = [d for d in drops if d["start"] < b and d["end"] > a]
+        if "**" in text:
             high = [n["label"] for n in perf["notes"] if a - 2 <= n["t"] < b and n["octave"] >= 2]
             kind, ok, got = "no notes two octaves up", not high, f"{len(high)} such notes"
-        elif re.search(r"no vocal|no singer|no singing|no artist voice|background only|instruments? only", text):
+        elif dropped:
+            bad = [n["label"] for d in dropped for n in perf["notes"]
+                   if d["start"] <= n["t"] < d["end"] and n["label"] in d["labels"]]
+            kind, ok, got = "named note removed", not bad, f"{len(bad)} left"
+        elif nv_len >= 0.5 * (b - a):
+            cov = sum(_covered(perf["notes"], x, y) for x, y in nv) / max(1e-9, nv_len)
             kind, ok, got = "no voice → few notes", cov <= 0.15, f"{100 * cov:.0f}% covered"
-        elif re.search(r"continuous|no breath|singing (is )?ongoing|singing here", text):
+        elif re.search(r"\bsing|singer|voice dominant|this is voice|alaap|sargam|voice of the singer|voice on", text) \
+                and not re.search(r"no singing|no voice|no vocal|no singer|instruments? only|only (bg |background )?instrument", text):
+            cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
             kind, ok, got = "singing → covered", cov >= 0.8, f"{100 * cov:.0f}% covered"
-        elif re.search(r"instrument|sarangi|harmonium|bleed", text):
-            kind, ok, got = "instrument → few notes", cov <= 0.15, f"{100 * cov:.0f}% covered"
         else:
+            cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
             kind, ok, got = "unclassified", None, f"{100 * cov:.0f}% covered"
         out.append({"start": a, "end": b, "check": kind, "pass": ok, "measured": got, "text": f["text"]})
     return out
@@ -195,7 +212,8 @@ def report(slug: str) -> dict:
            "coverage": coverage(perf, d / "work" / "vocals.wav"),
            "out_of_raga": out_of_raga(perf)}
     fb = d / "feedback.json"
-    rep["feedback"] = feedback_checks(perf, json.loads(fb.read_text())) if fb.exists() else []
+    from .corrections import load as load_corrections
+    rep["feedback"] = feedback_checks(perf, json.loads(fb.read_text()), load_corrections(d)) if fb.exists() else []
     lab = d / "sargam_labels.json"
     if lab.exists():
         rep["sargam"] = sargam_check(perf, d / "work" / "f0.vad.csv", json.loads(lab.read_text()))

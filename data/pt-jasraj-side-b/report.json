@@ -4,7 +4,8 @@
  "notes": 27646,
  "removed": {
   "range": 82,
-  "octave": 28
+  "octave": 28,
+  "listener": 0
  },
  "coverage": {
   "voice_seconds": 2419.8,
@@ -35,5 +36,46 @@
   ]
  },
  "out_of_raga": null,
- "feedback": []
+ "feedback": [
+  {
+   "start": 408.6,
+   "end": 416.54,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "90% covered",
+   "text": "low volume singing. there is bg instruments playing"
+  },
+  {
+   "start": 586.37,
+   "end": 593.67,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "94% covered",
+   "text": "singing volume reduces here and bg instrument volume exists and relatively higher than in section before this range marked with this comment"
+  },
+  {
+   "start": 731.63,
+   "end": 739.69,
+   "check": "singing → covered",
+   "pass": false,
+   "measured": "67% covered",
+   "text": "12:12 onwards to end of htis stretch is singing alaap"
+  },
+  {
+   "start": 2109.82,
+   "end": 2118.22,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "97% covered",
+   "text": "low volume singing in this section. maybe some bg instrument playing here"
+  },
+  {
+   "start": 2493.18,
+   "end": 2502.58,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "82% covered",
+   "text": "all singing continues in this section"
+  }
+ ]
 }

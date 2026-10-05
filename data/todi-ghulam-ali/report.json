@@ -1,17 +1,26 @@
 {
  "slug": "todi-ghulam-ali",
  "title": "Todi — Ghulam Ali",
- "notes": 21371,
+ "notes": 21113,
  "removed": {
-  "range": 62,
-  "octave": 38
+  "range": 29,
+  "octave": 40,
+  "listener": 0
  },
  "coverage": {
   "voice_seconds": 1544.5,
-  "covered": 0.886,
+  "covered": 0.875,
   "notes_outside_voice_seconds": 0.8,
-  "gaps_total_seconds": 5.7,
+  "gaps_total_seconds": 26.1,
   "longest_gaps": [
+   {
+    "start": 1101.87,
+    "end": 1112.39
+   },
+   {
+    "start": 1172.02,
+    "end": 1179.07
+   },
    {
     "start": 448.26,
     "end": 449.91
@@ -21,12 +30,24 @@
     "end": 451.77
    },
    {
-    "start": 1108.56,
-    "end": 1109.17
+    "start": 1112.44,
+    "end": 1113.65
+   },
+   {
+    "start": 1169.59,
+    "end": 1170.46
+   },
+   {
+    "start": 1114.19,
+    "end": 1114.96
    },
    {
     "start": 451.8,
     "end": 452.4
+   },
+   {
+    "start": 1168.74,
+    "end": 1169.32
    },
    {
     "start": 636.41,
@@ -54,5 +75,86 @@
    "label": "R"
   }
  ],
- "feedback": []
+ "feedback": [
+  {
+   "start": 312.47,
+   "end": 324.9,
+   "check": "singing → covered",
+   "pass": false,
+   "measured": "69% covered",
+   "text": "all sargam here by singer, yes there is sarangi like instrument in bg"
+  },
+  {
+   "start": 1100.53,
+   "end": 1117.76,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this section (except last about a  second) has only background instrument no voice"
+  },
+  {
+   "start": 1102.35,
+   "end": 1109.58,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "the entire section here has only background instrument (sarangi?) no voice"
+  },
+  {
+   "start": 1103.42,
+   "end": 1113.8,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this streth has 5 notes showing in the hearing: notes*glides mode when the singing feels like there was fast note transitions"
+  },
+  {
+   "start": 1106.75,
+   "end": 1117.81,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this stretch (except for last second when voice starts) has only background instrument (sarangi? ) no voice"
+  },
+  {
+   "start": 1168.23,
+   "end": 1179.49,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "all music here no singing , bg instrument- sarangi?"
+  },
+  {
+   "start": 1246.69,
+   "end": 1257.66,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "89% covered",
+   "text": "volume of singer is low, bg instrument is prominent and tabla"
+  },
+  {
+   "start": 1409.54,
+   "end": 1417.81,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "81% covered",
+   "text": "singer volume is low. bg instrument is loud (sarangi?) with tabla"
+  },
+  {
+   "start": 1613.34,
+   "end": 1621.56,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "87% covered",
+   "text": "singer volume low, sarangi? bg instrument volume is loud"
+  },
+  {
+   "start": 1728.33,
+   "end": 1736.35,
+   "check": "singing → covered",
+   "pass": false,
+   "measured": "69% covered",
+   "text": "singer singing sargam, there is sarangi in the bg too"
+  }
+ ]
 }

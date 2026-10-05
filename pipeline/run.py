@@ -10,6 +10,7 @@ import shutil
 from pathlib import Path
 
 from .calibrate import calibrated_notes
+from . import corrections
 from .detect_sa import estimate_sa, write_estimate
 from .raga import RAGAS
 from .extract_f0 import extract_f0
@@ -119,11 +120,13 @@ def run(
         vad_meta = {"skipped": True, "out": str(vad_csv)}
     else:
         vad_meta = filter_f0(primary_f0, vocals, vad_csv, sa_hz=sa_hz)
-    frames = prepare_frames(load_frames(vad_csv), sa_hz)
+    corr = corrections.load(dest)
+    frames = corrections.drop_no_voice(prepare_frames(load_frames(vad_csv), sa_hz), corr)
     if calibrate:
         notes, sa_hz, calibration = calibrated_notes(frames, sa_hz)
     else:
         notes, calibration = frames_to_notes(frames, sa_hz, prepared=True), None
+    notes = corrections.flag_listener_notes(notes, corr)
 
     write_performance(
         notes,

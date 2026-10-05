@@ -1,0 +1,30 @@
+{
+ "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+ "no_voice": [
+  {
+   "start": 934.02,
+   "end": 938.0,
+   "feedback": "instruments only, at about 15:38 singing starts"
+  },
+  {
+   "start": 1585.44,
+   "end": 1590.54,
+   "feedback": "after like 1 second of singing, the rest of duration is bg instrument"
+  },
+  {
+   "start": 1964.97,
+   "end": 1974.43,
+   "feedback": "all instrument in this stretch (harmonium?)"
+  }
+ ],
+ "drop_notes": [
+  {
+   "start": 1055.63,
+   "end": 1056.79,
+   "labels": [
+    "M+'"
+   ],
+   "feedback": "this M+* i think is not from voice probably bg instruments"
+  }
+ ]
+}

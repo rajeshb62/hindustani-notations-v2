@@ -1,5 +1,40 @@
 [
  {
+  "start": 0.89,
+  "end": 11.32,
+  "text": "tanpura and bg mainly tanpura singing starts just as this section ends",
+  "mode": "audio",
+  "created": "2026-10-05T17:16:32.650Z"
+ },
+ {
+  "start": 61.43,
+  "end": 68.48,
+  "text": "singer is singing, but since the swara is low, maybe can hear less relative to bg instruments, slow and low start to todi, can hear singer distinctly but possibly can hear the instruments equally as well",
+  "mode": "audio",
+  "created": "2026-10-05T18:05:16.418Z"
+ },
+ {
+  "start": 166.76,
+  "end": 169.47,
+  "text": "the sa* is the middle of pa is it voice imo not singer does not move from pa to sa* back to pa imo in their voice",
+  "mode": "notes",
+  "created": "2026-10-04T17:59:03.612Z"
+ },
+ {
+  "start": 166.99,
+  "end": 170.1,
+  "text": "the singer takes a brief apuse before continuing. that pause coincides with the sa* appearing suddenly in the track- so the sa* is being picked from somewhere else not the singer's voice (maybe the tabla knock at around the same time as sa*)?",
+  "mode": "notes",
+  "created": "2026-10-04T18:00:43.362Z"
+ },
+ {
+  "start": 217.52,
+  "end": 222.47,
+  "text": "singer sings here, both singer singing and instruments can be heard",
+  "mode": "audio",
+  "created": "2026-10-05T18:06:02.288Z"
+ },
+ {
   "start": 962.09,
   "end": 964.17,
   "text": "there is a r** that does not belong in the voice of the artist",
@@ -40,5 +75,12 @@
   "text": "the sa** that appear in this stretch (and may be a second or two before this stretch starts) are not in the singer's voice and appear out of no where (bleed? if yes maybe too low to",
   "mode": "notes",
   "created": "2026-10-02T18:14:17.451Z"
+ },
+ {
+  "start": 1818.08,
+  "end": 1825.75,
+  "text": "singing ends as this section starts and no singing in the entire stretch only bg instruments",
+  "mode": "audio",
+  "created": "2026-10-05T17:17:29.413Z"
  }
 ]

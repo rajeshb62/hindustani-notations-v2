@@ -1,17 +1,30 @@
 {
  "slug": "todi-ashwini-bhide",
  "title": "Todi — Ashwini Bhide",
- "notes": 12760,
+ "notes": 12736,
  "removed": {
   "range": 0,
-  "octave": 25
+  "octave": 25,
+  "listener": 1
  },
  "coverage": {
   "voice_seconds": 1584.8,
-  "covered": 0.958,
+  "covered": 0.947,
   "notes_outside_voice_seconds": 1.2,
-  "gaps_total_seconds": 0.5,
+  "gaps_total_seconds": 16.9,
   "longest_gaps": [
+   {
+    "start": 0.9,
+    "end": 11.0
+   },
+   {
+    "start": 1821.29,
+    "end": 1825.01
+   },
+   {
+    "start": 1818.09,
+    "end": 1820.64
+   },
    {
     "start": 896.01,
     "end": 896.53
@@ -52,6 +65,46 @@
  ],
  "feedback": [
   {
+   "start": 0.89,
+   "end": 11.32,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "tanpura and bg mainly tanpura singing starts just as this section ends"
+  },
+  {
+   "start": 61.43,
+   "end": 68.48,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "96% covered",
+   "text": "singer is singing, but since the swara is low, maybe can hear less relative to bg instruments, slow and low start to todi, can hear singer distinctly but possibly can hear the instruments equally as well"
+  },
+  {
+   "start": 166.76,
+   "end": 169.47,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "the sa* is the middle of pa is it voice imo not singer does not move from pa to sa* back to pa imo in their voice"
+  },
+  {
+   "start": 166.99,
+   "end": 170.1,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "the singer takes a brief apuse before continuing. that pause coincides with the sa* appearing suddenly in the track- so the sa* is being picked from somewhere else not the singer's voice (maybe the tabla knock at around the same time as sa*)?"
+  },
+  {
+   "start": 217.52,
+   "end": 222.47,
+   "check": "singing → covered",
+   "pass": true,
+   "measured": "100% covered",
+   "text": "singer sings here, both singer singing and instruments can be heard"
+  },
+  {
    "start": 962.09,
    "end": 964.17,
    "check": "no notes two octaves up",
@@ -80,7 +133,7 @@
    "end": 1096.82,
    "check": "no voice → few notes",
    "pass": true,
-   "measured": "10% covered",
+   "measured": "0% covered",
    "text": "no artist voice here only background instruments"
   },
   {
@@ -98,6 +151,14 @@
    "pass": true,
    "measured": "0 such notes",
    "text": "the sa** that appear in this stretch (and may be a second or two before this stretch starts) are not in the singer's voice and appear out of no where (bleed? if yes maybe too low to"
+  },
+  {
+   "start": 1818.08,
+   "end": 1825.75,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "singing ends as this section starts and no singing in the entire stretch only bg instruments"
   }
  ]
 }

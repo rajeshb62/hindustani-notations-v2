@@ -1,0 +1,16 @@
+{
+ "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+ "no_voice": [
+  {
+   "start": 1100.53,
+   "end": 1116.8,
+   "feedback": "only background instrument no voice (except last about a second)"
+  },
+  {
+   "start": 1168.23,
+   "end": 1179.49,
+   "feedback": "all music here no singing, bg instrument- sarangi?"
+  }
+ ],
+ "drop_notes": []
+}

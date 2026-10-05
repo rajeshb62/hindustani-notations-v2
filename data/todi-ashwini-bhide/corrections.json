@@ -1,0 +1,30 @@
+{
+ "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+ "no_voice": [
+  {
+   "start": 0.89,
+   "end": 11.0,
+   "feedback": "tanpura and bg mainly tanpura singing starts just as this section ends"
+  },
+  {
+   "start": 1093.41,
+   "end": 1096.82,
+   "feedback": "no artist voice here only background instruments"
+  },
+  {
+   "start": 1818.08,
+   "end": 1825.75,
+   "feedback": "singing ends as this section starts and no singing in the entire stretch"
+  }
+ ],
+ "drop_notes": [
+  {
+   "start": 166.76,
+   "end": 170.1,
+   "labels": [
+    "S'"
+   ],
+   "feedback": "the sa* in the middle of pa ... not the singer's voice (tabla knock?)"
+  }
+ ]
+}
