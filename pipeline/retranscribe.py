@@ -20,6 +20,7 @@ from . import corrections
 from .raga import RAGAS
 from .run import DATA, write_catalog
 from .transcribe import (
+    absorb_passing,
     build_contour,
     error_spans,
     frames_to_notes,
@@ -45,7 +46,7 @@ def retranscribe(
         notes, sa_hz, calibration = calibrated_notes(frames, base_sa)
     else:
         notes, sa_hz, calibration = frames_to_notes(frames, base_sa, prepared=True), base_sa, None
-    notes = corrections.flag_listener_notes(notes, corr)
+    notes = absorb_passing(corrections.flag_listener_notes(notes, corr), raga or perf.get("raga"))
     write_performance(
         notes,
         dest / "performance.json",

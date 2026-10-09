@@ -1,26 +1,31 @@
 {
- "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
- "no_voice": [
-  {
-   "start": 2.48,
-   "end": 14.52,
-   "feedback": "this is all background music no vocals"
-  },
-  {
-   "start": 42.54,
-   "end": 43.6,
-   "feedback": "no singer just background instrument (harmonium?) and tanpura, maybe towards end last second or 2 voice starts again"
-  },
-  {
-   "start": 120.89,
-   "end": 123.86,
-   "feedback": "instruments / background only ... the singer starts singing in the last second"
-  },
-  {
-   "start": 2046.6,
-   "end": 2047.9,
-   "feedback": "voice in the first second ... followed by instruments playing similar swaras, then voice starts at the fag end"
-  }
- ],
- "drop_notes": []
+  "note": "Curated by hand from this recording's listening feedback (feedback.json). no_voice: no singer in the range, all pitch dropped. drop_notes: remove the named notes in the range.",
+  "no_voice": [
+    {
+      "start": 2.48,
+      "end": 14.52,
+      "feedback": "this is all background music no vocals"
+    },
+    {
+      "start": 42.54,
+      "end": 43.6,
+      "feedback": "no singer just background instrument (harmonium?) and tanpura, maybe towards end last second or 2 voice starts again"
+    },
+    {
+      "start": 120.89,
+      "end": 123.86,
+      "feedback": "instruments / background only ... the singer starts singing in the last second"
+    },
+    {
+      "start": 2021.91,
+      "end": 2024.77,
+      "why": "listener: just background instruments, no voice"
+    },
+    {
+      "start": 2046.6,
+      "end": 2047.9,
+      "feedback": "voice in the first second ... followed by instruments playing similar swaras, then voice starts at the fag end"
+    }
+  ],
+  "drop_notes": []
 }

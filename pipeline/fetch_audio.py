@@ -51,6 +51,10 @@ SOURCES: dict[str, tuple[str, str, str, int]] = {
         "dni.ncaa.SF-SFC001103-AC",  # Hindustani Vocal Recital by Ustad Khadim Hussain Khan
         "SF-SFC001103-AC_SIDE_A.mp3", "SF-SFC001103-AC_SIDE_A.mp3", 44914176,
     ),
+    "yaman-madhav-umdekar": (
+        "dni.ncaa.SF-SFC000980-AC",  # Hindustani Vocal Recital by Pandit Madhav Umdekar
+        "SF-SFC000980-AC_SIDE_A.mp3", "SF-SFC000980-AC_SIDE_A.mp3", 29298432,
+    ),
 }
 
 

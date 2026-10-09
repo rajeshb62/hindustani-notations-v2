@@ -33,8 +33,9 @@ class Note:
     label: str
     snap_quality: float
     # None = a note. Otherwise why it is an error, not something the singer
-    # sang: "range" (flag_range: bleed / 2nd harmonic) or "octave"
-    # (flag_octave_flips). Players hide flagged notes.
+    # sang: "range" (flag_range: bleed / 2nd harmonic), "octave"
+    # (flag_octave_flips), "listener" (corrections.py) or "passing"
+    # (absorb_passing: passed through, not meant). Players hide flagged notes.
     flag: str | None = None
 
 
@@ -332,6 +333,64 @@ def flag_octave_flips(
     return notes
 
 
+PASS_MAX = 0.12   # longest out-of-raga note still read as passed through
+PASS_GAP = 0.05   # neighbours must be this close to the passing run
+
+
+def absorb_passing(notes: list[Note], raga: str | None) -> list[Note]:
+    """Out-of-raga notes the voice only passes through between two neighbouring
+    raga notes (Yaman 1:44: N -> n 30 ms -> D) are absorbed into those
+    neighbours: the singer means N D, not N n D.
+
+    A run of short (<= PASS_MAX) out-of-raga notes is flagged "passing" when
+    the notes on either side are different raga swaras with no raga swara
+    between them, and every note in the run lies between them in pitch. Its
+    time is split between the neighbours at the run's midpoint. Held
+    out-of-raga notes are left alone, and so is the pitch curve.
+    """
+    if not raga:
+        return notes
+    from .raga import NAMES as GRID, RAGAS
+
+    scale = RAGAS[raga]
+    live = [n for n in notes if n.flag is None]
+
+    def step(n: Note) -> int:  # semitone index across octaves
+        return n.octave * 12 + GRID.index(n.swara)
+
+    def raga_between(a: int, b: int) -> bool:
+        lo, hi = sorted((a, b))
+        return any(GRID[k % 12] in scale for k in range(lo + 1, hi))
+
+    i = 1
+    while i < len(live) - 1:
+        j = i
+        while j < len(live) and live[j].swara not in scale and live[j].dur <= PASS_MAX:
+            j += 1
+        if j == i or j >= len(live):
+            i = max(j, i + 1)
+            continue
+        prev, nxt, run = live[i - 1], live[j], live[i:j]
+        a, b = step(prev), step(nxt)
+        if (
+            prev.swara in scale
+            and nxt.swara in scale
+            and a != b
+            and not raga_between(a, b)
+            and all(min(a, b) < step(n) < max(a, b) for n in run)
+            and run[0].t - (prev.t + prev.dur) <= PASS_GAP
+            and nxt.t - (run[-1].t + run[-1].dur) <= PASS_GAP
+        ):
+            mid = (run[0].t + run[-1].t + run[-1].dur) / 2.0
+            end = nxt.t + nxt.dur
+            prev.dur = round(mid - prev.t, 3)
+            nxt.t, nxt.dur = round(mid, 3), round(end - mid, 3)
+            for n in run:
+                n.flag = "passing"
+        i = j
+    return notes
+
+
 def _in_spans(t: float, c: float, spans: list[tuple[float, float, float | None]]) -> bool:
     """True if a frame at time t / pitch c falls in an error span.
 
@@ -433,7 +492,7 @@ def write_performance(
             ),
             "low_conf_notes": sum(1 for n in kept if n.conf < 0.35),
             "removed": {
-                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave", "listener")
+                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave", "listener", "passing")
             },
         },
     }

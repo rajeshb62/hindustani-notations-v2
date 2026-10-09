@@ -1,0 +1,135 @@
+{
+  "sa_hz": 134.646,
+  "sa_source": "voice-grid+raga:yaman",
+  "audio_used": "/Users/rajeshbhat/grok/hindustani notations/data/yaman-madhav-umdekar/work/no_vocals.wav",
+  "tanpura_candidates": [
+    {
+      "hz": 271.857,
+      "harmonic_score": 13.7474,
+      "band_energy": 1.0
+    },
+    {
+      "hz": 96.899,
+      "harmonic_score": 10.5764,
+      "band_energy": 0.7723
+    },
+    {
+      "hz": 204.565,
+      "harmonic_score": 9.2071,
+      "band_energy": 0.3455
+    },
+    {
+      "hz": 274.548,
+      "harmonic_score": 8.1892,
+      "band_energy": 0.6847
+    },
+    {
+      "hz": 99.591,
+      "harmonic_score": 7.8548,
+      "band_energy": 0.6732
+    },
+    {
+      "hz": 137.274,
+      "harmonic_score": 6.5667,
+      "band_energy": 0.1495
+    },
+    {
+      "hz": 102.283,
+      "harmonic_score": 6.3602,
+      "band_energy": 0.1315
+    },
+    {
+      "hz": 129.199,
+      "harmonic_score": 5.8546,
+      "band_energy": 0.1358
+    }
+  ],
+  "vocal_tonic_candidates": [
+    {
+      "hz": 136.938,
+      "count": 30955
+    },
+    {
+      "hz": 134.312,
+      "count": 6499
+    },
+    {
+      "hz": 127.312,
+      "count": 5278
+    },
+    {
+      "hz": 76.562,
+      "count": 3785
+    },
+    {
+      "hz": 101.062,
+      "count": 3677
+    },
+    {
+      "hz": 129.938,
+      "count": 3511
+    }
+  ],
+  "raga": "yaman",
+  "raga_choice": {
+    "sa_hz": 135.929,
+    "fit": 0.8264,
+    "madhya_share": 0.654,
+    "candidates": [
+      {
+        "hz": 271.857,
+        "peak": 271.857,
+        "peak_as": "sa",
+        "fit": 0.8264
+      },
+      {
+        "hz": 136.377,
+        "peak": 204.565,
+        "peak_as": "pa",
+        "fit": 0.8149
+      },
+      {
+        "hz": 68.189,
+        "peak": 102.283,
+        "peak_as": "pa",
+        "fit": 0.8149
+      },
+      {
+        "hz": 66.394,
+        "peak": 99.591,
+        "peak_as": "pa",
+        "fit": 0.8147
+      },
+      {
+        "hz": 181.238,
+        "peak": 271.857,
+        "peak_as": "pa",
+        "fit": 0.7864
+      },
+      {
+        "hz": 274.548,
+        "peak": 274.548,
+        "peak_as": "sa",
+        "fit": 0.7812
+      },
+      {
+        "hz": 137.274,
+        "peak": 137.274,
+        "peak_as": "sa",
+        "fit": 0.7812
+      },
+      {
+        "hz": 183.032,
+        "peak": 274.548,
+        "peak_as": "pa",
+        "fit": 0.7515
+      }
+    ]
+  },
+  "agreement": null,
+  "voice_grid": {
+    "sa_hz": 134.646,
+    "score": 1.037
+  },
+  "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz."
+}

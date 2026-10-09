@@ -1,18 +1,23 @@
 {
  "slug": "desh-kalyan-chattopadhyay",
  "title": "Desh — Kalyan Chattopadhyay",
- "notes": 21345,
+ "notes": 19484,
  "removed": {
-  "range": 6,
-  "octave": 51,
-  "listener": 0
+  "range": 5,
+  "octave": 49,
+  "listener": 0,
+  "passing": 1862
  },
  "coverage": {
   "voice_seconds": 1985.4,
-  "covered": 0.947,
+  "covered": 0.948,
   "notes_outside_voice_seconds": 1.8,
-  "gaps_total_seconds": 3.5,
+  "gaps_total_seconds": 5.8,
   "longest_gaps": [
+   {
+    "start": 2021.9,
+    "end": 2023.55
+   },
    {
     "start": 2046.6,
     "end": 2047.77
@@ -24,6 +29,10 @@
    {
     "start": 4.58,
     "end": 5.35
+   },
+   {
+    "start": 2024.04,
+    "end": 2024.67
    },
    {
     "start": 2026.1,
@@ -39,7 +48,7 @@
   },
   {
    "t": 1345.32,
-   "dur": 0.31,
+   "dur": 0.49,
    "label": "d"
   },
   {
@@ -94,7 +103,7 @@
    "end": 1353.69,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "94% of pitched frames",
+   "measured": "95% of pitched frames",
    "text": "all sargam here by singer (may be bg too?)"
   },
   {
@@ -112,6 +121,14 @@
    "pass": true,
    "measured": "by ear",
    "text": "for this period the notes of singer and that of the note player sound like each other, the note player plays notes fairly close to the the note transitions of the voice"
+  },
+  {
+   "start": 2021.91,
+   "end": 2024.77,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this section is just bg instruments, no voice"
   },
   {
    "start": 2045.58,

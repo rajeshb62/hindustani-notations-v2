@@ -191,7 +191,7 @@ class Output(unittest.TestCase):
         self.assertNotIn("S''", [n["label"] for n in perf["notes"]])
         self.assertTrue(all("flag" not in n for n in perf["notes"]))
         self.assertEqual([r[2:] for r in perf["removed_notes"]], [["S''", "range"]])
-        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0})
+        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0, "passing": 0})
 
 
 class Rescue(unittest.TestCase):
@@ -230,6 +230,23 @@ class Corrections(unittest.TestCase):
         notes = frames_to_notes(run([0] * 30 + [1200] * 30 + [0] * 30), SA, prepared=True)
         notes = corrections.flag_listener_notes(notes, corr)
         self.assertEqual([(n.label, n.flag) for n in notes], [("S", None), ("S'", "listener"), ("S", None)])
+
+
+class Passing(unittest.TestCase):
+    def test_brief_out_of_raga_note_between_neighbours_is_absorbed(self):
+        from pipeline.transcribe import absorb_passing
+        N, n, D = 1088, 996, 884
+        notes = frames_to_notes(run([N] * 30 + [n] * 5 + [D] * 30), SA, prepared=True)
+        notes = absorb_passing(notes, "yaman")
+        self.assertEqual([(x.swara, x.flag) for x in notes], [("N", None), ("n", "passing"), ("D", None)])
+        self.assertAlmostEqual(notes[0].t + notes[0].dur, notes[2].t)
+        # Held, or not between two different neighbours, or raga unknown: kept.
+        for cents, raga in (([N] * 30 + [n] * 30 + [D] * 30, "yaman"),
+                            ([N] * 30 + [n] * 5 + [N] * 30, "yaman"),
+                            ([N] * 30 + [n] * 5 + [D] * 30, "desh"),
+                            ([N] * 30 + [n] * 5 + [D] * 30, None)):
+            kept = absorb_passing(frames_to_notes(run(cents), SA, prepared=True), raga)
+            self.assertTrue(all(x.flag is None for x in kept), (cents[30], raga))
 
 
 class Contour(unittest.TestCase):

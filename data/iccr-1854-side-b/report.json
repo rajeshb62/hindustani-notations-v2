@@ -1,16 +1,17 @@
 {
  "slug": "iccr-1854-side-b",
  "title": "Chhayanat — Raja Kale",
- "notes": 17328,
+ "notes": 16273,
  "removed": {
   "range": 8,
   "octave": 33,
-  "listener": 1
+  "listener": 1,
+  "passing": 1055
  },
  "coverage": {
   "voice_seconds": 1260.0,
-  "covered": 0.927,
-  "notes_outside_voice_seconds": 1.9,
+  "covered": 0.928,
+  "notes_outside_voice_seconds": 2.0,
   "gaps_total_seconds": 3.1,
   "longest_gaps": [
    {
@@ -60,7 +61,7 @@
    "end": 150.3,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "74% of pitched frames (listener: sounds right)",
+   "measured": "75% of pitched frames (listener: sounds right)",
    "text": "this section is alaap fast notes"
   },
   {
@@ -76,7 +77,7 @@
    "end": 850.48,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "94% of pitched frames",
+   "measured": "95% of pitched frames",
    "text": "the singing reduces in audio volume relative to the bg harmonium, and it is possible that as a result the harmonium notes are being transcribed more than the singing"
   },
   {

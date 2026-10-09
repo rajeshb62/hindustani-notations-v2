@@ -16,6 +16,7 @@ from .raga import RAGAS
 from .extract_f0 import extract_f0
 from .isolate import isolate
 from .transcribe import (
+    absorb_passing,
     build_contour,
     error_spans,
     frames_to_notes,
@@ -40,7 +41,7 @@ def write_catalog() -> None:
     items = []
     for d in sorted(DATA.iterdir() if DATA.exists() else []):
         perf = d / "performance.json"
-        if not perf.exists():
+        if not perf.exists() or (d / "hidden.json").exists():  # hidden.json: kept, not listed
             continue
         meta = json.loads(perf.read_text())
         items.append(
@@ -126,7 +127,7 @@ def run(
         notes, sa_hz, calibration = calibrated_notes(frames, sa_hz)
     else:
         notes, calibration = frames_to_notes(frames, sa_hz, prepared=True), None
-    notes = corrections.flag_listener_notes(notes, corr)
+    notes = absorb_passing(corrections.flag_listener_notes(notes, corr), raga)
 
     write_performance(
         notes,

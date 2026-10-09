@@ -37,7 +37,8 @@ python3 -m pipeline.fetch_audio
 | Todi — Ghulam Ali | [SKSS-T206-AC](https://archive.org/details/dni.ncaa.SKSS-T206-AC) | B |
 | Todi — Vidushi Ashwini Bhide Deshpande | [SKSS-T208-AC](https://archive.org/details/dni.ncaa.SKSS-T208-AC) (Bandishes in Raga Todi, Vol. III) | A |
 | Desh — Shri Kalyan Chattopadhyay (vilambit ektal, drut teentaal) | [ICCR-923-AC](https://archive.org/details/dni.ncaa.ICCR-923-AC) | A |
-| Bihag — Ustad Khadim Hussain Khan (khayal) | [SF-SFC001103-AC](https://archive.org/details/dni.ncaa.SF-SFC001103-AC) | A |
+| ~~Bihag — Ustad Khadim Hussain Khan~~ — hidden: tape noise drowns the singer (`data/<slug>/hidden.json` keeps a recording out of the player) | [SF-SFC001103-AC](https://archive.org/details/dni.ncaa.SF-SFC001103-AC) | A |
+| Yaman — Pandit Madhav Umdekar | [SF-SFC000980-AC](https://archive.org/details/dni.ncaa.SF-SFC000980-AC) | A |
 
 ## Listen
 
@@ -120,6 +121,10 @@ Checked against sargam sung by the singer (Jasraj side A 0:00–0:39): the pinne
 ## Listener corrections (`data/<slug>/corrections.json`)
 
 Curated by hand from each recording's listening feedback, only where the feedback clearly says what is there: `no_voice` ranges (sarangi/harmonium/tanpura only — pitch dropped there before notes are formed, so neither notes nor the pitch curve play) and `drop_notes` (a specific note heard as not the singer's, audited in `removed_notes` as `listener`). Applied by `pipeline.run` and `pipeline.retranscribe`. Automatic detection of instrument-only passages was tried and parked: timbre embeddings (PANNs) and accompaniment-pitch overlap both flagged soft singing under loud accompaniment as "no voice" when checked by ear.
+
+## Passing notes (`absorb_passing` in `pipeline/transcribe.py`)
+
+When the raga is known, a short (≤ 120 ms) out-of-raga note the voice only passes through between two neighbouring raga notes is absorbed into them: Yaman 1:44, N → n (30 ms) → D reads N D, as the singer means it. The run's time is split between the neighbours, the note is audited in `removed_notes` as `passing`, and the pitch curve is unchanged. Held out-of-raga notes are left as sung (nearest swara) — whether a held note between two raga notes is a deliberate foreign note or a meend that turns back is a judgement for the ear, not the code. Checked by ear on Yaman 1:44 and Ghulam Ali 5:17. 6–14% of notes per recording, almost all 2–3 frames.
 
 ## Where is it weakest? (`pipeline/report.py`)
 

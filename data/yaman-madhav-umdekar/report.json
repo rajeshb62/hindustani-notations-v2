@@ -1,0 +1,149 @@
+{
+ "slug": "yaman-madhav-umdekar",
+ "title": "Yaman — Madhav Umdekar",
+ "notes": 11022,
+ "removed": {
+  "range": 13,
+  "octave": 21,
+  "listener": 0,
+  "passing": 1869
+ },
+ "coverage": {
+  "voice_seconds": 1442.4,
+  "covered": 0.938,
+  "notes_outside_voice_seconds": 1.8,
+  "gaps_total_seconds": 23.6,
+  "longest_gaps": [
+   {
+    "start": 10.64,
+    "end": 13.31
+   },
+   {
+    "start": 19.9,
+    "end": 22.06
+   },
+   {
+    "start": 8.21,
+    "end": 10.22
+   },
+   {
+    "start": 17.79,
+    "end": 19.65
+   },
+   {
+    "start": 24.46,
+    "end": 26.13
+   },
+   {
+    "start": 30.37,
+    "end": 32.03
+   },
+   {
+    "start": 22.59,
+    "end": 24.02
+   },
+   {
+    "start": 28.63,
+    "end": 29.92
+   },
+   {
+    "start": 14.63,
+    "end": 15.9
+   },
+   {
+    "start": 0.11,
+    "end": 1.29
+   },
+   {
+    "start": 5.32,
+    "end": 6.23
+   },
+   {
+    "start": 16.09,
+    "end": 17.0
+   },
+   {
+    "start": 27.3,
+    "end": 28.21
+   },
+   {
+    "start": 4.02,
+    "end": 4.91
+   },
+   {
+    "start": 33.57,
+    "end": 34.43
+   }
+  ]
+ },
+ "out_of_raga": [
+  {
+   "t": 101.61,
+   "dur": 0.42,
+   "label": "n."
+  },
+  {
+   "t": 229.78,
+   "dur": 0.3,
+   "label": "n."
+  },
+  {
+   "t": 360.51,
+   "dur": 0.33,
+   "label": "r."
+  },
+  {
+   "t": 707.88,
+   "dur": 0.32,
+   "label": "M"
+  },
+  {
+   "t": 716.31,
+   "dur": 0.3,
+   "label": "M"
+  },
+  {
+   "t": 718.51,
+   "dur": 0.38,
+   "label": "M"
+  },
+  {
+   "t": 837.85,
+   "dur": 0.61,
+   "label": "n"
+  },
+  {
+   "t": 1159.29,
+   "dur": 0.41,
+   "label": "r"
+  },
+  {
+   "t": 1272.57,
+   "dur": 0.35,
+   "label": "n."
+  },
+  {
+   "t": 1433.35,
+   "dur": 0.31,
+   "label": "M"
+  }
+ ],
+ "feedback": [
+  {
+   "start": 0.93,
+   "end": 35.27,
+   "check": "no voice → few notes",
+   "pass": true,
+   "measured": "0% covered",
+   "text": "this part is all voice- but not singing- it is announcer announcing the singer, raag, accompaniment persons, taal and so on. it is spoken words and no note transcription is required here"
+  },
+  {
+   "start": 355.97,
+   "end": 361.23,
+   "check": "unclassified",
+   "pass": null,
+   "measured": "11% covered",
+   "text": "voice continues in this stretch- the notes transcription stops in some parts of this section"
+  }
+ ]
+}

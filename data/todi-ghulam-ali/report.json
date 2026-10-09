@@ -1,16 +1,17 @@
 {
  "slug": "todi-ghulam-ali",
  "title": "Todi — Ghulam Ali",
- "notes": 21600,
+ "notes": 19619,
  "removed": {
   "range": 29,
   "octave": 42,
-  "listener": 0
+  "listener": 0,
+  "passing": 1981
  },
  "coverage": {
   "voice_seconds": 1544.5,
-  "covered": 0.884,
-  "notes_outside_voice_seconds": 0.8,
+  "covered": 0.886,
+  "notes_outside_voice_seconds": 2.8,
   "gaps_total_seconds": 26.1,
   "longest_gaps": [
    {
@@ -81,7 +82,7 @@
    "end": 320.12,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "93% of pitched frames",
+   "measured": "94% of pitched frames",
    "text": "singer singing sargam:\n(pause)gamaresa(pause)ni(pause)sarega(pause)danisari first pause is around 5:11\n single ni is around 5:15.0 \npause after sarega and before danisari is around 5:17"
   },
   {
@@ -89,7 +90,7 @@
    "end": 324.9,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "93% of pitched frames",
+   "measured": "95% of pitched frames",
    "text": "all sargam here by singer, yes there is sarangi like instrument in bg"
   },
   {
@@ -161,7 +162,7 @@
    "end": 1257.66,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "95% of pitched frames",
+   "measured": "96% of pitched frames",
    "text": "volume of singer is low, bg instrument is prominent and tabla"
   },
   {
@@ -169,7 +170,7 @@
    "end": 1417.81,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "96% of pitched frames",
+   "measured": "97% of pitched frames",
    "text": "singer volume is low. bg instrument is loud (sarangi?) with tabla"
   },
   {
@@ -177,7 +178,7 @@
    "end": 1621.56,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "96% of pitched frames",
+   "measured": "97% of pitched frames",
    "text": "singer volume low, sarangi? bg instrument volume is loud"
   },
   {
@@ -185,7 +186,7 @@
    "end": 1736.35,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "84% of pitched frames",
+   "measured": "86% of pitched frames",
    "text": "singer singing sargam, there is sarangi in the bg too"
   }
  ]
