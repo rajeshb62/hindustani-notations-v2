@@ -121,6 +121,38 @@ def _sa_by_resting_notes(tanpura_cands: list[dict], voiced: np.ndarray) -> dict 
             "resting_score": round(score, 3)}
 
 
+def _sa_by_voice_grid(voiced: np.ndarray, swaras: set[str] | None) -> dict | None:
+    """Sa from the singing alone: every 5 cents through an octave, score
+    rest-on-Sa (+ half rest-on-Pa) plus, with a raga, the raga-scale fit.
+
+    Tanpura peaks can miss Sa entirely (Bihag / Khadim Hussain Khan: the peaks
+    implied 186 Hz; the singing rests on ~139 Hz, where Ga, Ma, Pa and Ni of
+    Bihag fall into place). On the seven earlier recordings this lands within
+    19 cents of the established Sa; calibration removes the rest.
+    """
+    if len(voiced) < 500:
+        return None
+    from .raga import raga_fit
+
+    hz = voiced[:: max(1, len(voiced) // 60000)]
+
+    def near(sa: float, cents: float) -> float:
+        # Triangular weight (1 at the swara, 0 at 50 cents) so the score peaks
+        # at the centre of the singing rather than anywhere within +-50 cents.
+        d = np.abs((1200.0 * np.log2(hz / sa) - cents + 600.0) % 1200.0 - 600.0)
+        return float(np.clip(1.0 - d / 50.0, 0.0, None).mean())
+
+    best = None
+    for c in np.arange(0.0, 1200.0, 5.0):
+        sa = 100.0 * 2.0 ** (c / 1200.0)
+        score = near(sa, 0.0) + 0.5 * near(sa, 702.0)
+        if swaras:
+            score += raga_fit(hz, sa, swaras)
+        if best is None or score > best[0]:
+            best = (score, sa)
+    return {"sa_hz": round(_madhya_octave(best[1], voiced), 3), "score": round(best[0], 3)}
+
+
 def estimate_sa(
     accompaniment_wav: Path | None = None,
     mix_wav: Path | None = None,
@@ -156,12 +188,22 @@ def estimate_sa(
     chosen = None
     source = "unresolved"
     raga_choice = None
+    voice_grid = None
+    if len(voiced) > 500:
+        from .raga import RAGAS
+
+        voice_grid = _sa_by_voice_grid(voiced, RAGAS.get(raga) if raga else None)
+        if voice_grid:
+            chosen = voice_grid["sa_hz"]
+            source = "voice-grid" + (f"+raga:{raga}" if raga else "")
     if raga and tanpura_cands and len(voiced) > 500:
         from .raga import RAGAS, choose_sa
 
+        # Kept for comparison; the voice grid above decides when it ran.
         raga_choice = choose_sa([c["hz"] for c in tanpura_cands], voiced, RAGAS[raga])
-        chosen = raga_choice["sa_hz"]
-        source = f"tanpura+raga-fit:{raga}"
+        if chosen is None:
+            chosen = raga_choice["sa_hz"]
+            source = f"tanpura+raga-fit:{raga}"
     # Prefer accompaniment peak that also sits near a vocal tonic (or its octave).
     agreement = None
     if chosen is None and tanpura_cands:
@@ -186,6 +228,7 @@ def estimate_sa(
         "raga": raga,
         "raga_choice": raga_choice,
         "agreement": agreement,
+        "voice_grid": voice_grid,
         "note": "Pin this in the player if the drone sounds off. Labels remap from stored Hz.",
     }
 

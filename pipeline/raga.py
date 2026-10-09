@@ -33,6 +33,7 @@ RAGAS: dict[str, set[str]] = {
     "desh": {"S", "R", "G", "M", "P", "D", "n", "N"},
     "chhayanat": {"S", "R", "G", "M", "M+", "P", "D", "N"},  # tivra Ma as an accidental
     "shuddh-kalyan": {"S", "R", "G", "M+", "P", "D", "N"},  # M+ and N sparing
+    "bihag": {"S", "R", "G", "M", "M+", "P", "D", "N"},  # tivra Ma as an accent; R, D weak in aroh
 }
 
 

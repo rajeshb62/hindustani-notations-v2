@@ -1,5 +1,12 @@
 [
   {
+    "id": "bihag-khadim-hussain-khan",
+    "title": "Bihag \u2014 Khadim Hussain Khan",
+    "path": "./data/bihag-khadim-hussain-khan/performance.json",
+    "sa_hz": 138.64720318855726,
+    "notes": 26673
+  },
+  {
     "id": "desh-kalyan-chattopadhyay",
     "title": "Desh \u2014 Kalyan Chattopadhyay",
     "path": "./data/desh-kalyan-chattopadhyay/performance.json",

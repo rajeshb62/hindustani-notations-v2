@@ -151,6 +151,18 @@ class SaDetection(unittest.TestCase):
         self.assertEqual(r["peak_as"], "ma")
         self.assertAlmostEqual(r["sa_hz"], sa, delta=1.0)
 
+    def test_voice_grid_finds_sa_the_tanpura_misses(self):
+        import numpy as np
+        from pipeline.detect_sa import _sa_by_voice_grid
+        from pipeline.raga import RAGAS
+        # Bihag-like singing around Sa=139.5: S, G, M, P, N prominent, tivra Ma accent.
+        sa = 139.5
+        cents = [0] * 30 + [386] * 18 + [498] * 6 + [702] * 13 + [1088] * 22 + [590] * 5 + [204] * 4
+        voiced = np.array([sa * 2 ** (c / 1200) for c in cents * 20])
+        r = _sa_by_voice_grid(voiced, RAGAS["bihag"])
+        off = (1200 * np.log2(r["sa_hz"] / sa) + 600) % 1200 - 600   # circular, any octave
+        self.assertAlmostEqual(off, 0, delta=10)
+
     def test_raga_fit_picks_sa_over_the_tanpura_pa(self):
         import numpy as np
         from pipeline.raga import RAGAS, choose_sa
