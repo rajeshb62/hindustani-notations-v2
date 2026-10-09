@@ -1,15 +1,15 @@
 {
  "slug": "todi-paluskar-side-a",
  "title": "Todi — Paluskar side A",
- "notes": 15147,
+ "notes": 15345,
  "removed": {
-  "range": 7,
-  "octave": 38,
+  "range": 8,
+  "octave": 33,
   "listener": 0
  },
  "coverage": {
   "voice_seconds": 1633.3,
-  "covered": 0.924,
+  "covered": 0.927,
   "notes_outside_voice_seconds": 0.7,
   "gaps_total_seconds": 37.2,
   "longest_gaps": [
@@ -19,7 +19,7 @@
    },
    {
     "start": 556.4,
-    "end": 563.61
+    "end": 563.6
    },
    {
     "start": 1008.73,
@@ -27,7 +27,7 @@
    },
    {
     "start": 674.31,
-    "end": 678.55
+    "end": 678.54
    },
    {
     "start": 13.82,
@@ -78,17 +78,17 @@
   {
    "start": 88.89,
    "end": 89.68,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "95% covered",
+   "measured": "95% of pitched frames",
    "text": "this is voice and only voice instrument has not yet entered in this window"
   },
   {
    "start": 365.65,
    "end": 367.2,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "97% covered",
+   "measured": "97% of pitched frames",
    "text": "this is voice mostly maybe instrument weak in the background"
   },
   {
@@ -102,9 +102,9 @@
   {
    "start": 397.23,
    "end": 399.18,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "99% covered",
+   "measured": "99% of pitched frames",
    "text": "voice + instrument (towards the end instrument becomes strong) but predominently voice dominant"
   },
   {
@@ -118,9 +118,9 @@
   {
    "start": 565.99,
    "end": 574.45,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "100% covered",
+   "measured": "100% of pitched frames",
    "text": "voice dominant here, there is instrument here in the bg but maybe same notes as voice? or it is in discernability lower than voice here"
   },
   {
@@ -158,9 +158,9 @@
   {
    "start": 1185.66,
    "end": 1191.18,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "81% covered",
+   "measured": "94% of pitched frames",
    "text": "singing by singer. yes i can hear sarangi too in this section"
   },
   {

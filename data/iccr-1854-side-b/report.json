@@ -1,15 +1,15 @@
 {
  "slug": "iccr-1854-side-b",
  "title": "Chhayanat — Raja Kale",
- "notes": 16961,
+ "notes": 17328,
  "removed": {
   "range": 8,
-  "octave": 42,
-  "listener": 0
+  "octave": 33,
+  "listener": 1
  },
  "coverage": {
   "voice_seconds": 1260.0,
-  "covered": 0.919,
+  "covered": 0.927,
   "notes_outside_voice_seconds": 1.9,
   "gaps_total_seconds": 3.1,
   "longest_gaps": [
@@ -42,17 +42,25 @@
   {
    "start": 35.47,
    "end": 43.54,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "89% covered",
+   "measured": "96% of pitched frames",
    "text": "singing is lower in volume (singer is conserving energy? as he prepares to launch into louder singing?) compared to harmonium volume in bg"
+  },
+  {
+   "start": 144.37,
+   "end": 150.79,
+   "check": "listener: sounds right",
+   "pass": true,
+   "measured": "by ear",
+   "text": "2:25-2:30 is all alaap\nthere is a stray M+note in 2:24 around that i dont think is coming fromvoice\nthe notes transcribed as listened to in note playing mode sound much like the note transitions in the singing in this stretch"
   },
   {
    "start": 145.21,
    "end": 150.3,
-   "check": "singing → covered",
-   "pass": false,
-   "measured": "62% covered",
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "74% of pitched frames (listener: sounds right)",
    "text": "this section is alaap fast notes"
   },
   {
@@ -66,17 +74,17 @@
   {
    "start": 841.53,
    "end": 850.48,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "89% covered",
+   "measured": "94% of pitched frames",
    "text": "the singing reduces in audio volume relative to the bg harmonium, and it is possible that as a result the harmonium notes are being transcribed more than the singing"
   },
   {
    "start": 1262.48,
    "end": 1272.49,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "84% covered",
+   "measured": "96% of pitched frames",
    "text": "there is both singing and harmonium in the bg, not clear if note transcribing is transcribing both siging and harmonium or only singing"
   }
  ]

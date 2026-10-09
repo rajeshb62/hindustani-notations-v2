@@ -1,10 +1,38 @@
 [
  {
+  "start": 312.32,
+  "end": 320.12,
+  "text": "singer singing sargam:\n(pause)gamaresa(pause)ni(pause)sarega(pause)danisari first pause is around 5:11\n single ni is around 5:15.0 \npause after sarega and before danisari is around 5:17",
+  "mode": "notes",
+  "created": "2026-10-09T09:58:02.088Z"
+ },
+ {
   "start": 312.47,
   "end": 324.9,
   "text": "all sargam here by singer, yes there is sarangi like instrument in bg",
   "mode": "audio",
   "created": "2026-10-05T17:20:22.245Z"
+ },
+ {
+  "start": 316.76,
+  "end": 324.14,
+  "text": "singer is singing sargam, and the notes track his singing somewhat accurately. i noticed at 5:17 singer is singing but note taker is transcribing and playing. i think at around that time of a brief second or so (when singer is not singing) the note taker is transcribing background instrument (?)",
+  "mode": "notes",
+  "created": "2026-10-09T09:45:30.865Z"
+ },
+ {
+  "start": 316.81,
+  "end": 317.31,
+  "text": "(Pause)Danisari(pause)sarega(pause)maga_resa\n\nis the sargam sung by the singer in this stretch",
+  "mode": "audio",
+  "created": "2026-10-09T09:49:08.096Z"
+ },
+ {
+  "start": 316.91,
+  "end": 320.38,
+  "text": "the pause before danisari is the pause occuring at around 5:17 when the bg instrument is playing and the note player is transcribing that too in the pause so the note taking appears continuous without the pause at 5:17",
+  "mode": "audio",
+  "created": "2026-10-09T09:52:06.135Z"
  },
  {
   "start": 1100.53,

@@ -182,6 +182,15 @@ class Output(unittest.TestCase):
         self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0})
 
 
+class Rescue(unittest.TestCase):
+    def test_low_confidence_kept_only_when_continuous(self):
+        from pipeline.vad_filter import _rescued
+        rows = [(k * 0.01, 200.0 * 2 ** (k * 5 / 1200), 0.9) for k in range(20)]   # a smooth rising glide
+        rows[10] = (0.10, 200.0 * 2 ** (50 / 1200), 0.35)                          # unsure but on the line
+        rows[12] = (0.12, 330.0, 0.35)                                               # unsure and off the line
+        self.assertEqual(_rescued(rows), {10})
+
+
 class Report(unittest.TestCase):
     def test_feedback_becomes_checks(self):
         from pipeline.report import feedback_checks

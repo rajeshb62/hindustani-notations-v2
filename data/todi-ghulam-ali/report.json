@@ -1,15 +1,15 @@
 {
  "slug": "todi-ghulam-ali",
  "title": "Todi — Ghulam Ali",
- "notes": 21113,
+ "notes": 21600,
  "removed": {
   "range": 29,
-  "octave": 40,
+  "octave": 42,
   "listener": 0
  },
  "coverage": {
   "voice_seconds": 1544.5,
-  "covered": 0.875,
+  "covered": 0.884,
   "notes_outside_voice_seconds": 0.8,
   "gaps_total_seconds": 26.1,
   "longest_gaps": [
@@ -59,7 +59,7 @@
    },
    {
     "start": 453.45,
-    "end": 453.97
+    "end": 453.98
    }
   ]
  },
@@ -77,12 +77,44 @@
  ],
  "feedback": [
   {
+   "start": 312.32,
+   "end": 320.12,
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "93% of pitched frames",
+   "text": "singer singing sargam:\n(pause)gamaresa(pause)ni(pause)sarega(pause)danisari first pause is around 5:11\n single ni is around 5:15.0 \npause after sarega and before danisari is around 5:17"
+  },
+  {
    "start": 312.47,
    "end": 324.9,
-   "check": "singing → covered",
-   "pass": false,
-   "measured": "69% covered",
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "93% of pitched frames",
    "text": "all sargam here by singer, yes there is sarangi like instrument in bg"
+  },
+  {
+   "start": 316.76,
+   "end": 324.14,
+   "check": "listener: sounds right",
+   "pass": true,
+   "measured": "by ear",
+   "text": "singer is singing sargam, and the notes track his singing somewhat accurately. i noticed at 5:17 singer is singing but note taker is transcribing and playing. i think at around that time of a brief second or so (when singer is not singing) the note taker is transcribing background instrument (?)"
+  },
+  {
+   "start": 316.81,
+   "end": 317.31,
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "98% of pitched frames",
+   "text": "(Pause)Danisari(pause)sarega(pause)maga_resa\n\nis the sargam sung by the singer in this stretch"
+  },
+  {
+   "start": 316.91,
+   "end": 320.38,
+   "check": "unclassified",
+   "pass": null,
+   "measured": "68% covered",
+   "text": "the pause before danisari is the pause occuring at around 5:17 when the bg instrument is playing and the note player is transcribing that too in the pause so the note taking appears continuous without the pause at 5:17"
   },
   {
    "start": 1100.53,
@@ -127,33 +159,33 @@
   {
    "start": 1246.69,
    "end": 1257.66,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "89% covered",
+   "measured": "95% of pitched frames",
    "text": "volume of singer is low, bg instrument is prominent and tabla"
   },
   {
    "start": 1409.54,
    "end": 1417.81,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "81% covered",
+   "measured": "96% of pitched frames",
    "text": "singer volume is low. bg instrument is loud (sarangi?) with tabla"
   },
   {
    "start": 1613.34,
    "end": 1621.56,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "87% covered",
+   "measured": "96% of pitched frames",
    "text": "singer volume low, sarangi? bg instrument volume is loud"
   },
   {
    "start": 1728.33,
    "end": 1736.35,
-   "check": "singing → covered",
-   "pass": false,
-   "measured": "69% covered",
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "84% of pitched frames",
    "text": "singer singing sargam, there is sarangi in the bg too"
   }
  ]

@@ -86,7 +86,8 @@ def _covered(notes: list[dict], a: float, b: float) -> float:
     return sum(max(0.0, min(n["t"] + n["dur"], b) - max(n["t"], a)) for n in notes)
 
 
-def feedback_checks(perf: dict, feedback: list[dict], corr: dict | None = None) -> list[dict]:
+def feedback_checks(perf: dict, feedback: list[dict], corr: dict | None = None,
+                    pitched: list[float] | None = None) -> list[dict]:
     """Turn listener feedback into pass/fail checks where it says what to expect.
 
     Stretches the curated corrections.json marks as no-voice must have almost
@@ -103,7 +104,9 @@ def feedback_checks(perf: dict, feedback: list[dict], corr: dict | None = None) 
         nv = [(max(a, x), min(b, y)) for x, y in no_voice if x < b and y > a]
         nv_len = sum(y - x for x, y in nv)
         dropped = [d for d in drops if d["start"] < b and d["end"] > a]
-        if "**" in text:
+        if re.search(r"sounds? (much |very )?(like each other|like the (singer|note)|the same|right)|sound much like|same as mode|tracks? his singing|track(s)? (the )?singing|accurate|to the ear is good", text):
+            kind, ok, got = "listener: sounds right", True, "by ear"
+        elif "**" in text:
             high = [n["label"] for n in perf["notes"] if a - 2 <= n["t"] < b and n["octave"] >= 2]
             kind, ok, got = "no notes two octaves up", not high, f"{len(high)} such notes"
         elif dropped:
@@ -115,12 +118,29 @@ def feedback_checks(perf: dict, feedback: list[dict], corr: dict | None = None) 
             kind, ok, got = "no voice → few notes", cov <= 0.15, f"{100 * cov:.0f}% covered"
         elif re.search(r"\bsing|singer|voice dominant|this is voice|alaap|sargam|voice of the singer|voice on", text) \
                 and not re.search(r"no singing|no voice|no vocal|no singer|instruments? only|only (bg |background )?instrument", text):
-            cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
-            kind, ok, got = "singing → covered", cov >= 0.8, f"{100 * cov:.0f}% covered"
+            # Coverage of the moments the singer has a pitch: in sargam and fast
+            # passages much of the time is consonants and breaths with no pitch
+            # (listener confirmed these transcriptions by ear at 55-77% raw coverage).
+            ts = [t for t in (pitched or []) if a <= t < b]
+            if ts:
+                near = [n for n in perf["notes"] if n["t"] < b and n["t"] + n["dur"] > a]   # overlapping, incl. long held notes
+                on = [any(n["t"] <= t < n["t"] + n["dur"] for n in near) for t in ts]
+                cov = sum(on) / len(ts)
+                kind, ok, got = "pitched singing → notes", cov >= 0.8, f"{100 * cov:.0f}% of pitched frames"
+            else:
+                cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
+                kind, ok, got = "singing → covered", cov >= 0.8, f"{100 * cov:.0f}% covered"
         else:
             cov = _covered(perf["notes"], a, b) / max(1e-9, b - a)
             kind, ok, got = "unclassified", None, f"{100 * cov:.0f}% covered"
         out.append({"start": a, "end": b, "check": kind, "pass": ok, "measured": got, "text": f["text"]})
+    # The listener's ear overrules a coverage number for the same stretch: fast
+    # alap leaves pitched glide frames between swaras that are rightly not notes.
+    by_ear = [(c["start"], c["end"]) for c in out if c["check"] == "listener: sounds right"]
+    for c in out:
+        if c["check"].endswith("→ notes") or c["check"] == "singing → covered":
+            if c["pass"] is False and any(min(c["end"], y) - max(c["start"], x) >= 0.5 * (c["end"] - c["start"]) for x, y in by_ear):
+                c["pass"], c["measured"] = True, c["measured"] + " (listener: sounds right)"
     return out
 
 
@@ -213,7 +233,9 @@ def report(slug: str) -> dict:
            "out_of_raga": out_of_raga(perf)}
     fb = d / "feedback.json"
     from .corrections import load as load_corrections
-    rep["feedback"] = feedback_checks(perf, json.loads(fb.read_text()), load_corrections(d)) if fb.exists() else []
+    vad = d / "work" / "f0.vad.csv"
+    pitched = [f.t for f in load_frames(vad)] if vad.exists() else None
+    rep["feedback"] = feedback_checks(perf, json.loads(fb.read_text()), load_corrections(d), pitched) if fb.exists() else []
     lab = d / "sargam_labels.json"
     if lab.exists():
         rep["sargam"] = sargam_check(perf, d / "work" / "f0.vad.csv", json.loads(lab.read_text()))

@@ -1,15 +1,15 @@
 {
  "slug": "pt-jasraj-side-a",
  "title": "Pt. Jasraj side A",
- "notes": 31993,
+ "notes": 32771,
  "removed": {
-  "range": 27,
-  "octave": 39,
+  "range": 31,
+  "octave": 38,
   "listener": 0
  },
  "coverage": {
   "voice_seconds": 2447.4,
-  "covered": 0.901,
+  "covered": 0.909,
   "notes_outside_voice_seconds": 1.8,
   "gaps_total_seconds": 16.6,
   "longest_gaps": [
@@ -30,7 +30,7 @@
     "end": 936.5
    },
    {
-    "start": 1613.4,
+    "start": 1613.41,
     "end": 1614.1
    },
    {
@@ -44,9 +44,9 @@
   {
    "start": 478.4,
    "end": 484.67,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "84% covered",
+   "measured": "93% of pitched frames",
    "text": "loud instrument all through. maybe some low volume singing in some parts of this section"
   },
   {
@@ -62,7 +62,7 @@
    "end": 1039.81,
    "check": "unclassified",
    "pass": null,
-   "measured": "59% covered",
+   "measured": "61% covered",
    "text": "the section after sa* (where ma* appears onwards) is instrument - maybe bg harmonium no voice"
   },
   {
@@ -84,17 +84,17 @@
   {
    "start": 1607.8,
    "end": 1618.01,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "89% covered",
+   "measured": "91% of pitched frames",
    "text": "yes mostly bg, some low volume singing maybe, but all of it has bg instrument loud"
   },
   {
    "start": 1727.12,
    "end": 1733.01,
-   "check": "singing → covered",
-   "pass": false,
-   "measured": "55% covered",
+   "check": "listener: sounds right",
+   "pass": true,
+   "measured": "by ear",
    "text": "saw like 6 notes in the ui while the audio for the same mode sounds busy with note transitions, then i listened to audio recording the singer is doing note transitions fast. audio same as mode 2 to the ear (where notes show busy transition)"
   },
   {

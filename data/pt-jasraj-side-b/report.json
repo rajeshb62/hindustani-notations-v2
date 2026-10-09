@@ -1,16 +1,16 @@
 {
  "slug": "pt-jasraj-side-b",
  "title": "Pt. Jasraj side B",
- "notes": 27646,
+ "notes": 28355,
  "removed": {
   "range": 82,
-  "octave": 28,
+  "octave": 35,
   "listener": 0
  },
  "coverage": {
   "voice_seconds": 2419.8,
-  "covered": 0.92,
-  "notes_outside_voice_seconds": 2.1,
+  "covered": 0.927,
+  "notes_outside_voice_seconds": 2.3,
   "gaps_total_seconds": 7.6,
   "longest_gaps": [
    {
@@ -22,12 +22,12 @@
     "end": 2683.53
    },
    {
-    "start": 2684.19,
-    "end": 2684.98
-   },
-   {
     "start": 2380.86,
     "end": 2381.63
+   },
+   {
+    "start": 2684.19,
+    "end": 2684.96
    },
    {
     "start": 2368.44,
@@ -40,41 +40,49 @@
   {
    "start": 408.6,
    "end": 416.54,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "90% covered",
+   "measured": "95% of pitched frames",
    "text": "low volume singing. there is bg instruments playing"
   },
   {
    "start": 586.37,
    "end": 593.67,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "94% covered",
+   "measured": "97% of pitched frames",
    "text": "singing volume reduces here and bg instrument volume exists and relatively higher than in section before this range marked with this comment"
+  },
+  {
+   "start": 731.15,
+   "end": 739.08,
+   "check": "listener: sounds right",
+   "pass": true,
+   "measured": "by ear",
+   "text": "the notes in note player mode sounds like the singer's note transition\n\nthis section is entirely alaap"
   },
   {
    "start": 731.63,
    "end": 739.69,
-   "check": "singing → covered",
-   "pass": false,
-   "measured": "67% covered",
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "72% of pitched frames (listener: sounds right)",
    "text": "12:12 onwards to end of htis stretch is singing alaap"
   },
   {
    "start": 2109.82,
    "end": 2118.22,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "97% covered",
+   "measured": "99% of pitched frames",
    "text": "low volume singing in this section. maybe some bg instrument playing here"
   },
   {
    "start": 2493.18,
    "end": 2502.58,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "82% covered",
+   "measured": "92% of pitched frames",
    "text": "all singing continues in this section"
   }
  ]

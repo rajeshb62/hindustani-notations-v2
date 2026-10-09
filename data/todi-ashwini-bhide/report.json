@@ -1,15 +1,15 @@
 {
  "slug": "todi-ashwini-bhide",
  "title": "Todi — Ashwini Bhide",
- "notes": 12736,
+ "notes": 13036,
  "removed": {
   "range": 0,
-  "octave": 25,
+  "octave": 27,
   "listener": 1
  },
  "coverage": {
   "voice_seconds": 1584.8,
-  "covered": 0.947,
+  "covered": 0.952,
   "notes_outside_voice_seconds": 1.2,
   "gaps_total_seconds": 16.9,
   "longest_gaps": [
@@ -59,7 +59,7 @@
   },
   {
    "t": 580.91,
-   "dur": 0.31,
+   "dur": 0.3,
    "label": "R"
   }
  ],
@@ -75,9 +75,9 @@
   {
    "start": 61.43,
    "end": 68.48,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "96% covered",
+   "measured": "99% of pitched frames",
    "text": "singer is singing, but since the swara is low, maybe can hear less relative to bg instruments, slow and low start to todi, can hear singer distinctly but possibly can hear the instruments equally as well"
   },
   {
@@ -99,9 +99,9 @@
   {
    "start": 217.52,
    "end": 222.47,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "100% covered",
+   "measured": "100% of pitched frames",
    "text": "singer sings here, both singer singing and instruments can be heard"
   },
   {
@@ -123,9 +123,9 @@
   {
    "start": 1043.9,
    "end": 1050.6,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "100% covered",
+   "measured": "100% of pitched frames",
    "text": "all parts of this the voice of the singer continues, no breaths taken no stops"
   },
   {
@@ -139,9 +139,9 @@
   {
    "start": 1130.14,
    "end": 1134.77,
-   "check": "singing → covered",
+   "check": "pitched singing → notes",
    "pass": true,
-   "measured": "98% covered",
+   "measured": "99% of pitched frames",
    "text": "singer is continuously singing here no breaks"
   },
   {

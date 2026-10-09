@@ -7,5 +7,14 @@
    "feedback": "background music only here- tanpura tabla notes"
   }
  ],
- "drop_notes": []
+ "drop_notes": [
+  {
+   "start": 144.5,
+   "end": 145.1,
+   "labels": [
+    "M+"
+   ],
+   "feedback": "there is a stray M+ note in 2:24 around that i dont think is coming from voice"
+  }
+ ]
 }
