@@ -1,17 +1,17 @@
 {
  "slug": "todi-paluskar-side-a",
  "title": "Todi — Paluskar side A",
- "notes": 12433,
+ "notes": 12358,
  "removed": {
-  "range": 8,
-  "octave": 33,
+  "range": 10,
+  "octave": 18,
   "listener": 7,
-  "passing": 1601,
-  "waver": 652
+  "passing": 1608,
+  "waver": 653
  },
  "coverage": {
   "voice_seconds": 1633.3,
-  "covered": 0.929,
+  "covered": 0.928,
   "notes_outside_voice_seconds": 0.7,
   "gaps_total_seconds": 37.5,
   "longest_gaps": [
@@ -186,7 +186,7 @@
    "end": 787.14,
    "check": "unclassified",
    "pass": null,
-   "measured": "83% covered",
+   "measured": "86% covered",
    "text": "for all but the last second or so, it is only bg instruments playing (sarangi?) no singing. singing starts in teh last second or so\nnotes in period before last second or so are transcribed for bg instrument/s"
   },
   {

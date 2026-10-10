@@ -1,13 +1,13 @@
 {
  "slug": "yaman-madhav-umdekar",
  "title": "Yaman — Madhav Umdekar",
- "notes": 9314,
+ "notes": 9289,
  "removed": {
-  "range": 13,
-  "octave": 21,
+  "range": 14,
+  "octave": 9,
   "listener": 0,
-  "passing": 1869,
-  "waver": 854
+  "passing": 1879,
+  "waver": 857
  },
  "coverage": {
   "voice_seconds": 1442.4,

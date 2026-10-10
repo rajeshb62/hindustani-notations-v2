@@ -1,0 +1,18 @@
+[
+ {
+  "start": 699.04,
+  "end": 704.24,
+  "source": "sung by the singer (sargam), transcribed by ear by the listener",
+  "notation": "'|' separates alternatives (sa|da = sa, possibly da)",
+  "tokens": "ga ma ga re ga ma da ni sa|da re|ni ga|sa re ni da",
+  "as_written": "ga ma ga ri ga ma da ni sa(da?) ri(ni?).. ga(sa?) ri ni da.."
+ },
+ {
+  "start": 711.7,
+  "end": 718.93,
+  "source": "sung by the singer (sargam), transcribed by ear by the listener",
+  "notation": "'|' separates alternatives (da|ma = da, possibly ma)",
+  "tokens": "ni da re ga ma da ni ma ni re ga da|ma da ni re ga ma re sa",
+  "as_written": "ni da.. re ga ma da ni..ma ni.. re ga da(ma?).. da ni re ga.. ma re sa"
+ }
+]

@@ -128,6 +128,8 @@ When the raga is known, a short (≤ 120 ms) out-of-raga note the voice only pas
 
 A short (≤ 120 ms) dip to the next semitone outside the raga that returns to the same note (Yaman N n N, P d P) is a waver inside a held note: the three become one continuous note, so the player does not re-strike it (`absorb_wavers`, audited as `waver`). Only dips that stay on the held note's side of the dip note's centre are merged (85–91% of them); deeper dips stay as sung.
 
+**Octave slips** (`_fix_octave_slips`, in `prepare_frames`): the pitch jumps about an octave between two adjacent 10 ms frames and jumps back within 120 ms, with steady pitch on both sides for at least 30 ms and at least as long as the slip — a tracker octave error, moved back (Ghulam Ali 11:54.0: N → "S" → n was N → S' → n). 48–190 per recording, mostly 20–60 ms. The 1.4 s-median octave fix before it misses these in sargam that spans an octave.
+
 ## Where is it weakest? (`pipeline/report.py`)
 
 ```bash

@@ -1,11 +1,13 @@
 {
  "slug": "pt-jasraj-side-b",
  "title": "Pt. Jasraj side B",
- "notes": 28355,
+ "notes": 28239,
  "removed": {
-  "range": 82,
-  "octave": 35,
-  "listener": 0
+  "range": 86,
+  "octave": 15,
+  "listener": 0,
+  "passing": 0,
+  "waver": 0
  },
  "coverage": {
   "voice_seconds": 2419.8,
@@ -82,7 +84,7 @@
    "end": 2502.58,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "92% of pitched frames",
+   "measured": "91% of pitched frames",
    "text": "all singing continues in this section"
   }
  ]

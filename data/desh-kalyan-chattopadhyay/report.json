@@ -1,17 +1,17 @@
 {
  "slug": "desh-kalyan-chattopadhyay",
  "title": "Desh — Kalyan Chattopadhyay",
- "notes": 17202,
+ "notes": 17164,
  "removed": {
   "range": 5,
-  "octave": 49,
+  "octave": 24,
   "listener": 0,
-  "passing": 1862,
-  "waver": 1141
+  "passing": 1874,
+  "waver": 1145
  },
  "coverage": {
   "voice_seconds": 1985.4,
-  "covered": 0.949,
+  "covered": 0.948,
   "notes_outside_voice_seconds": 1.8,
   "gaps_total_seconds": 5.8,
   "longest_gaps": [
@@ -104,7 +104,7 @@
    "end": 1353.69,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "95% of pitched frames",
+   "measured": "94% of pitched frames",
    "text": "all sargam here by singer (may be bg too?)"
   },
   {
@@ -112,7 +112,7 @@
    "end": 1636.86,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "89% of pitched frames",
+   "measured": "90% of pitched frames",
    "text": "fast sargam by singer here. maybe like 1 second breath break between at like 27:10 or something"
   },
   {

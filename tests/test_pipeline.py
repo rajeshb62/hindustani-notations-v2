@@ -267,6 +267,23 @@ class Wavers(unittest.TestCase):
             self.assertTrue(all(x.flag is None for x in kept))
 
 
+class OctaveSlips(unittest.TestCase):
+    def test_short_octave_slip_inside_a_phrase_is_moved_back(self):
+        from pipeline.transcribe import _fix_octave_slips
+        # N held, 50 ms read an octave low (the singer turned on S'), back to N.
+        cents = [1100] * 10 + [1240 - 1200] * 5 + [1100] * 10
+        fixed = [round(1200 * math.log2(f.hz / SA)) for f in _fix_octave_slips(run(cents))]
+        self.assertEqual(fixed[10:15], [1240] * 5)
+        # A lone stray frame is a slip itself, not the jump back for the run before it.
+        cents = [0] * 10 + [1200] * 5 + [10] + [1200] * 10
+        got = [round(1200 * math.log2(f.hz / SA)) for f in _fix_octave_slips(run(cents))]
+        self.assertEqual(got, [0] * 10 + [1200] * 5 + [1210] + [1200] * 10)
+        # A real leap that stays there, or a slip longer than the steady pitch around it: unchanged.
+        for cents in ([0] * 10 + [1200] * 20, [0] * 3 + [1200] * 6 + [0] * 3):
+            got = [round(1200 * math.log2(f.hz / SA)) for f in _fix_octave_slips(run(cents))]
+            self.assertEqual(got, cents)
+
+
 class Contour(unittest.TestCase):
     def test_gap_splits_runs(self):
         frames = run([0, 10, 20]) + run([702, 702], t0=1.0)

@@ -1,18 +1,18 @@
 {
  "slug": "todi-ghulam-ali",
  "title": "Todi — Ghulam Ali",
- "notes": 17339,
+ "notes": 17443,
  "removed": {
-  "range": 29,
-  "octave": 42,
-  "listener": 0,
-  "passing": 1981,
-  "waver": 1140
+  "range": 30,
+  "octave": 15,
+  "listener": 1,
+  "passing": 1907,
+  "waver": 1125
  },
  "coverage": {
   "voice_seconds": 1544.5,
-  "covered": 0.887,
-  "notes_outside_voice_seconds": 2.8,
+  "covered": 0.886,
+  "notes_outside_voice_seconds": 1.7,
   "gaps_total_seconds": 26.1,
   "longest_gaps": [
    {
@@ -83,7 +83,7 @@
    "end": 320.12,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "96% of pitched frames",
+   "measured": "97% of pitched frames",
    "text": "singer singing sargam:\n(pause)gamaresa(pause)ni(pause)sarega(pause)danisari first pause is around 5:11\n single ni is around 5:15.0 \npause after sarega and before danisari is around 5:17"
   },
   {
@@ -91,7 +91,7 @@
    "end": 324.9,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "95% of pitched frames",
+   "measured": "96% of pitched frames",
    "text": "all sargam here by singer, yes there is sarangi like instrument in bg"
   },
   {
@@ -119,12 +119,28 @@
    "text": "the pause before danisari is the pause occuring at around 5:17 when the bg instrument is playing and the note player is transcribing that too in the pause so the note taking appears continuous without the pause at 5:17"
   },
   {
+   "start": 699.04,
+   "end": 704.24,
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "91% of pitched frames",
+   "text": "sargam sung here\nga ma ga ri ga ma da ni sa(da?) ri(ni?).. ga(sa?) ri ni da.."
+  },
+  {
    "start": 711.7,
    "end": 718.93,
-   "check": "unclassified",
-   "pass": null,
-   "measured": "71% covered",
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
    "text": "this section is sangam: ni da.. re ga ma da ni..ma ni.. re ga da(ma?).. da ni re ga.. ma re sa"
+  },
+  {
+   "start": 712.19,
+   "end": 719.34,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "the note playing in this section sounds somewhat like the singing sargam at this section in recording. but i cant rule out some small deviations from it from bg instruments- the sarangi is trailing the singer's notes and playing loudly in the recording.. atleast one note i found that was from sarangi the M after the d before the first pause (if i remember correctly?)"
   },
   {
    "start": 1100.53,
@@ -179,7 +195,7 @@
    "end": 1417.81,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "97% of pitched frames",
+   "measured": "96% of pitched frames",
    "text": "singer volume is low. bg instrument is loud (sarangi?) with tabla"
   },
   {
@@ -197,6 +213,30 @@
    "pass": true,
    "measured": "86% of pitched frames",
    "text": "singer singing sargam, there is sarangi in the bg too"
+  }
+ ],
+ "sargam": [
+  {
+   "start": 699.04,
+   "end": 704.24,
+   "syllables": 14,
+   "matched": 5,
+   "agree": 4,
+   "misses": [
+    {
+     "t": 702.66,
+     "sung": "ga",
+     "transcribed": "M"
+    }
+   ]
+  },
+  {
+   "start": 711.7,
+   "end": 718.93,
+   "syllables": 19,
+   "matched": 5,
+   "agree": 5,
+   "misses": []
   }
  ]
 }

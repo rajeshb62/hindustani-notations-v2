@@ -1,16 +1,18 @@
 {
  "slug": "bihag-khadim-hussain-khan",
  "title": "Bihag — Khadim Hussain Khan",
- "notes": 26673,
+ "notes": 21808,
  "removed": {
-  "range": 243,
-  "octave": 100,
-  "listener": 0
+  "range": 244,
+  "octave": 61,
+  "listener": 0,
+  "passing": 1531,
+  "waver": 1649
  },
  "coverage": {
   "voice_seconds": 2580.5,
-  "covered": 0.905,
-  "notes_outside_voice_seconds": 2.9,
+  "covered": 0.907,
+  "notes_outside_voice_seconds": 3.4,
   "gaps_total_seconds": 23.1,
   "longest_gaps": [
    {

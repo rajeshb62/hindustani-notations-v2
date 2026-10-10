@@ -85,6 +85,61 @@ def _deglitch(frames: list[Frame], sa_hz: float, window_sec: float = 1.4) -> lis
     ]
 
 
+SLIP_MAX = 0.12     # longest octave slip
+SLIP_JUMP = 700.0   # a step this big between adjacent frames is not a glide
+SLIP_TOL = 450.0    # ...and after moving it an octave it must be this close
+SLIP_STEADY = 150.0 # pitch either side counts as steady below this step per frame
+
+
+def _fix_octave_slips(frames: list[Frame]) -> list[Frame]:
+    """Move short octave slips back: the pitch jumps about an octave between
+    two adjacent frames and jumps back within SLIP_MAX (Ghulam Ali 11:54.0:
+    N 1101 cents -> 44, 98 -> n 1006; the singer turned on S', the tracker
+    read S). The steady pitch on each side must be at least 30 ms and at
+    least as long as the slip, so a lone stray frame, a fast slide, or the
+    wrong half of an alternating stretch is not "fixed". _deglitch compares with a 1.4 s median, which in a sargam
+    spanning an octave sits mid-range and misses these."""
+    if len(frames) < 3:
+        return frames
+    c = [1200.0 * math.log2(f.hz) for f in frames]
+    t = [f.t for f in frames]
+
+    def slip(a: int, b: int) -> int:  # octave shift that undoes the a->b jump, or 0
+        d = c[b] - c[a]
+        if t[b] - t[a] > 0.03 or abs(d) < SLIP_JUMP:
+            return 0
+        k = -1 if d > 0 else 1
+        return k if abs(d + 1200.0 * k) <= SLIP_TOL else 0
+
+    def held(m: int, step: int) -> int:  # frames of steady pitch from m outwards
+        n = 1
+        while 0 <= m + step < len(c) and abs(t[m + step] - t[m]) <= 0.015 \
+                and abs(c[m + step] - c[m]) < SLIP_STEADY and n < 40:
+            m += step
+            n += 1
+        return n
+
+    out = list(c)
+    i = 1
+    while i < len(c) - 1:
+        k = slip(i - 1, i)
+        if not k:
+            i += 1
+            continue
+        j = i
+        while j + 1 < len(c) and t[j + 1] - t[i] <= SLIP_MAX and slip(j, j + 1) != -k:
+            j += 1
+        run = j - i + 1
+        if j + 1 < len(c) and slip(j, j + 1) == -k and t[j] - t[i] < SLIP_MAX \
+                and min(held(i - 1, -1), held(j + 1, 1)) >= max(3, run):
+            for m in range(i, j + 1):
+                out[m] = c[m] + 1200.0 * k
+            i = j + 2  # the jump back is not the start of another slip
+        else:
+            i += 1
+    return [Frame(f.t, 2 ** (x / 1200.0), f.conf) if x != y else f for f, x, y in zip(frames, out, c)]
+
+
 def _median_smooth(frames: list[Frame], win: int = 5) -> list[Frame]:
     if win < 3 or len(frames) < win:
         return frames
@@ -100,12 +155,13 @@ def _median_smooth(frames: list[Frame], win: int = 5) -> list[Frame]:
 
 
 def prepare_frames(frames: list[Frame], sa_hz: float) -> list[Frame]:
-    """Fix octave hops, then remove single-frame spikes.
+    """Fix octave hops (long-window, then short slips), then remove
+    single-frame spikes.
 
     The 3-frame median only kills 1-frame glitches; anything longer (kan swaras,
     gamak) survives. A wider window erased real 20 ms ornaments.
     """
-    return _median_smooth(_deglitch(frames, sa_hz), 3)
+    return _median_smooth(_fix_octave_slips(_deglitch(frames, sa_hz)), 3)
 
 
 # Frame times are 10 ms steps in float; 0.02 can come out as 0.01999.
