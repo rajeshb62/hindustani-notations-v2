@@ -1,16 +1,17 @@
 {
  "slug": "todi-ghulam-ali",
  "title": "Todi — Ghulam Ali",
- "notes": 19619,
+ "notes": 17339,
  "removed": {
   "range": 29,
   "octave": 42,
   "listener": 0,
-  "passing": 1981
+  "passing": 1981,
+  "waver": 1140
  },
  "coverage": {
   "voice_seconds": 1544.5,
-  "covered": 0.886,
+  "covered": 0.887,
   "notes_outside_voice_seconds": 2.8,
   "gaps_total_seconds": 26.1,
   "longest_gaps": [
@@ -82,7 +83,7 @@
    "end": 320.12,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "94% of pitched frames",
+   "measured": "96% of pitched frames",
    "text": "singer singing sargam:\n(pause)gamaresa(pause)ni(pause)sarega(pause)danisari first pause is around 5:11\n single ni is around 5:15.0 \npause after sarega and before danisari is around 5:17"
   },
   {
@@ -106,7 +107,7 @@
    "end": 317.31,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "98% of pitched frames",
+   "measured": "100% of pitched frames",
    "text": "(Pause)Danisari(pause)sarega(pause)maga_resa\n\nis the sargam sung by the singer in this stretch"
   },
   {
@@ -116,6 +117,14 @@
    "pass": null,
    "measured": "68% covered",
    "text": "the pause before danisari is the pause occuring at around 5:17 when the bg instrument is playing and the note player is transcribing that too in the pause so the note taking appears continuous without the pause at 5:17"
+  },
+  {
+   "start": 711.7,
+   "end": 718.93,
+   "check": "unclassified",
+   "pass": null,
+   "measured": "71% covered",
+   "text": "this section is sangam: ni da.. re ga ma da ni..ma ni.. re ga da(ma?).. da ni re ga.. ma re sa"
   },
   {
    "start": 1100.53,

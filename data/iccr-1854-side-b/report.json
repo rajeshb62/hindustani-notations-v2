@@ -1,12 +1,13 @@
 {
  "slug": "iccr-1854-side-b",
  "title": "Chhayanat — Raja Kale",
- "notes": 16273,
+ "notes": 14243,
  "removed": {
   "range": 8,
   "octave": 33,
   "listener": 1,
-  "passing": 1055
+  "passing": 1055,
+  "waver": 1015
  },
  "coverage": {
   "voice_seconds": 1260.0,

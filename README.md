@@ -126,6 +126,8 @@ Curated by hand from each recording's listening feedback, only where the feedbac
 
 When the raga is known, a short (≤ 120 ms) out-of-raga note the voice only passes through between two neighbouring raga notes is absorbed into them: Yaman 1:44, N → n (30 ms) → D reads N D, as the singer means it. The run's time is split between the neighbours, the note is audited in `removed_notes` as `passing`, and the pitch curve is unchanged. Held out-of-raga notes are left as sung (nearest swara) — whether a held note between two raga notes is a deliberate foreign note or a meend that turns back is a judgement for the ear, not the code. Checked by ear on Yaman 1:44 and Ghulam Ali 5:17. 6–14% of notes per recording, almost all 2–3 frames.
 
+A short (≤ 120 ms) dip to the next semitone outside the raga that returns to the same note (Yaman N n N, P d P) is a waver inside a held note: the three become one continuous note, so the player does not re-strike it (`absorb_wavers`, audited as `waver`). Only dips that stay on the held note's side of the dip note's centre are merged (85–91% of them); deeper dips stay as sung.
+
 ## Where is it weakest? (`pipeline/report.py`)
 
 ```bash

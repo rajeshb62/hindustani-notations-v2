@@ -4,14 +4,14 @@
     "title": "Desh \u2014 Kalyan Chattopadhyay",
     "path": "./data/desh-kalyan-chattopadhyay/performance.json",
     "sa_hz": 142.64546419841744,
-    "notes": 19484
+    "notes": 17202
   },
   {
     "id": "iccr-1854-side-b",
     "title": "Chhayanat \u2014 Raja Kale",
     "path": "./data/iccr-1854-side-b/performance.json",
     "sa_hz": 171.99359237571935,
-    "notes": 16273
+    "notes": 14243
   },
   {
     "id": "pt-jasraj-side-a",
@@ -32,27 +32,27 @@
     "title": "Todi \u2014 Ashwini Bhide",
     "path": "./data/todi-ashwini-bhide/performance.json",
     "sa_hz": 235.10592053587985,
-    "notes": 11935
+    "notes": 11014
   },
   {
     "id": "todi-ghulam-ali",
     "title": "Todi \u2014 Ghulam Ali",
     "path": "./data/todi-ghulam-ali/performance.json",
     "sa_hz": 133.8503754594449,
-    "notes": 19619
+    "notes": 17339
   },
   {
     "id": "todi-paluskar-side-a",
     "title": "Todi \u2014 Paluskar side A",
     "path": "./data/todi-paluskar-side-a/performance.json",
     "sa_hz": 161.27387262297026,
-    "notes": 13742
+    "notes": 12433
   },
   {
     "id": "yaman-madhav-umdekar",
     "title": "Yaman \u2014 Madhav Umdekar",
     "path": "./data/yaman-madhav-umdekar/performance.json",
     "sa_hz": 134.26311674675372,
-    "notes": 11022
+    "notes": 9314
   }
 ]

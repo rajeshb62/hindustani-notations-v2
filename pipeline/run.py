@@ -17,6 +17,7 @@ from .extract_f0 import extract_f0
 from .isolate import isolate
 from .transcribe import (
     absorb_passing,
+    absorb_wavers,
     build_contour,
     error_spans,
     frames_to_notes,
@@ -127,7 +128,7 @@ def run(
         notes, sa_hz, calibration = calibrated_notes(frames, sa_hz)
     else:
         notes, calibration = frames_to_notes(frames, sa_hz, prepared=True), None
-    notes = absorb_passing(corrections.flag_listener_notes(notes, corr), raga)
+    notes = absorb_passing(absorb_wavers(corrections.flag_listener_notes(notes, corr), raga), raga)
 
     write_performance(
         notes,

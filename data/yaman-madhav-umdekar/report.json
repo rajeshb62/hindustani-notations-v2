@@ -1,12 +1,13 @@
 {
  "slug": "yaman-madhav-umdekar",
  "title": "Yaman — Madhav Umdekar",
- "notes": 11022,
+ "notes": 9314,
  "removed": {
   "range": 13,
   "octave": 21,
   "listener": 0,
-  "passing": 1869
+  "passing": 1869,
+  "waver": 854
  },
  "coverage": {
   "voice_seconds": 1442.4,
@@ -144,6 +145,14 @@
    "pass": null,
    "measured": "11% covered",
    "text": "voice continues in this stretch- the notes transcription stops in some parts of this section"
+  },
+  {
+   "start": 1585.69,
+   "end": 1592.45,
+   "check": "unclassified",
+   "pass": null,
+   "measured": "86% covered",
+   "text": "the sung transitions and the transitions in the note player mode sound very similar in this section"
   }
  ]
 }

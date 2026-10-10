@@ -191,7 +191,7 @@ class Output(unittest.TestCase):
         self.assertNotIn("S''", [n["label"] for n in perf["notes"]])
         self.assertTrue(all("flag" not in n for n in perf["notes"]))
         self.assertEqual([r[2:] for r in perf["removed_notes"]], [["S''", "range"]])
-        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0, "passing": 0})
+        self.assertEqual(perf["stats"]["removed"], {"range": 1, "octave": 0, "listener": 0, "passing": 0, "waver": 0})
 
 
 class Rescue(unittest.TestCase):
@@ -247,6 +247,24 @@ class Passing(unittest.TestCase):
                             ([N] * 30 + [n] * 5 + [D] * 30, None)):
             kept = absorb_passing(frames_to_notes(run(cents), SA, prepared=True), raga)
             self.assertTrue(all(x.flag is None for x in kept), (cents[30], raga))
+
+
+class Wavers(unittest.TestCase):
+    def test_brief_out_of_raga_dip_inside_a_note_merges_it(self):
+        from pipeline.transcribe import absorb_wavers
+        N, n, P, d = 1088, 1006, 702, 782  # dips 10 cents toward the held note
+        notes = absorb_wavers(frames_to_notes(run([N] * 30 + [n] * 4 + [N] * 30), SA, prepared=True), "yaman")
+        self.assertEqual([(x.swara, x.flag) for x in notes], [("N", None), ("n", "waver")])
+        self.assertAlmostEqual(notes[0].dur, 0.64, places=2)
+        # Above the note too: P d P in Yaman.
+        notes = absorb_wavers(frames_to_notes(run([P] * 30 + [d] * 4 + [P] * 30), SA, prepared=True), "yaman")
+        self.assertEqual([(x.swara, x.flag) for x in notes], [("P", None), ("d", "waver")])
+        # Held dip, a dip past the dip note's centre (flat n), or a dip in the raga (Desh has n): kept.
+        for cents, raga in (([N] * 30 + [n] * 30 + [N] * 30, "yaman"), ([N] * 30 + [n - 20] * 4 + [N] * 30, "yaman"),
+                            ([N] * 30 + [n] * 4 + [N] * 30, "desh")):
+            kept = absorb_wavers(frames_to_notes(run(cents), SA, prepared=True), raga)
+            self.assertEqual(len(kept), 3)
+            self.assertTrue(all(x.flag is None for x in kept))
 
 
 class Contour(unittest.TestCase):

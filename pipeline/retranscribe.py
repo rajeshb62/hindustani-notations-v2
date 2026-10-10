@@ -21,6 +21,7 @@ from .raga import RAGAS
 from .run import DATA, write_catalog
 from .transcribe import (
     absorb_passing,
+    absorb_wavers,
     build_contour,
     error_spans,
     frames_to_notes,
@@ -46,7 +47,8 @@ def retranscribe(
         notes, sa_hz, calibration = calibrated_notes(frames, base_sa)
     else:
         notes, sa_hz, calibration = frames_to_notes(frames, base_sa, prepared=True), base_sa, None
-    notes = absorb_passing(corrections.flag_listener_notes(notes, corr), raga or perf.get("raga"))
+    raga = raga or perf.get("raga")
+    notes = absorb_passing(absorb_wavers(corrections.flag_listener_notes(notes, corr), raga), raga)
     write_performance(
         notes,
         dest / "performance.json",
@@ -57,7 +59,7 @@ def retranscribe(
         extra=perf.get("pipeline"),
         contour=build_contour(frames, sa_hz, singer_range(notes, sa_hz), error_spans(notes, sa_hz)),
         calibration=calibration,
-        raga=raga or perf.get("raga"),
+        raga=raga,
     )
     return {"slug": slug, "sa_hz": round(sa_hz, 3), "before": perf["stats"]["note_count"], "after": len(notes)}
 

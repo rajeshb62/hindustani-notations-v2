@@ -1,18 +1,19 @@
 {
  "slug": "todi-paluskar-side-a",
  "title": "Todi — Paluskar side A",
- "notes": 13742,
+ "notes": 12433,
  "removed": {
   "range": 8,
   "octave": 33,
-  "listener": 0,
-  "passing": 1603
+  "listener": 7,
+  "passing": 1601,
+  "waver": 652
  },
  "coverage": {
   "voice_seconds": 1633.3,
   "covered": 0.929,
   "notes_outside_voice_seconds": 0.7,
-  "gaps_total_seconds": 37.2,
+  "gaps_total_seconds": 37.5,
   "longest_gaps": [
    {
     "start": 649.6,
@@ -24,7 +25,7 @@
    },
    {
     "start": 1008.73,
-    "end": 1013.9
+    "end": 1014.05
    },
    {
     "start": 674.31,
@@ -35,7 +36,7 @@
     "end": 16.5
    },
    {
-    "start": 386.11,
+    "start": 386.1,
     "end": 388.7
    },
    {
@@ -47,7 +48,7 @@
     "end": 1466.92
    },
    {
-    "start": 85.9,
+    "start": 85.81,
     "end": 87.96
    }
   ]
@@ -61,6 +62,14 @@
  ],
  "feedback": [
   {
+   "start": 10.03,
+   "end": 13.84,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "the S* and may be N*(?) towards the end of the segment here is probably from bg, the singer is singing but not at sucha. high pitch that only 2-3 notes show that high pitch abruptly- that is probably from bg instruments"
+  },
+  {
    "start": 13.82,
    "end": 18.53,
    "check": "no voice → few notes",
@@ -69,11 +78,19 @@
    "text": "here the note transcription is transcribing the background instrument (sarangi?) instead of the voice maybe the voice is fading in teh background but the transcription is busy and is tracking the instrument (last second or two voice starts over again)"
   },
   {
+   "start": 79.96,
+   "end": 87.37,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "this N*d* towards the end is probably from bg instruments singer is not singing high notes there"
+  },
+  {
    "start": 85.89,
    "end": 87.96,
-   "check": "no voice → few notes",
+   "check": "named note removed",
    "pass": true,
-   "measured": "0% covered",
+   "measured": "0 left",
    "text": "all instrument here only instrument no voice"
   },
   {
@@ -207,17 +224,17 @@
   {
    "start": 1009.12,
    "end": 1013.9,
-   "check": "no voice → few notes",
+   "check": "named note removed",
    "pass": true,
-   "measured": "0% covered",
+   "measured": "0 left",
    "text": "this section is only bg instrument no voice"
   },
   {
    "start": 1012.13,
    "end": 1014.44,
    "check": "no notes two octaves up",
-   "pass": false,
-   "measured": "1 such notes",
+   "pass": true,
+   "measured": "0 such notes",
    "text": "this s** here likely comes from bg instrument (sarangi?)"
   },
   {
@@ -225,7 +242,7 @@
    "end": 1191.18,
    "check": "pitched singing → notes",
    "pass": true,
-   "measured": "95% of pitched frames",
+   "measured": "96% of pitched frames",
    "text": "singing by singer. yes i can hear sarangi too in this section"
   },
   {

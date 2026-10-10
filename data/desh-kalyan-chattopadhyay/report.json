@@ -1,16 +1,17 @@
 {
  "slug": "desh-kalyan-chattopadhyay",
  "title": "Desh — Kalyan Chattopadhyay",
- "notes": 19484,
+ "notes": 17202,
  "removed": {
   "range": 5,
   "octave": 49,
   "listener": 0,
-  "passing": 1862
+  "passing": 1862,
+  "waver": 1141
  },
  "coverage": {
   "voice_seconds": 1985.4,
-  "covered": 0.948,
+  "covered": 0.949,
   "notes_outside_voice_seconds": 1.8,
   "gaps_total_seconds": 5.8,
   "longest_gaps": [
@@ -121,6 +122,14 @@
    "pass": true,
    "measured": "by ear",
    "text": "for this period the notes of singer and that of the note player sound like each other, the note player plays notes fairly close to the the note transitions of the voice"
+  },
+  {
+   "start": 1729.53,
+   "end": 1736.32,
+   "check": "pitched singing → notes",
+   "pass": true,
+   "measured": "91% of pitched frames",
+   "text": "the notes track much of the length the singers singing in this segment (as noted by note player playing here) with some small parts that are off maybe bg instrument bleeding in\nin voice in the beginning 2 seconds or so (maybe from 28:49 just before this segment starts), the singer drops his frequencies by 8 steps by about 28:49 end or 28:50, and then raises by 4-6 steps of frequency, but in the note playing in the dropping section by 8 steps in a couple of steps there is not a clean drop maybe the 2nd step downwards, then at the bottom maybe the 7th or 8th steps or immediately after the note player plays a little differently, when the drop ends and the raise starts around 28:50 the drop and raise is not clear is muddled by some raises i think, again untrained ear\nafter 28:52 or so i can tell singer transitions and note player transitions match"
   },
   {
    "start": 2021.91,

@@ -1,12 +1,13 @@
 {
  "slug": "todi-ashwini-bhide",
  "title": "Todi — Ashwini Bhide",
- "notes": 11935,
+ "notes": 11014,
  "removed": {
   "range": 0,
   "octave": 27,
-  "listener": 1,
-  "passing": 1101
+  "listener": 4,
+  "passing": 1101,
+  "waver": 459
  },
  "coverage": {
   "voice_seconds": 1584.8,
@@ -106,19 +107,27 @@
    "text": "singer sings here, both singer singing and instruments can be heard"
   },
   {
+   "start": 280.17,
+   "end": 284.89,
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
+   "text": "this G* something G* towards the end (or is it G something G) of this segment are not sung notes, they may be bg instruments"
+  },
+  {
    "start": 281.86,
    "end": 284.99,
-   "check": "unclassified",
-   "pass": null,
-   "measured": "12% covered",
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
    "text": "this notes here G S then G(?) they are not voice"
   },
   {
    "start": 282.82,
    "end": 285.01,
-   "check": "unclassified",
-   "pass": null,
-   "measured": "18% covered",
+   "check": "named note removed",
+   "pass": true,
+   "measured": "0 left",
    "text": "the notes transcribed here are not singing G... etc are not from singing- there is no singing in this stretch"
   },
   {

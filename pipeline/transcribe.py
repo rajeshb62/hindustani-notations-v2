@@ -34,8 +34,9 @@ class Note:
     snap_quality: float
     # None = a note. Otherwise why it is an error, not something the singer
     # sang: "range" (flag_range: bleed / 2nd harmonic), "octave"
-    # (flag_octave_flips), "listener" (corrections.py) or "passing"
-    # (absorb_passing: passed through, not meant). Players hide flagged notes.
+    # (flag_octave_flips), "listener" (corrections.py), "passing"
+    # (absorb_passing: passed through, not meant) or "waver" (absorb_wavers:
+    # a dip inside a held note). Players hide flagged notes.
     flag: str | None = None
 
 
@@ -337,6 +338,57 @@ PASS_MAX = 0.12   # longest out-of-raga note still read as passed through
 PASS_GAP = 0.05   # neighbours must be this close to the passing run
 
 
+def absorb_wavers(notes: list[Note], raga: str | None) -> list[Note]:
+    """A short dip to the next semitone that is not in the raga, returning to
+    the same note (Yaman N -> n 40 ms -> N, or P -> d -> P), is a waver in a
+    held note, not a move: the three notes become one continuous note.
+
+    The dip (<= PASS_MAX, one semitone either side, out of raga, joined on
+    both sides, and on the held note's side of the dip note's centre: N n N
+    only if that n is sharp) is flagged "waver"; the two sides merge into the first, so
+    the player does not re-strike the note. Across six recordings the dip's
+    median depth is ~60 cents from the sung note: it barely crosses the
+    labelling boundary. The pitch curve is unchanged.
+    """
+    if not raga:
+        return notes
+    from .raga import NAMES as GRID, RAGAS
+
+    scale = RAGAS[raga]
+    live = [n for n in notes if n.flag is None]
+
+    def step(n: Note) -> int:
+        return n.octave * 12 + GRID.index(n.swara)
+
+    merged: set[int] = set()
+    i = 0
+    while i < len(live) - 2:
+        a, m, b = live[i], live[i + 1], live[i + 2]
+        if (
+            a.swara in scale
+            and (a.swara, a.octave) == (b.swara, b.octave)
+            and m.swara not in scale
+            and m.dur <= PASS_MAX
+            and abs(step(m) - step(a)) == 1
+            # the dip stays on the held note's side of the dip note's centre
+            and (m.cents_off > 0) == (step(a) > step(m))
+            and m.t - (a.t + a.dur) <= PASS_GAP
+            and b.t - (m.t + m.dur) <= PASS_GAP
+        ):
+            m.flag = "waver"
+            w = a.dur + b.dur
+            a.hz = round((a.hz * a.dur + b.hz * b.dur) / w, 3)
+            a.cents_off = round((a.cents_off * a.dur + b.cents_off * b.dur) / w, 2)
+            a.conf = round((a.conf * a.dur + b.conf * b.dur) / w, 4)
+            a.snap_quality = round((a.snap_quality * a.dur + b.snap_quality * b.dur) / w, 4)
+            a.dur = round(b.t + b.dur - a.t, 3)
+            merged.add(id(b))
+            del live[i + 1:i + 3]
+            continue  # a may waver again with the note after b
+        i += 1
+    return [n for n in notes if id(n) not in merged]
+
+
 def absorb_passing(notes: list[Note], raga: str | None) -> list[Note]:
     """Out-of-raga notes the voice only passes through between two neighbouring
     raga notes (Yaman 1:44: N -> n 30 ms -> D) are absorbed into those
@@ -492,7 +544,7 @@ def write_performance(
             ),
             "low_conf_notes": sum(1 for n in kept if n.conf < 0.35),
             "removed": {
-                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave", "listener", "passing")
+                k: sum(1 for n in removed if n.flag == k) for k in ("range", "octave", "listener", "passing", "waver")
             },
         },
     }
